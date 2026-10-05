@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "buildkeel": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/bk-launch",
+      "args": [
+        "server",
+        "--host",
+        "claude-code",
+        "--root",
+        "${CLAUDE_PROJECT_DIR}"
+      ]
+    }
+  }
+}

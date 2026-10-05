@@ -1,0 +1,49 @@
+BuildKeel License
+
+Copyright (c) 2026 BuildKeel. All rights reserved.
+
+This license covers BuildKeel: its plugins for the AI coding tools it
+supports, its installer, and everything they contain, including program
+code, command prompts, skills, instructions, rules and templates (together,
+"the software").
+
+"You" means the person or organization using the software. For an
+organization, it includes the organizations it controls, that control it, or
+that are under common control with it.
+
+1. Free use. You may install and use the software free of charge, in any
+   organization and for any project, commercial or not, on as many machines
+   and for as many people as you like.
+
+2. Your work is yours. What you make with the software belongs to you,
+   including your spec trees, the artifacts BuildKeel drafts for you, and
+   templates you adapt from its built-in ones. You may keep, change and
+   share them as part of your projects.
+
+3. Limits. You may not:
+   (a) copy the software, except to install and use it or to keep backups;
+   (b) give, sell, rent, lend, publish or sublicense the software, or any
+       part of it, to anyone else;
+   (c) use the software, or any part of it, to build, train or improve a
+       product or service that competes with BuildKeel;
+   (d) reverse engineer, decompile or disassemble the software's program
+       code, except where the law allows it despite this limit;
+   (e) remove or change this license or any copyright notice in the
+       software.
+
+4. Ending. If you break this license, your rights under it end. If you stop
+   the breach within 30 days of being told about it, they continue as
+   before.
+
+5. Versions. Each version of the software is covered by the license that
+   comes with it. A later version may come with a different license.
+
+6. Third-party components. The software includes open source components,
+   which are covered by their own licenses, listed in THIRD-PARTY-NOTICES.
+
+7. Names. This license gives no right to use the BuildKeel name or logo.
+
+8. No warranty. The software is provided "as is", without warranty of any
+   kind, express or implied, including fitness for a particular purpose. To
+   the fullest extent the law allows, BuildKeel is not liable for any
+   claim, damage or loss arising from the software or its use.

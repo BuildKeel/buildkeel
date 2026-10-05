@@ -1,0 +1,38 @@
+#!/bin/sh
+# Starts a BuildKeel component after checking for Node.js 20 or later.
+# Usage: bk-launch <server|hook> [args...]
+# BK_LAUNCH_DIST overrides the directory holding the built components.
+set -u
+
+REQUIRED_MAJOR=20
+
+target="${1:-}"
+case "$target" in
+  server|hook) shift ;;
+  *) echo "usage: bk-launch <server|hook> [args...]" >&2; exit 64 ;;
+esac
+
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+dist="${BK_LAUNCH_DIST:-$here/../dist}"
+case "$target" in
+  server) entry="$dist/server/main.js" ;;
+  hook) entry="$dist/hooks/main.js" ;;
+esac
+
+fail() {
+  cat >&2 <<MSG
+BuildKeel needs Node.js $REQUIRED_MAJOR or later. $1
+Install it from https://nodejs.org or with your version manager (for example "nvm install $REQUIRED_MAJOR"), then start a new session.
+MSG
+  exit 1
+}
+
+command -v node >/dev/null 2>&1 || fail "Node.js was not found on your PATH."
+version=$(node -p "process.versions.node" 2>/dev/null) || fail "Node.js could not be run."
+major=${version%%.*}
+case "$major" in
+  ''|*[!0-9]*) fail "Could not read the Node.js version." ;;
+esac
+[ "$major" -ge "$REQUIRED_MAJOR" ] || fail "Found Node.js $version."
+
+exec node "$entry" "$@"

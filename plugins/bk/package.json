@@ -1,0 +1,8 @@
+{
+  "name": "buildkeel",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://buildkeel.ai",
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module"
+}

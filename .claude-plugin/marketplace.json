@@ -1,0 +1,14 @@
+{
+  "name": "buildkeel",
+  "owner": {
+    "name": "BuildKeel"
+  },
+  "description": "The BuildKeel plugin for Claude Code.",
+  "plugins": [
+    {
+      "name": "bk",
+      "source": "./plugins/bk",
+      "description": "Keeps requirements, tests and code connected, from the business idea down to the commit, and gives Claude that full picture before it writes anything."
+    }
+  ]
+}
