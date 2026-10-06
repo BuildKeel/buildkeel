@@ -2,8 +2,6 @@
 
 BuildKeel keeps your requirements, tests and code connected, from the business idea down to the commit, and gives your coding agent that full picture before it writes anything.
 
-> **Early access.** Commands and behavior may change between 0.x releases. Your spec trees keep working across them: a change of format comes with `/bk:migrate`.
-
 ## Install
 
 You need Node.js 20 or later, and git.
