@@ -45,7 +45,7 @@ When the spec tree is a folder of your code repository, its approvals live on th
 
 - The unit is approved and has its permanent number, and so is everything above it: its story, epic and business idea.
 - Neither the unit nor anything above it is suspect: built against an older version of something that has changed since. See [Change impact](change-impact.md).
-- Every document your process requires of the unit and of everything above it is approved: by default the epic's design document and the story's test plan, which must cover every acceptance criterion. A task's own test plan, when it has one, must be approved too. See [Process and templates](process-and-templates.md#documents-attached-to-a-stage).
+- Every document your process requires of the unit and of everything above it is approved: by default the epic's design document and the story's test plan, which must cover every acceptance criterion. A task's own test plan needs no approval: it is recorded as it is saved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)), unless your process approves task plans. See [Process and templates](process-and-templates.md#documents-attached-to-a-stage).
 - No other working tree on this machine is working on it.
 
 A story that has tasks is worked on through its tasks. Epics and business ideas are not started at all. Bugs and ad-hoc units need no approval and no test plan, but are not started while anything above them is suspect.
@@ -119,7 +119,7 @@ A signed token in an emailed link opens the reset form once.
 
 - The unit and its parent appear in full, in their tracked sections. Everything further up appears as one line: its ID, version, title and approved summary.
 - The nearest design document, on the unit or above it, usually its epic's, appears under **How it is built**: its summary and the sections work is built on, such as the design, the decisions, and the architecture, data and interfaces when it has them. Other documents attached to the unit or above it, such as a team's own threat model, appear as one line each under **Background**.
-- Bugs attached to the unit or its parent that are not finished yet are listed under **Open bugs**, with the test case that found each one. A bug's own context asks for a regression test tagged with its ID (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
+- Bugs attached to the unit or its parent that are neither finished nor closed are listed under **Open bugs**, with the test case that found each one. A bug's own context asks for a regression test tagged with its ID (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
 - Every artifact shows the version the context was built from. When a newer version of a parent is approved, the context shows it at once, with a note that the unit was approved against the older one.
 - An artifact at version 0 is marked as describing the code as it was before BuildKeel, with the paths its scope covers, such as `US-E001 v0 describes the code as it was before BuildKeel, in src/reset/.` under **Why**.
 - **Linked code** lists the unit's commits and the files they changed, in every code repository on this machine. For work finished before BuildKeel, these are the commits made before the baseline that name its tracker key, found when its version 0 was approved.
@@ -208,8 +208,117 @@ Claude lists the units ready to start, at the lowest level (tasks, and stories w
 
 The run stops and asks you when a start is refused, a test keeps failing after Claude has tried to fix it, or a requirement is unclear: Claude never guesses a requirement. At the end it shows each unit with its branch, commits and record, and the last branch, which holds the whole run.
 
+## In a Spec-driven tree
+
+In a [Spec-driven](modes.md) tree, the units are [changes](changes.md), bugs and ad-hoc units. Starting one works as above, with two differences: no gate runs, so a unit starts unless another working tree on this machine holds it, and a change gets its branch from its ID and title, such as `bk/CH-002-reset-links-expire`.
+
+```
+/bk:start CH-002
+```
+
+### A change's context
+
+A change's context holds its proposal, every spec change in full, its design and its tasks with their ticks, then each capability it touches at its version in force: the requirements the change touches in full, and the others in a line each. It ends with its open bugs and the code linked to it:
+
+```
+# Active unit: CH-002 "Reset links expire" (change)
+Progress: 1 of 3 tasks done.
+Commits: end every message with "BuildKeel-Unit: CH-002", and add "BuildKeel-Task: <number>" when the commit does exactly one task.
+Tests: put the scenario ID in each test's name, such as [AUTH-R1-S1]. Record each run's JUnit XML report with test_results.
+Tasks: work through the unticked ones in order, and tick each with save_draft once its verification passes. Finish with /bk:done.
+Keep the change consistent: when you edit one of its files, check the others and propose the follow-on edits.
+
+## Proposal
+### Why
+
+A reset link that never expires can be used by anyone who finds it later.
+
+### What changes
+
+- Reset links expire 30 minutes after they are sent.
+- The reset email says when the link expires.
+
+### Capabilities
+
+- **AUTH** (modified): reset links expire 30 minutes after they are sent, and the reset email says when.
+
+### Impact
+
+The reset endpoint and the reset email template.
+
+## Spec change: AUTH
+### Added
+
+#### AUTH-R3 Reset link expires
+The system SHALL expire a reset link 30 minutes after it is sent.
+
+##### AUTH-R3-S1 Expired link
+- **WHEN** a user opens a reset link 31 minutes after it was sent
+- **THEN** they are told the link expired and offered a new one
+
+### Modified
+
+#### AUTH-R2 Request a reset link
+The system SHALL email a password reset link to a registered address on request, saying when the link expires.
+
+##### AUTH-R2-S1 Registered address
+- **WHEN** a user asks for a reset link for a registered email
+- **THEN** a reset link is emailed to that address, with the time it expires
+
+## Design
+### Summary
+
+Each reset link carries its issue time, signed, and the endpoint refuses links older than 30 minutes.
+
+### Context
+
+Reset links are random tokens stored with no time.
+
+### Design
+
+The token gains an issue time, signed with the existing reset key. The endpoint checks the signature, then the age.
+
+## Tasks
+### 1. Expiry
+
+- [x] 1.1 Add the issue time to reset tokens. Verify: token tests for a new and an old token.
+- [ ] 1.2 Refuse links older than 30 minutes. Verify: the "Expired link" scenario test (AUTH-R3-S1).
+
+### 2. Email
+
+- [ ] 2.1 Say when the link expires in the reset email. Verify: the "Registered address" scenario test (AUTH-R2-S1).
+
+## AUTH v1, in force
+How people prove who they are, and get back in when they cannot.
+- AUTH-R1 Sign in with email and password
+
+### AUTH-R2 Request a reset link
+The system SHALL email a password reset link to a registered address on request.
+
+#### AUTH-R2-S1 Registered address
+- **WHEN** a user asks for a reset link for a registered email
+- **THEN** a reset link is emailed to that address
+
+## Open bugs: none
+
+## Linked code: none yet
+```
+
+### Building a change's tasks
+
+`/bk:build` builds the active change's unticked tasks, in order, on its branch, after one confirmation. Each test is named with the scenario it checks, such as `[AUTH-R3-S1]`. A commit that does exactly one task names it too:
+
+```
+Refuse reset links older than 30 minutes
+
+BuildKeel-Unit: CH-002
+BuildKeel-Task: 1.2
+```
+
+so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and the run stops to ask when a test fails and cannot be fixed, or a requirement is unclear. Finish the change with `/bk:done` when its tasks are done.
+
 ## When the work is done
 
 Finish the unit with `/bk:done`: it checks the tests and records what was built. See [Finishing a unit](finishing-a-unit.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-start`, `/bk-approve`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-start`, `/bk-approve`, `/bk-build`, `/bk-done`.

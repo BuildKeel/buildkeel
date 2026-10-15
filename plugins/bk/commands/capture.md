@@ -7,6 +7,8 @@ Turn the conversation into a plan the team's process can build from. There are t
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow step 1, then "In a Spec-driven tree" at the end in place of steps 2 to 5.
+
 ## 1. Say what you heard
 
 Before calling any tool, sum up the discussion in plain words, with no BuildKeel terms yet (no stages, IDs or templates):
@@ -76,7 +78,7 @@ Version 0 describes what the code does today, as if BuildKeel had been used from
 - Reword what the code and the sources say into the template's form, such as a ticket's description written as testable criteria. Add nothing they do not support.
 - Describe only what the work touches, not the whole area around it.
 - Keep each source as you read it: pass it to `save_draft` in `sources`, with where it came from, its key and link, and its text exactly as your tool returned it (description, fields and comments). Never copy code into a source: the baseline commit names the code.
-- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended, before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it with /bk:new bug once version 0 is approved. When the source is out of date, version 0 follows the code.
+- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended, before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it with /bk:new bug once version 0 is approved. When the source is out of date, version 0 follows the code. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
 - Supported means the code or a source says it. A plausible guess is not support: who a story is for and why, a business idea's problem and goals, or a design's context are rarely in the code. Leave a required section empty when nothing supports it, and do not ask about it here: `save_draft` lists what version 0 leaves empty, and the reviewer sees it.
 
 ## 4. What the conversation left out
@@ -85,6 +87,15 @@ Show what was drafted as a table: ID, title, and what is still missing. Then, fo
 
 ## 5. Next step
 
-Offer approval as the next step: /bk:approve shows the drafts from this capture as one set, with anything that would not pass, and approves them in one review once the user confirms, a version 0 before the change built on it. Do not approve anything yourself here.
+Offer approval as the next step: /bk:approve shows the drafts from this capture as one set, with anything that would not pass, and approves them in one review once the user confirms, a version 0 before the change built on it. A task's own test plan is not in the set unless the process approves task plans: it is recorded when its task is approved. Do not approve anything yourself here.
 
 Do not create or edit spec tree files yourself; `save_draft` does all writing.
+
+## In a Spec-driven tree
+
+The plan is one change: a proposal, a spec change for each capability whose behavior it alters, a design only when needed, and tasks. Nothing is approved.
+
+1. **Read the capability specs first.** Call `query` with `view: "capabilities"`, then with the `id` of each capability the work touches, so the change starts from how the system behaves now. Check `view: "changes"` for an open change that already covers the work.
+2. **Propose the change**, showing a table of the capabilities it adds or modifies, by code, with what changes in each, and say in a sentence whether it needs a design: only when it makes decisions worth recording, such as a new component, data, an interface or a trade-off. A change that alters no behavior, such as a refactor, says so and has no spec changes. For a new capability, propose a short code from its name, such as SMS, which the user can change before anything is saved. Then ask, the same way as in step 1, showing the table and that sentence. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices: **Draft the change** (the default), **Change the plan**, **Keep talking**.
+3. **Draft the whole change** once the user agrees. Call `get_template` for proposal, spec-change, tasks and, when needed, design. Save them in one `save_draft` call with `type: "change"`, the proposal as `content`, and the others in `files`. A modified requirement keeps its ID and holds its full new text; a removed one says why and what replaces it. Each task says how its completion is verified, and each group holds the tests and docs its work needs. If the user asked to go one artifact at a time, save the proposal first, then each other file with the change's `id`, showing each before the next.
+4. **Show what was saved**: the change's ID, its files, the IDs given, and anything `save_draft` lists as worth fixing. Ask about what is missing, one question at a time. Then offer /bk:start with the change's ID as the next step.

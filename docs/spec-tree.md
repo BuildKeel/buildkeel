@@ -26,6 +26,20 @@ Both work the same way, with the same files and IDs. You can start with a folder
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
 ```
 
+That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes instead of stages:
+
+```
+<spec root>/
+  buildkeel.yaml                 settings, with mode: spec-driven
+  templates/                     your own templates (optional)
+  capabilities/AUTH/versions/    each version of a capability spec, with its record
+  changes/CH-012/                one directory per change
+  bugs/BUG-001/bug.md            one directory per bug
+  adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
+```
+
+See [Capability specs](capability-specs.md) and [Spec-driven and Full SDLC](modes.md).
+
 Each artifact has its own directory, named by its ID, holding its working file. As the artifact moves through its life, BuildKeel adds records next to it:
 
 | Directory | Holds |
@@ -34,6 +48,7 @@ Each artifact has its own directory, named by its ID, holding its working file. 
 | `approvals/` | One approval record per approved version, such as `v1.yaml`, and `v1-pending.yaml` for an approval made while its number could not be assigned (see [Approving artifacts](approval.md)) |
 | `sources/` | For version 0: each source it was drafted from, kept as it was read, and frozen with it (see [Version 0](approval.md#version-0-code-from-before-buildkeel)) |
 | `completions/` | One record each time the work is finished |
+| `closed.yaml` | For a bug closed without a fix: why, who closed it and when (see [Bugs and ad-hoc units](bugs-and-adhoc.md#closing-a-bug-without-a-fix)) |
 | `repins/` | One record each time someone confirms the artifact, or in a test plan one of its test cases, is still valid after what it was built against changed |
 | `test-plan/` | The artifact's test plan, `plan.md`, with its own `versions/` and `approvals/` |
 | `design/` | The artifact's design document, `design.md`, with its own `versions/` and `approvals/` |
@@ -98,6 +113,7 @@ settings:
 |---|---|
 | `format` | The version of the spec tree format. Required. |
 | `name` | A display name for the tree. |
+| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required in a format 2 tree. See [Spec-driven and Full SDLC](modes.md). |
 | `repos` | The code repositories that use this tree. Each has a `name`, and optionally its `remote` and a `baseline` commit: commits up to the baseline predate BuildKeel and are never reported as untracked work. |
 | `templates` | An organization template source, with a fixed `version`. |
 | `process` | Your process: stages, ID prefixes, the letter of onboarded numbers (`onboarded.letter`, `E` by default) and gate settings. Leave it out to use the default process. |
@@ -136,7 +152,7 @@ The key is the `remote` from the pointer file. This file stays on your machine a
 
 ## Format versions
 
-`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses.
+`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Full SDLC trees use format 1 and Spec-driven trees format 2; this version of BuildKeel reads and writes both, so neither needs migrating. A version of BuildKeel from before modes opens a format 2 tree read-only and asks for an update.
 
 - **An older format:** BuildKeel reads the tree but does not change it, and asks you to run `/bk:migrate`. Migration upgrades the tree in one commit you can review, and never alters approved versions.
 - **A newer format** than your BuildKeel supports: BuildKeel reads the tree but does not change it, and asks you to update the plugin.

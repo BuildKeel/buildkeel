@@ -20,7 +20,7 @@ If the user typed nothing, ask straight away, before calling any tool: "Which pe
 
 ## Show it
 
-Call the BuildKeel `query` tool with `view: "stats"` and `days` (leave `days` out for all of it). Show the result as it is: it opens with what the period comes to, then the details.
+Call the BuildKeel `query` tool with `view: "stats"` and `days` (leave `days` out for all of it). Show the result as it is: it opens with what the period comes to, then the details. In a Spec-driven tree it counts changes and what finishing them reported, in place of gate figures.
 
 ## Change the record
 

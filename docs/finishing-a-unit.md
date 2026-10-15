@@ -80,7 +80,8 @@ Run it on its own and Claude asks what to finish; press Enter for the active uni
 ### What must be true
 
 - The working tree has no uncommitted changes, and is on the unit's branch.
-- Every test case of the unit's **own** test plan has a tagged test and a current passing result. For a task, that is the task's plan; for a story built without tasks, the story's plan.
+- The unit is not suspect: built against a version of something above it that has changed since. Decide it first with `/bk:impact` (see [Change impact](change-impact.md)).
+- Every test case of the unit's **own** test plan has a tagged test and a current passing result. For a task, that is the task's plan, at the version recorded last; for a story built without tasks, the story's plan.
 - A test case the task takes from its **story's** plan must pass once a test is tagged with it. Until someone writes that test, it is **left for the story**: it does not stop the task, but the story cannot be finished until every one of its test cases passes. So the first task under a story can finish before the whole story works.
 - A task needs **at least one** passing test case, its own or its story's. A task with no test plan of its own, none of whose tests is tagged with a story test case, is refused: nothing shows its work is tested. Give it a test plan whose test cases cover the task, or tag a test with the story test case it delivers.
 
@@ -220,7 +221,7 @@ A story built through tasks, or an epic, is never started: its work is done in t
 /bk:done US-001
 ```
 
-- Every unit under it must be finished at its approved version in force: its tasks, any bugs attached to it or to them, and for an epic, its stories. An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
+- Every unit under it must be finished at its approved version in force: its tasks, any bugs attached to it or to them, and for an epic, its stories. A bug closed without a fix counts as done (see [Bugs and ad-hoc units](bugs-and-adhoc.md#closing-a-bug-without-a-fix)). An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
 - Every test case of its own test plan must pass. A test case with a tagged test in this repository needs a current passing result here, so run the tests after the work is merged. A test case delivered only in another code repository counts as passed when the completion record of the unit that delivered it says it passed.
 - An epic needs no test plan of its own; when it has one, its test cases must pass the same way.
 - Nothing under it may be suspect: no unit under it, and no test case in its plan or theirs. See [Change impact](change-impact.md).
@@ -237,5 +238,92 @@ children:
     record: tasks/TK-002/completions/20261001T160500Z-sam-lee.yaml
 ```
 - The unit's context keeps listing its code, from git and from its completion record.
+
+## Finishing a change
+
+In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Bugs and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
+
+A change does not have to be the active unit to be finished. Run `/bk:done CH-002`, or run `/bk:done` on its own with no active unit and pick from the open changes; those with every task ticked come first, and you can pick several.
+
+### What finishing reports
+
+Before anything is written, BuildKeel gathers, for Claude and for you:
+
+- each capability spec as it will be after the merge: what the change adds or modifies in full, the rest one line each;
+- the design's Design and Decisions sections;
+- the code linked to the change: its commits (stamped `BuildKeel-Unit: CH-002`, or on its branch) and the files they changed;
+- where each scenario's tests stand, and the **gaps**: scenarios with no tagged test (see [Test plans](test-plans.md));
+- the consistency check: the proposal and spec changes disagreeing, tasks or the design naming a requirement the change removes, test tags naming no scenario, ticked tasks whose requirement changed after the tick;
+- the template check, including the capability specs after the merge;
+- the suspects archiving would raise (see [Change impact](change-impact.md));
+- **overlaps**: requirements this change modifies or removes that another change archived since its spec change was written.
+
+Nothing here stops the finish. The only things that do are uncommitted changes in the working tree, which the record would leave out, and for the active change, being off its branch.
+
+### The review, and your choice
+
+Claude then reviews the code against the change's requirements, scenarios and design, and reports which scenarios the code implements, which it does not, and anything at odds with the design. The report is headed as Claude's judgment, not a check: it is kept in the completion record as Claude wrote it, never as a pass or a fail.
+
+You then choose **Fix first** or **Finish anyway**. Fix first is the default when the review or the checks report something missing, such as a scenario not implemented, a gap or a failing test; otherwise finishing is the default. Finishing anyway is recorded, with what was reported.
+
+### Overlaps
+
+A spec change records the capability version it was written against (`base`). When another change has given the capability a newer version since, changes to different requirements merge on their own. When both changed the same requirement, Claude shows you both texts:
+
+```
+- AUTH-R2: written against AUTH v1; CH-002 changed it in v2.
+```
+
+You choose which text to keep, or how to combine them, and Claude passes your choice when the change is archived. The spec change is rewritten with that text and the version it was merged onto, so the frozen change says exactly what was merged.
+
+### Several changes
+
+Several changes finish oldest first, each with its own review, versions and commit. Each is merged onto the versions the ones before it wrote: when `CH-012` and `CH-015` both modify `AUTH`, `CH-012` makes `AUTH` version 4, and `CH-015` is checked against version 4 and makes version 5.
+
+### What archiving writes
+
+```
+Archived CH-002 "Reset links expire".
+- Wrote AUTH v2 (capabilities/AUTH/versions/v2.md), naming CH-002.
+- Froze the change: changes/CH-002/archive.yaml, and its completion record changes/CH-002/completions/20261014T101500Z-jane-doe.yaml (1 commit, 2 files).
+- Committed as "archive: CH-002" (4c1d2e9) in the spec repo.
+- Released its claim; there is no active unit in this working tree now.
+- The branch bk/CH-002-reset-links-expire is unchanged: push it and open a pull request as usual.
+```
+
+Everything is committed once, as `archive: CH-002`, and pushed only when `autoPush` is set:
+
+```
+<spec root>/
+  capabilities/AUTH/versions/v2.md      AUTH after the merge
+  capabilities/AUTH/versions/v2.yaml    its record: the change, the hash, who, when
+  changes/CH-002/archive.yaml           the hash of every file of the change
+  changes/CH-002/completions/...yaml    the completion record
+```
+
+The archive record freezes the change. Its files, and the capability versions, are never edited: the agent is blocked from changing them, and validation reports one changed, added or removed outside BuildKeel.
+
+```yaml
+change: CH-002
+versions:
+  AUTH: 2
+files:
+  changes/CH-002/design.md: sha256:7d1b0c4e9f2a8e3d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d
+  changes/CH-002/proposal.md: sha256:2b4c6d8e0f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c
+  changes/CH-002/specs/AUTH.md: sha256:9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d
+  changes/CH-002/tasks.md: sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+archivedBy: Jane Doe <jane@example.com>
+archivedAt: 2026-10-14T10:15:00Z
+```
+
+A change's completion record has the fields above, for the change's commits, files and the scenarios' results, and these besides:
+
+| Field | What it holds |
+|---|---|
+| `versions` | The capability versions its archiving wrote, such as `AUTH: 2`. Code linked to the change is thereby linked to them: `query` on `AUTH` version 2 lists its commits and files. |
+| `requirements` | The requirements it added or modified. Its code depends on them: a later change to one makes the change suspect. |
+| `review` | Claude's review, as reported to you. |
+| `findings` | What the consistency and template checks reported. |
+| `finishedAnyway` | `true` when you finished it although something was reported missing. |
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`, `/bk-start`.

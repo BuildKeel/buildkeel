@@ -19,6 +19,7 @@ sections:
   Operations: { offered: "How it is deployed, monitored and supported." }
   Rollout and rollback: { offered: "How it is released, and how it is undone if something goes wrong." }
   Testing approach: { offered: "How the design is tested beyond the test cases in its test plans." }
+  Open questions: { offered: "Questions that can safely wait, each with who answers it and by when. A question whose answer would change the specs or tasks is answered first." }
   Notes: { offered: "Background, links, and anything from a source that fits no other section." }
 ---
 

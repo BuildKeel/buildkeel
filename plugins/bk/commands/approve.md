@@ -7,6 +7,8 @@ Help the user approve a BuildKeel artifact. Approval is the user's decision: nev
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, it has nothing to approve: call `approve` once and show its answer as it is.
+
 ## Choose what to approve
 
 If the user named one artifact above, approve it as below. If they named several, approve them as a set (see "A set in one review").
@@ -35,7 +37,7 @@ If they pick "Show what is ready", call the BuildKeel `query` tool with `view: "
 
 ## Its documents
 
-If the result says the approved artifact has a document with a draft waiting, such as its test plan or design document, tell the user and ask whether to approve it now. If they agree, go through the same steps for the document's ID: show it, check it without `apply`, and approve it only after they confirm. Each approval is its own commit.
+If the result says a task's own test plan was recorded with it, say so in a line: it needs no approval. If the result says the approved artifact has a document with a draft waiting, such as its test plan or design document, tell the user and ask whether to approve it now. If they agree, go through the same steps for the document's ID: show it, check it without `apply`, and approve it only after they confirm. Each approval is its own commit.
 
 ## Afterwards
 

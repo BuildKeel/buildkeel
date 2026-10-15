@@ -7,6 +7,8 @@ Review change impact in BuildKeel with the user. A suspect is a task, story, epi
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end as well.
+
 ## Choose what to review
 
 If the user named an artifact or test case above, use it.
@@ -34,9 +36,14 @@ For each suspect in the result, in order:
 3. Ask the user to decide, with your tool for asking a question with choices: your proposal first, then the other decision, then **Skip it for now**.
 4. Record only what the user chose: call `resolve_suspect` with the `id` and the `decision` (`still-valid` or `needs-change`), and show its result as it is.
    - After **needs change**, offer to make the change now: read the draft it opened with `query`, change it with `save_draft`, show the user the result, and approve it with /bk:approve only when they confirm. For a unit already finished, its new version can be started again with /bk:start once approved, to change the code.
+   - For a **bug**, needs change on an open bug means changing its file with the user and saving it with `save_draft`: the save records the decision. For a finished bug, `resolve_suspect` records a new bug to check it: show it, and offer to start it with /bk:start.
 
 ## Afterwards
 
 Call `impact` without `id` and say how many suspects are left. If a test plan is still written against an older version of its story, suggest updating it to cover any new criteria.
 
 Do not create or edit spec tree files yourself: `resolve_suspect` and `save_draft` do all writing, and re-pin records are never edited.
+
+## In a Spec-driven tree
+
+Suspects are tests tagged with a scenario, and archived changes, built against a requirement that a later capability version modified or removed. With an open change's ID, `impact` previews what archiving it would make suspect: decide each then or after it is archived, as its result says, passing that change in `change` to `resolve_suspect`. Needs change adds a task to revisit it: in the previewed change, or after archiving, in an open change the user picks (draft a new change with `save_draft` first if they want one). Show the task it added.

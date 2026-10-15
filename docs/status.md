@@ -72,10 +72,12 @@ Every artifact, in its hierarchy, with its state:
 | `draft` | Never approved. |
 | `approved v2` | Version 2 is approved and in force. |
 | `approved v1, v2 in draft` | Version 1 is in force; a change is being drafted. |
+| `recorded v2` | A task's own test plan: version 2 is in force, recorded as it was saved, with no approval (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)). |
 | `approved v0 (code as it was before BuildKeel, reviewed by Ana Lima on 2026-10-03)` | [Version 0](approval.md#version-0-code-from-before-buildkeel) is in force: it describes code that existed before BuildKeel, and counts as done. |
 | `v0 in draft` | A version 0 is drafted and waits for approval. |
 | `approved, number pending` | Approved while the number counter could not be reached; it gets its number the next time it can. |
 | `open`, `done on 2026-10-01` | For bugs and ad-hoc units, which are never approved. |
+| `closed on 2026-10-15 as a duplicate of BUG-001` | A bug [closed without a fix](bugs-and-adhoc.md#closing-a-bug-without-a-fix), with its reason and any note. It counts as done. |
 
 After the state, the work on it:
 
@@ -126,7 +128,7 @@ Existing code (payments-api):
 - Tests: 14 of 20 onboarded test cases (70%) have a test, tagged or matched; 3 tests in the latest report match no test case.
 ```
 
-The **Areas** line appears once there is a map of areas, and the **Tests** line once a test plan has a version 0 (see [Documenting existing code](onboarding.md)). A file is described when an approved artifact's `scope` covers it, or when the commits of a unit changed it, including the commits from before BuildKeel found for onboarded work by its tracker key. The files counted are those tracked in git, leaving out tests, the spec tree when it is kept in the repository, and the `.buildkeel.yaml` pointer file and `.gitignore`. Nothing here needs attention, so it is never in the line under the title, and it never appears in the session report. To find what describes particular files, ask Claude, such as "what describes src/reset/token.ts?".
+The **Areas** line appears once there is a map of areas, and the **Tests** line once a test plan has a version 0 (see [Documenting existing code](onboarding.md)). Two more lines appear when there is something to say: **Tickets**, once the tickets onboarding read are recorded on the map, such as `- Tickets: 12 read, 9 carried over, 3 left out (2 open, 1 by choice).`, and **Questions left open**, while a version 0 draft keeps one (see [Questions left open](onboarding.md#questions-left-open)). A file is described when an approved artifact's `scope` covers it, or when the commits of a unit changed it, including the commits from before BuildKeel found for onboarded work by its tracker key. The files counted are those tracked in git, leaving out tests, the spec tree when it is kept in the repository, and the `.buildkeel.yaml` pointer file and `.gitignore`. Nothing here needs attention, so it is never in the line under the title, and it never appears in the session report. To find what describes particular files, ask Claude, such as "what describes src/reset/token.ts?".
 
 ### Changed outside BuildKeel
 
@@ -148,5 +150,63 @@ Validation reports the same.
 ### Ready to start
 
 The units that can be started now, the active unit first. `/bk:start` lists the ones that are not ready yet, each with the reason.
+
+## In a Spec-driven tree
+
+In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), the overview is about changes and capability specs:
+
+```
+BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 2)
+In short: CH-002 is in progress here; 2 open changes; 2 findings in open changes; 4 scenarios with no tagged test; 1 failing; commits with no unit.
+
+Active unit here: CH-002 change "Reset links expire" on branch bk/CH-002-reset-links-expire.
+Spec repo: not checked yet in this session.
+
+Open changes (2):
+- CH-002 "Reset links expire": 1 of 3 tasks done; proposal, spec change AUTH, design, tasks · in progress here
+  - scenario AUTH-R2-S1 "Registered address" has no tagged test.
+- CH-003 "Remember devices": 1 of 2 tasks done; proposal, spec change AUTH, tasks
+  - scenario AUTH-R1-S1 "Correct password" has no tagged test.
+
+Capability specs (2):
+- AUTH "Authentication" v1, written by CH-001; open changes to it: CH-002, CH-003
+- NOTIF "Notifications" v1, written by CH-001
+
+Claims on this machine (1):
+- CH-002: this working tree, branch bk/CH-002-reset-links-expire, since 2026-10-14T09:12:40Z
+
+Scenarios: 5, 1 with a tagged test (local results in this working tree).
+- No tagged test (4): AUTH-R1-S1, AUTH-R1-S2, AUTH-R2-S1, NOTIF-R1-S1
+- Failing (1): AUTH-R3-S1
+
+Bugs: 1 open, 0 done.
+- BUG-001 "Reset email lands in spam"
+
+Ad-hoc work: 1 open, 0 done.
+- AH-001 "Fix typo in sign-in page"
+
+Commits with no unit, after each repo's baseline:
+- accounts-api: its baseline 4f2a9c1 is not in its history, so every commit counts.
+- accounts-api: 1 commit: e41b7d2 "Initial commit"
+
+Ready to start (4):
+- CH-002 change "Reset links expire" (1 of 3 tasks done): the active unit here
+- CH-003 change "Remember devices" (1 of 2 tasks done)
+- AH-001 ad-hoc unit "Fix typo in sign-in page"
+- BUG-001 bug "Reset email lands in spam"
+
+Offer to review CH-002 now: call finish_work without apply (it writes nothing), review the code against its requirements, scenarios and design, and report as your judgment what is implemented, missing or at odds with the design. Do not finish it unless the user asks.
+```
+
+- **Open changes**: each with its progress, its files, whether it is in progress here or in another working tree, and what the consistency check finds in it (see [What BuildKeel checks](changes.md#what-buildkeel-checks)). Archived and discarded changes are counted below them.
+- **Capability specs**: each at its version in force, the change that wrote it, and the open changes that alter it.
+- **Scenarios**: how many have a tagged test, then those with none (the gaps), those whose test fails, and those whose result is stale. Results are this working tree's. None of these ever stops anything.
+- **Suspect**: tests and archived changes built against a capability version that a later one changed where they rely on it. See [Change impact](change-impact.md).
+- **Bugs** and **ad-hoc work**: the open ones, and the bugs closed without a fix, with their reason.
+- **Commits with no unit**, as above, and the **commits of discarded changes**, with the reason each was discarded.
+- **Changed outside BuildKeel**: a capability version, or a file of an archived change, edited after it was written.
+- **Ready to start**: open changes, bugs and ad-hoc units. No gate applies.
+
+When a change is active, Claude offers to review it: the same review as finishing (see [Finishing a change](finishing-a-unit.md#finishing-a-change)), reported as Claude's judgment, with nothing written.
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`, `/bk-start`.

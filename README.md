@@ -1,6 +1,11 @@
 # BuildKeel for Claude Code and Antigravity
 
-BuildKeel keeps your requirements, tests and code connected, from the business idea down to the commit, and gives your coding agent that full picture before it writes anything.
+BuildKeel keeps your specs, tests and code connected, and gives your coding agent that picture before it writes anything. It works in one of two modes, chosen for each spec tree:
+
+- **Spec-driven**: capability specs say how your system behaves, and each piece of work is a change to them, with a proposal, spec changes, a design when needed, and tasks. Nothing waits for an approval.
+- **Full SDLC**: your team's chain from business idea down, through epics, user stories and tasks, with approvals and gates.
+
+Start Spec-driven and move to Full SDLC when your team needs approvals and gates; the move keeps your tests, linked code and history.
 
 ## Install
 
@@ -23,19 +28,26 @@ For installing in one project only, updating and removing, see [Install in Claud
 
 ## What it does
 
-- **Gives the agent the full "why".** Start a task and the agent receives the task, its story and acceptance criteria, the epic, the business idea, the tests that apply, and the code already written for it.
-- **Keeps work in order.** The agent will not start on a story that has not been approved, or one whose requirements changed after it was planned. Work is not done until its tests pass.
-- **Builds the audit trail for you.** Every commit is linked to its unit of work automatically. Finishing a unit records what was built, against which requirements, verified by which tests.
-- **Catches untested requirements.** Every test case declares what it covers, so an acceptance criterion with no test is flagged before the code is written.
-- **Shows what a change affects.** Change a requirement and see which tests, tasks and code are now in question.
-- **Leaves the conversation free.** Talk through ideas, options and architecture as usual. BuildKeel steps in when you run one of its commands, ask for code to change, or ask to move work forward.
-- **Turns a conversation into a plan.** The agent sums up what you discussed and drafts the epics, design documents, stories, acceptance criteria, test cases and tasks your process needs, in your templates, for you to approve in one review.
-- **Builds what is ready.** After one confirmation, the agent starts, builds, tests and finishes each ready unit in turn, stopping when a check fails or a requirement is unclear.
-- **Works on code you already have.** Code from before BuildKeel is described as work touches it, or all at once when you choose: drafted from the code and your existing tickets and pages, read and approved by people, with its old commits and tests linked.
+- **Gives the agent the full "why".** Start a change, or a task, and the agent receives what it is for, the requirements and scenarios or acceptance criteria it must meet, the tests that apply, and the code already written for it.
+- **Turns a conversation into a plan.** Talk ideas through as usual; when you are ready, the agent drafts a change (Spec-driven) or the epics, stories, test plans and tasks your process needs (Full SDLC), in your templates.
+- **Builds what is ready.** After one confirmation, the agent works through the tasks, testing each, and stops when a test fails or a requirement is unclear.
+- **Reviews before it finishes.** Finishing a change checks its code against its requirements, scenarios and design, reports what is missing, and gives each capability spec it touched its next version. In Full SDLC, work is not done until its tests pass.
+- **Builds the audit trail for you.** Every commit is linked to its unit of work, and finishing records what was built, against which versions, verified by which tests.
+- **Catches untested requirements.** Tests carry the IDs of the scenarios or test cases they check, so a requirement with no test is reported.
+- **Shows what a change affects.** Change a requirement and see which tests, work and code are now in question.
+- **Keeps work in order, when you want it.** In Full SDLC, the agent does not start on a story that is not approved, or one whose requirements changed after it was planned.
+- **Leaves the conversation free.** BuildKeel steps in when you run one of its commands, ask for code to change, or ask to move work forward.
+- **Works on code you already have.** Existing code is described as work touches it, or all at once when you choose, from the code and your existing tickets and pages, confirmed by people.
 
 ## How it works
 
-Your plan lives as structured files in git, next to your code:
+Your specs live as structured files in git, next to your code. In a Spec-driven tree:
+
+```
+Capability specs ← Changes (proposal, spec changes, design, tasks) → Tests → Code
+```
+
+In a Full SDLC tree:
 
 ```
 Business Idea → Epic → User Story → Task → Test cases → Code
@@ -51,15 +63,15 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 
 | Command | What it does |
 |---|---|
-| `/bk:init` | Set up a spec tree and its process, or point this repository at an existing one |
-| `/bk:capture` | Turn what you discussed into the artifacts your process needs, drafted once you agree |
-| `/bk:new` | Draft an artifact, break a parent down into drafts, or record a bug |
-| `/bk:onboard` | Document code from before BuildKeel, area by area, for people to review and approve |
-| `/bk:approve` | Validate and approve an artifact, or a whole plan in one review |
-| `/bk:start` | Load the context for a unit of work and begin |
-| `/bk:build` | Start, build, test and finish every ready unit in turn |
+| `/bk:init` | Set up a spec tree, Spec-driven or Full SDLC, or point this repository at an existing one |
+| `/bk:capture` | Turn what you discussed into a change, or the artifacts your process needs, drafted once you agree |
+| `/bk:new` | Draft a change or an artifact, break a parent down, or record a bug |
+| `/bk:onboard` | Document code from before BuildKeel, area by area, or move a Spec-driven tree to Full SDLC |
+| `/bk:approve` | Full SDLC: validate and approve an artifact, or a whole plan in one review |
+| `/bk:start` | Load the context for a change or a unit of work and begin |
+| `/bk:build` | Build a change task by task, or every ready unit in turn |
 | `/bk:adhoc` | Record a small change as an ad-hoc unit and start it |
-| `/bk:done` | Check the tests and record what was built, for a unit or a whole story or epic |
+| `/bk:done` | Review and archive a change, or check the tests and record what was built; close a bug that is not a defect |
 | `/bk:status` | Show the tree, work in progress, coverage gaps, what is not pushed and what to do next |
 | `/bk:impact` | Show what a change affects and resolve it |
 | `/bk:stats` | Show your own usage, kept on your machine |
@@ -67,7 +79,7 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 
 ## Documentation
 
-Start with [Getting started](docs/getting-started.md). On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
+Start with [Getting started](docs/getting-started.md), and see [Spec-driven and Full SDLC](docs/modes.md) for the two modes. On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
 
 ## License
 

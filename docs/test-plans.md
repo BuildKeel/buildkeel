@@ -15,6 +15,19 @@ Each business idea, epic, story and task can have one test plan. A test plan is 
 
 Its story's plan already applies to a task (see [Which test cases apply to a task](#which-test-cases-apply-to-a-task)). A task needs a plan of its own whenever its tests will not each be one of the story's test cases: a building block such as a token store or a data model, a migration, or a refactor. Its test cases then cover the task itself, such as `covers: [TK-001]`. A task can only be finished with at least one passing test case, of its own or of its story (see [Finishing a unit](finishing-a-unit.md)).
 
+### A task's own plan is recorded
+
+A task's own plan is not approved. Each time it is saved, once it passes its checks and its task is approved, it becomes its next version at once: frozen, with a record of its hash and who saved it, and committed as `record: TK-001-TP v2`. So while Claude builds a task, it can add a test case the plan did not foresee, numbered and checked like any other, and carry on. A save that changes nothing records nothing, and one that fails its checks stays a draft until a save passes. A plan drafted with its task, as `/bk:capture` does, is recorded when the task is approved.
+
+Starting the task never waits for its plan. Finishing it still needs every test case of its plan passing, and its completion record names the version the tests ran against, such as `TK-001-TP@v2`. `/bk:status` shows the plan as `recorded v2`. The plans of stories, epics and business ideas are approved as before, and a story's plan still has to cover every criterion.
+
+To have task plans approved like the others, set it in `buildkeel.yaml` (see [Process and templates](process-and-templates.md#task-plans)):
+
+```yaml
+process:
+  taskPlans: approve
+```
+
 Bugs and ad-hoc units have no test plan.
 
 Draft a plan with `/bk:new test-plan US-001`. When Claude breaks an epic down into stories, it drafts each story's plan with it.
@@ -199,5 +212,33 @@ The first are behavior to cover; the second, tests that check something no requi
 ## Approving a plan
 
 A plan is approved like any other artifact, with `/bk:approve US-001-TP`, and has its own versions. It can be approved once its story is approved, and it is approved against the story's current version. When the story moves to version 2, update the plan against version 2 and approve it again.
+
+## In a Spec-driven tree
+
+A Spec-driven tree has no test plans (see [Spec-driven and Full SDLC](modes.md)). The scenarios of its [capability specs](capability-specs.md) are what tests check: Claude puts the scenario's ID in the name of each test it writes for one.
+
+```js
+it("refuses a link opened 31 minutes after it was sent [AUTH-R3-S1]", async () => {
+  // ...
+});
+```
+
+Test results are read from a JUnit XML report, as above, and shown for the active change's scenarios: those of the requirements it adds or modifies first, then the others of the capabilities it changes.
+
+```
+CH-002: 1 of 4 scenarios passes, 1 fails, 2 without a current passing or failing result.
+Read .buildkeel/results.xml: 2 tests, 2 tagged with a scenario. Results are recorded for this working tree only (local results).
+
+Scenarios of CH-002 (local results):
+- AUTH-R2-S1 Registered address: no tagged test
+- AUTH-R3-S1 Expired link: passed
+Other scenarios of AUTH, which CH-002 leaves as they are:
+- AUTH-R1-S1 Correct password: failed: test/reset.test.ts > correct password [AUTH-R1-S1]
+- AUTH-R1-S2 Wrong password: no tagged test
+```
+
+- A result is **stale** when the code changed since the tests ran, or when the scenario's requirement changed: its text or its scenarios, in the change you are working on or in a newer capability version. A new name for the requirement, and changes to other requirements, leave it current.
+- A scenario with no tagged test is a **gap**. Gaps are reported in the status overview and when a change is finished, and never stop anything.
+- A tag that looks like a scenario ID but names none, such as a typo or a scenario of a removed requirement, is reported.
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-new`, `/bk-approve`.

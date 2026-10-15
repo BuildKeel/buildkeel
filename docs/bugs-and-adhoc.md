@@ -108,16 +108,41 @@ Once a bug attached to a unit is finished, its regression test counts among that
 
 If fixing a bug means a requirement must change, the change is made as a new version of the story or task, approved as usual.
 
+### Closing a bug without a fix
+
+Some bugs turn out not to be defects: a duplicate of another bug, one nobody can reproduce, behavior that works as intended, or a failure caused by a wrong test. None of these can get a regression test, so instead of finishing one, close it. Run `/bk:done BUG-002`, and Claude offers **Close without a fix** beside finishing it, then asks for the reason, for a duplicate which bug it duplicates, and for a note if you want one. Before anything is written, it shows what closing does:
+
+```
+Closing BUG-002 "Login redirect loops" without a fix, as a duplicate of BUG-001, will:
+- write its closing record, bugs/BUG-002/closed.yaml: the reason, who closed it and when, never edited after
+- commit it on its own in the spec repo
+
+A closed bug is not open, does not hold up TK-001 from being finished, and is never started or reopened: a defect that returns is a new bug.
+```
+
+Claude closes a bug only when you confirm it. The closing record is written once and committed alone, as `close: BUG-002 (duplicate of BUG-001)`:
+
+```yaml
+bug: BUG-002
+reason: duplicate
+duplicateOf: BUG-001
+note: Same root cause as the redirect loop.
+closedBy: Jane Doe <jane@example.com>
+closedAt: 2026-10-15T09:12:00Z
+```
+
+The reason is one of `duplicate`, `cannot-reproduce`, `works-as-intended` or `wrong-test`. A closed bug counts as done for its story or epic, drops out of open bugs, relies on nothing that can change, and cannot be started. It is never reopened: if the defect comes back, record a new bug, which can name the closed one. When the test was wrong, correct the test case as a new version of its test plan. A bug that is finished, or already closed, cannot be closed.
+
 ### Open bugs in a unit's context
 
-A unit's context lists the bugs attached to it or to its parent that are not finished yet:
+A unit's context lists the bugs attached to it or to its parent that are neither finished nor closed:
 
 ```
 ## Open bugs
 - BUG-002 "Reset link lasts 3 minutes" in TK-001, found by US-001-TC2
 ```
 
-A story or epic cannot be finished while a bug under it is open.
+A story or epic cannot be finished while a bug under it is open. A closed bug counts as done.
 
 ### Attaching a standalone bug
 
@@ -135,6 +160,15 @@ Claude asks whether to attach the bug there, to one of the tasks named, or to le
 ## When the spec tree is in your code repository
 
 The file of a bug or ad-hoc unit is committed on the branch that is checked out when it is recorded, often the branch of a unit you just finished, which waits for its pull request. When you start it, its own branch is made from your main branch as usual and brings along the commit that recorded it, which changes nothing but the unit's own file. The same file then sits on both branches, and they merge cleanly in either order.
+
+## In a Spec-driven tree
+
+Bugs and ad-hoc units work the same way in a [Spec-driven](modes.md) tree, with these differences:
+
+- A bug is attached to the [change](changes.md) whose work found it, such as `parent: CH-002`, with the scenario whose test found it as its `testCase`, or it stands alone. It needs no proposal, and it shows in that change's context while it is open.
+- Finishing a bug with no test tagged with its ID reports the missing regression test, as a reminder, and the bug is still finished. The work must be committed on its branch.
+- A fix that changes a requirement is made through a change, which alters the capability spec when it is finished.
+- Closing a bug without a fix works as above, and a closed bug drops out of its change's open bugs.
 
 ## IDs
 

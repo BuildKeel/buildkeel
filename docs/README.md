@@ -7,9 +7,12 @@ User documentation, kept beside the code it describes.
 - [Install in Claude Code](install-claude-code.md): what you need, installing for you or for a repository, updating and removing, and checking that it works.
 - [Install in Antigravity](install-antigravity.md): what you need, installing for every project or for one, updating and removing, installing without npm, and checking that it works.
 - [Getting started](getting-started.md): setting up a repository with /bk:init, what it adds, and a first piece of work from a conversation to finished code.
+- [Spec-driven and Full SDLC](modes.md): the two modes, what each holds, choosing one when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
 
 ## Plan the work
 
+- [Capability specs](capability-specs.md): in a Spec-driven tree, how the system behaves now: the format, requirement and scenario IDs, versions written by finishing a change, and what BuildKeel checks.
+- [Changes](changes.md): in a Spec-driven tree, a change's proposal, spec changes, design and tasks, editing an open change, and what BuildKeel checks.
 - [Drafting with Claude](drafting.md): turning a conversation into a plan with /bk:capture, drafting artifacts and breakdowns with /bk:new, bringing your own material, draft IDs, and what is still missing.
 - [Approving artifacts](approval.md): approving with /bk:approve, a whole plan in one review, permanent numbers, approval records and commits, changing an approved artifact, locked files and validation.
 - [Test plans and coverage](test-plans.md): test plans at every level, test case IDs, what is checked, gaps, the coverage view, and which test cases apply to a task.

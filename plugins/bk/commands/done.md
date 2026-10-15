@@ -7,6 +7,8 @@ Finish a BuildKeel unit with the user. Finishing writes a permanent record of wh
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end for a change.
+
 ## Choose the unit
 
 If the user named a unit above, use it.
@@ -29,6 +31,10 @@ A story built through tasks, an epic, or a stage the team added above its storie
    - **Ready:** show what finishing will record: the commits, the files, each test case's result, and any test cases left for the story. For a story or epic: the units under it and where each test case passed.
    - **A standalone bug:** the result also says which stories its changes belong to. Ask where to attach it, with your tool for asking a question with choices: **the story it suggests** (the default), then each task it names, then **leave it standalone**. Pass the chosen ID in `attach` when you finish.
 
+## A bug that is not a defect
+
+When the unit is a bug, offer closing it without a fix beside finishing it, with your tool for asking a question with choices, whether or not it is started: **Finish <ID>** (the default when its regression test passes, or when the user has not said it is not a defect) or **Close without a fix**, for a bug that turns out not to be a defect (a duplicate, one that cannot be reproduced, behavior that works as intended, or a test that was wrong; the default when the user says so). To close, ask for the reason with the same tool, then for a duplicate which bug it duplicates, and for an optional note in the user's words. Call `finish_work` with `close` (`reason`, `duplicateOf`, `note`) and without `apply`, show what it says with the bug's title, and ask the user to confirm. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. Only when they confirm, call it again with `apply: true`. Never close a bug the user has not confirmed in this conversation. When the test was wrong, offer to correct the test case as a new version of its test plan.
+
 ## Confirm
 
 Ask the user with your tool for asking a question with choices, the default first, showing what the result said. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices:
@@ -50,3 +56,7 @@ Show the result as it is: the completion record, the commit in the spec repo, an
 If the result names the next unit ready under the same parent, offer to start it, with your tool for asking a question with choices: **Start <ID>** (the default), or **Not now**. If the user agrees, call `start_work` with its `id` and `stack: true`, so its branch starts from this unit's branch and has this work before it is merged, and carry on as /bk:start does. Otherwise call `query` with `view: "startable"`, show what can be started next, and offer to start it with /bk:start, or to build everything ready with /bk:build.
 
 Do not create or edit spec tree files yourself: `finish_work` writes the record, and completion records are never edited.
+
+## In a Spec-driven tree
+
+A change is finished by archiving it, and need not be the active unit. With none named and none active, `finish_work` lists the open changes: ask which to finish, allowing several, those with every task ticked first. Call `finish_work` without `apply` (with `ids` for several) and follow its result step by step: review the code against the change, report it labeled as your judgment, and ask **Fix first** or **Finish anyway**, fix first being the default when anything is reported missing. Nothing blocks the finish but uncommitted work. Bugs and ad-hoc units finish as above.

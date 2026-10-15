@@ -15,7 +15,7 @@ Claude works in two steps, and asks before each:
 1. **What it heard.** A short summary in plain words: what you set out to do, the idea, and the approach and decisions discussed. Choose **Create the artifacts**, **Change something**, or **Keep talking**. Any other answer, such as a correction, simply goes on with the conversation; nothing is drafted.
 2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. Choose **Draft them all**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
 
-Once you agree, Claude drafts every artifact with your templates, top down, and then asks you, one question at a time, for each required part the conversation never covered, such as how a feature will be rolled out. Nothing is invented to fill a gap. Approve the drafts in one review with `/bk:approve` (see [Approving artifacts](approval.md)).
+Once you agree, Claude drafts every artifact with your templates, top down, and then asks you, one question at a time, for each required part the conversation never covered, such as how a feature will be rolled out. Nothing is invented to fill a gap. Approve the drafts in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
 
 To capture only part of a long conversation, say which: `/bk:capture the text message reset`.
 
@@ -57,7 +57,7 @@ What describes code that existed before BuildKeel is [version 0](approval.md#ver
 
 - What the code and the sources say is reworded into the template's form, such as a ticket's description written as testable criteria. Nothing they do not support is added.
 - Each source is kept beside version 0 as it was read, with where it came from and its link, and listed in its Sources section. Code is never copied: the baseline commit names it.
-- When a source and the code disagree, such as a ticket that says a reset link lasts 30 minutes where the code makes it 60, Claude asks which is intended before drafting that part. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it. When the ticket is out of date, version 0 follows the code.
+- When a source and the code disagree, such as a ticket that says a reset link lasts 30 minutes where the code makes it 60, Claude asks which is intended before drafting that part. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it. When the ticket is out of date, version 0 follows the code. When nobody here knows, answer **Not sure: leave it open**: the question is kept in the draft, that part is left out, and version 0 waits for someone who knows (see [Questions left open](onboarding.md#questions-left-open)).
 
 You read it, complete it or correct it, and approve it. You can also write any of it by hand. To document existing code area by area rather than as work touches it, see [Documenting existing code](onboarding.md).
 
@@ -83,8 +83,19 @@ Ask Claude to fill the gaps, or edit the draft and save again. To see a draft, a
 
 Bugs are recorded with `/bk:new bug` too, but they are not drafts: a bug gets its permanent ID at once and needs no approval. See [Bugs and ad-hoc units](bugs-and-adhoc.md).
 
+## In a Spec-driven tree
+
+In a Spec-driven tree, what Claude drafts is a [change](changes.md): a proposal, a spec change for each capability whose behavior it alters, a design only when needed, and tasks. Nothing in it is approved, and nothing is a draft: everything stays editable until the change is finished.
+
+- **`/bk:capture`** starts the same way, with a summary of what Claude heard. It then reads the capability specs the work touches and proposes the change as a table of capabilities, each new or modified, with what changes in it, saying whether the change needs a design. Choose **Draft the change**, **Change the plan** or **Keep talking**. Once you agree, Claude drafts the whole change in one save and asks, one question at a time, for anything the conversation left out.
+- **`/bk:new change for <what>`** drafts a change from what you type; **`/bk:new spec change for CH-012`**, or tasks or a design for an open change, adds or rewrites one file of it. Run `/bk:new` on its own and Claude asks what to draft, with examples, or suggests what an open change still lacks.
+- **IDs are given when the change is saved**, not at approval: the change's own, such as `CH-012`, and each new requirement and scenario, such as `AUTH-R3` and `AUTH-R3-S1`. See [Capability specs](capability-specs.md#ids).
+- To go one file at a time, say so: Claude saves the proposal first, then shows each other file before the next.
+
+When the change is drafted, start it with `/bk:start CH-012`.
+
 ## Next
 
 Approve drafts with `/bk:approve`, one at a time or as a whole plan.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-status`, `/bk-start`.

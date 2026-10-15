@@ -7,6 +7,8 @@ Start work on a BuildKeel unit with the user. Every code change belongs to exact
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end as well.
+
 ## Choose the unit
 
 If the user named a unit above, use it.
@@ -32,3 +34,7 @@ Call the BuildKeel `start_work` tool with the unit's `id`.
 - **Started:** tell the user the branch and anything it warned about, such as a spec tree that is behind its remote. Then give a short summary of the context it returned: what to build, the acceptance criteria, and the test cases, by ID. Propose how to begin, and ask before writing code.
 
 Keep the context in mind for the rest of the work, and call `get_context` again if you lose track of it. Do not create or edit spec tree files yourself.
+
+## In a Spec-driven tree
+
+The units are open changes, bugs and ad-hoc units, and no gate runs: `start_work` starts the unit, or says which working tree on this machine already holds it. If nothing can be started, suggest drafting a change with /bk:capture. When a change starts, sum up its context in a few lines: what the proposal changes, the requirements it adds, modifies or removes by ID, how many of its tasks are done, and the next unticked task. Propose starting with that task, or running /bk:build for all of them, and ask before writing code.

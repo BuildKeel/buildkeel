@@ -7,6 +7,8 @@ Draft BuildKeel artifacts with the user. Everything you produce is a draft: draf
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end instead of the sections before "Bugs".
+
 ## If the user typed nothing
 
 Ask straight away, before calling any tool, with your tool for asking a question with choices if you have one. The question itself says what they could type, in one sentence, since some hosts show only the question and its choices: "What should I draft? For example: " followed by the examples.
@@ -49,7 +51,7 @@ Version 0 describes what code already does, as if BuildKeel had been used from t
 - Fill the template's sections from the code and from what the user brings about it, such as a ticket or a wiki page read through their own tools, a file, or what they say. Reword what they say into the template's form, such as a ticket's description written as testable criteria; add nothing they do not support.
 - Describe only what the change touches.
 - Keep each source as you read it: pass it in `sources`, with where it came from, its key and link, and its text exactly as your tool returned it (description, fields and comments). Never copy code into a source.
-- When a source and the code disagree, or two sources do, ask the user which is intended before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it once version 0 is approved. When the source is out of date, version 0 follows the code.
+- When a source and the code disagree, or two sources do, ask the user which is intended before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it once version 0 is approved. When the source is out of date, version 0 follows the code. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
 - Supported means the code or a source says it; a plausible guess is not support, such as who a story is for and why. Leave a required section empty when nothing supports it, without asking: `save_draft` lists what is empty, for the reviewer.
 
 The change that builds on it is then saved with `save_draft`, the version 0's draft ID as `id` and no `version`: that draft is its version 1. Start from version 0's text as saved, with its entry IDs: keep the ID of every entry that stays, changed or not (a criterion whose limit changes keeps its ID), and write `{{new}}` only for an entry the change adds. Both are approved in one review with /bk:approve, version 0 first.
@@ -59,7 +61,7 @@ The change that builds on it is then saved with `save_draft`, the version 0's dr
 A test plan belongs to one artifact (its `parent`), and every test case has a `covers:` line saying what it checks. A test plan has no `id` field: its frontmatter is only its `parent`, and it is named after that artifact, such as `US-001-TP`.
 
 - **A story's plan** covers the story's acceptance criteria, such as `covers: [{{id}}-AC1]`. Every criterion must be covered, or the plan cannot be approved.
-- **A task's plan** covers the task itself (its ID, such as `covers: [TK-047]`) and/or its story's criteria. The story's test cases already apply to the task. Draft a plan for the task whenever its tests will not each be one of those story test cases: a building block such as a token store or a data model, a migration, or a refactor. A task without a plan of its own can be finished only when at least one of its tests is tagged with a story test case and passes.
+- **A task's plan** covers the task itself (its ID, such as `covers: [TK-047]`) and/or its story's criteria. Unless the process approves task plans, it is recorded, not approved: each save that passes its checks, once the task is approved, becomes its next version. The story's test cases already apply to the task. Draft a plan for the task whenever its tests will not each be one of those story test cases: a building block such as a token store or a data model, a migration, or a refactor. A task without a plan of its own can be finished only when at least one of its tests is tagged with a story test case and passes.
 - **An epic's plan** (its integration test plan) covers stories under the epic, or their criteria.
 - **A business idea's plan** (its end-to-end test plan) covers epics under the idea, or the idea's goals.
 
@@ -90,6 +92,17 @@ A bug is a defect in work that was planned: it is recorded straight away with it
 
 ## Finish
 
-List every draft you saved, with its ID and title, and anything `save_draft` reported as still missing. Offer to fix what is missing or to revise any draft. Remind the user that drafts are approved with /bk:approve.
+List every draft you saved, with its ID and title, and anything `save_draft` reported as still missing. Offer to fix what is missing or to revise any draft. Remind the user that drafts are approved with /bk:approve; a task's own test plan, when `save_draft` says it is recorded, needs no approval.
 
 Do not create or edit spec tree files yourself; `save_draft` does all writing.
+
+## In a Spec-driven tree
+
+What you draft is a change, or a file of an open change: its proposal, a spec change, its design or its tasks. Nothing is approved. A bug is recorded as in "Bugs", attached to the change whose work found it (its `parent` is the change's ID, its `testCase` the scenario whose test found it) or standalone; a fix that changes a requirement is made through a change.
+
+- **If the user typed nothing**, ask what to draft, offering **Suggest what to draft next** (the default) and **Type what to draft**. The question itself gives examples: `change for reset by text message`, `spec change for CH-012` and `bug CH-012`. For a suggestion, call `query` with `view: "changes"` and propose what an open change still lacks, such as tasks or a spec change its proposal names.
+- **Read before writing.** Call `query` with `view: "capabilities"`, and with the `id` of each capability the work touches. For a file of an open change, read the change with `view: "changes"` and its `id`. Call `get_template` for each file you draft.
+- **A new change**: draft its proposal, a spec change per capability it adds or modifies, a design only when it makes decisions worth recording, and tasks, and save them in one `save_draft` call with `type: "change"`, the proposal as `content` and the rest in `files`. Before saving a new capability, propose its code from its name and let the user change it.
+- **A file of an open change**: save it with `save_draft`, its type and the change's `id`. Then check the change's other files against it and propose the follow-on edits, such as a task for a new requirement.
+- Ask one question at a time, for what you cannot work out. If the user asks to go one artifact at a time, save and show each before the next.
+- Finish by listing what was saved and anything `save_draft` lists as worth fixing, and offer /bk:start with the change's ID.

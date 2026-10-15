@@ -9,6 +9,8 @@ What describes code from before BuildKeel is version 0 of its artifact: the arti
 
 The user typed: $ARGUMENTS
 
+If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end in place of "Onboard an area" and the sections after it.
+
 ## Choose what to do
 
 Call the BuildKeel `query` tool with `view: "onboarding"`; it changes nothing. Then ask straight away, with your tool for asking a question with choices if you have one, the default listed first, showing what the view said. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence.
@@ -52,6 +54,8 @@ Show a table of the artifacts the area needs, top down, in the team's stage name
 | Task | PAY-14 "Email template" | version 0 | finished in Jira |
 | Left out | PAY-31 "Reset by text" | | open in Jira: drafted with /bk:new when someone takes it up |
 
+Once the area's drafts are approved, or all but those waiting on a question left open, record every ticket you read for it with `manage`, `action: "map"`, `map: "tickets"`, the area and its `tickets`: each with its `key`, `link` and `title`, and either `outcome: "carried"` with the `artifact` it became (its approved ID), or `outcome: "left-out"` with `why`: `open`, `in-progress`, or `choice` when the team chose not to carry it over. Nothing read is left off the list.
+
 - Document every stage from the business idea down to the story, with the documents the process requires of each.
 - Tasks and bugs come in only when a source has them and they are finished: each as version 0, with its tracker key. Open or in-progress work is left out, and listed as such.
 - A required document no source provides, such as a design document or a test plan, is drafted as version 1, under the normal rules, so that new work under the area can start as usual.
@@ -69,7 +73,7 @@ Only once the user agrees. Draft top down, parents before children, so each chil
 - Name the paths it covers in its `scope`: an epic and a story always do.
 - Keep each source as you read it: pass it in `sources`, with where it came from, its key and link, and its text exactly as your tool returned it (description, fields and comments). Never copy code into a source.
 - Before drafting, go through every behavior each source states, such as each sentence of a ticket's description, and check it against the code. Each place they differ is a disagreement, however small: a ticket saying "rounded to the nearest cent" where the code rounds down is one. Ask about each, one at a time, before drafting that part; never take one side silently.
-- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended before drafting that part. Offer both answers as equals and recommend neither: **The code is right; the ticket is out of date** and **The ticket is right; the code has a defect**. When the ticket is out of date, version 0 follows the code. When the code is wrong, see "Known defects" below.
+- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended before drafting that part. Offer both answers as equals and recommend neither: **The code is right; the ticket is out of date** and **The ticket is right; the code has a defect**. When the ticket is out of date, version 0 follows the code. When the code is wrong, see "Known defects" below. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
 - For each required section nothing supports, ask the user, one question at a time, with your tool for asking a question with choices: **Leave it empty** (listed first) or **Type it in**, and put no answer of your own in the choices. A version 0 may leave a section empty: the approval records it, and it can be filled in later.
 
 **Each finished task, and each bug fixed before BuildKeel**, is a version 0 too: `save_draft` with `type: "task"` or `"bug"`, `version: 0`, its `parent` the story or task it belongs to (a draft's ID is fine), and its tracker issue in `sources`. It is approved with the area, counts as done, and is linked to the commits before the baseline that name its key. Never record a bug that was already fixed as an open bug.
@@ -93,7 +97,7 @@ Once the area is approved:
 
 ### 6. Next
 
-Call `query` with `view: "onboarding"` and ask which area to onboard next, as in "Choose an area", showing where onboarding stands. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. When the view lists anything left empty, also offer **Fill in what onboarding left empty**.
+Call `query` with `view: "onboarding"` and ask which area to onboard next, as in "Choose an area", showing where onboarding stands. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. When the view lists anything left empty, also offer **Fill in what onboarding left empty**; when it lists questions left open, also offer **Answer a question left open**: ask the question, with both readings as equals, and record the answer as above.
 
 ## Known defects
 
@@ -110,3 +114,18 @@ When the version in force leaves out behavior that version 0 describes, also dra
 The onboarding view lists the artifacts still as onboarding left them, with each section they leave empty. When it lists none, say that nothing was left empty, and stop: what the user says next is conversation, not a request for a new artifact. Otherwise ask which to fill in, the first listed as the default. For each empty section, ask the user, one question at a time, with **Leave it empty** as a choice. Save the whole artifact with the sections filled in, with `save_draft` and its `id`, and `completes: <the version in force>` in its frontmatter: that next version only completes it, so nothing built on it becomes suspect. Offer to approve it with /bk:approve.
 
 Do not create or edit spec tree files yourself: `save_draft`, `approve` and `manage` do all writing.
+
+## In a Spec-driven tree
+
+Existing code is documented as capability specs, version 0, area by area. Map the code as "Map the code" says, each area to become one or more capabilities. For the area `query` with `view: "onboarding"` names next: read its code and what the user brings, then draft each capability spec (a purpose, requirements with scenarios, new IDs as `CODE-R{{new}}`, the code proposed from its name for the user to change) and show it whole. Only once the user confirms one, save it with `save_draft`, `type: "capability"`, `version: 0` and `area: <name>` in its frontmatter: it is written once, with who confirmed it. When sources disagree, ask as above, with **Not sure: leave it open** last; a question left open is recorded on the area with `manage`, `action: "map"`, `map: "question"`, and its requirement is left out of version 0. Answering one later (`map: "answer"`) is followed by a change that adds the requirement. Record the tickets read for the area with `map: "tickets"` as above, each carried one naming the capability spec it fed. Then offer the next area.
+
+### Moving to Full SDLC
+
+When the user asks for approvals, stages or gates, or to convert the tree, offer **Move this tree to Full SDLC** (never as the default; the move is one way). Call `manage` with `action: "convert"` and `convert: "start"`, without `apply`, and follow what it says. Once a conversion is under way, `query` with `view: "onboarding"` shows it area by area: map the capability specs into areas, each area holding one or more, with `manage`, `action: "map"` and each area's `capabilities`, then for each area follow "Onboard an area" above, with these differences:
+
+- Its sources are its capability specs (`query`, `view: "capabilities"`) and the archived changes that wrote them (`view: "changes"`), each change kept as a source with its ID as the key. The code is not read at a baseline.
+- Draft the stages of `query` with `view: "process"`, top down: requirements become acceptance criteria, scenarios test cases, wherever they fit the stages. Nothing maps one to one.
+- Once the area is approved, show a table of each scenario and the criterion or test case it became, and record it with `manage`, `action: "convert"`, `convert: "place"` and `place`. Leave a scenario out (`drop`) only when the user says so.
+- Skip "Existing tests": a test tagged with a scenario counts for what that scenario became.
+
+Once every area is converted, the view says so: call `manage` with `action: "convert"` and `convert: "finish"`, without `apply`, and ask the user to confirm the switch, showing what it says. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence.

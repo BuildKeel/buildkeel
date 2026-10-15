@@ -50,7 +50,13 @@ One line for each of these, with the IDs, types, outcomes and time, and the codi
 - a unit's context loaded;
 - an ad-hoc unit or a bug recorded.
 
-The text of your requirements, designs, tests and code is never recorded.
+In a Spec-driven tree, also:
+
+- a change started, finished or discarded, with how long it took;
+- what finishing a change reported: the findings by kind, such as `scenario-untested`, how many scenarios had no tagged test or a failing one, and whether you finished it anyway;
+- the guide for a first change turned on, turned off, or completed.
+
+The text of your requirements, designs, tests and code is never recorded, nor a change's review or the reason it was discarded.
 
 The record is kept in `~/.buildkeel/usage/`, one file per spec tree, outside every repository: committing and pushing your work never includes it.
 
@@ -62,5 +68,25 @@ Run `/bk:stats` and choose **Change the record**, or say what you want:
 - `/bk:stats on`: recording starts again.
 - `/bk:stats delete`: deletes the record on this machine, after you confirm. It cannot be undone.
 - `/bk:stats export`: writes this spec tree's record to a file you choose, such as `~/buildkeel-usage.jsonl`: one JSON line per event.
+
+## In a Spec-driven tree
+
+A Spec-driven tree has no gates (see [Spec-driven and Full SDLC](modes.md)), so `/bk:stats` shows changes and what finishing them reported instead:
+
+```
+In the last 30 days (since 2026-09-02): 4 changes finished, typically in 1 h 15 min; at finish, 4 findings and 3 untested scenarios were reported, and 1 change was finished anyway; 2 suspects were decided.
+Recorded on this machine only, for Accounts; nothing is sent anywhere.
+
+Changes: 6 started, 4 finished, 1 discarded.
+Time from start to finish: 1 h 15 min typically (the median), 3 h at the longest.
+Reported at finish, over 4 changes: scenario-untested 3, task-names-removed-requirement 1; 3 scenarios with no tagged test; 1 failing scenario.
+Finished anyway, with something reported missing: 1 of 4.
+Suspects: 2 raised; 1 kept as still valid, 1 needing change.
+Bugs and ad-hoc units finished: bug 1, ad-hoc unit 1.
+Context loaded for a unit 12 times.
+Guidance for a first change: turned on 1, turned off 0, completed 1.
+```
+
+The findings are those of the consistency and template checks at finish (see [Finishing a change](finishing-a-unit.md#finishing-a-change)). Claude's review is not counted: it is a judgment, kept only in the change's completion record.
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-stats`.

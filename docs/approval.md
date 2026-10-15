@@ -38,6 +38,8 @@ After each approval, Claude shows the same list again, so you can see what has b
 
 When an artifact has a document with a draft waiting, such as a story's test plan or an epic's design document, Claude offers to approve it next. The document is checked against the artifact's approved version, and it is approved and committed on its own.
 
+A task's own test plan is not approved: it is recorded as it is saved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)). `/bk:approve` on one says so, unless your process approves task plans.
+
 ## Approve a whole plan in one review
 
 After `/bk:capture` has drafted a plan, run `/bk:approve` and press Enter on the first choice, **The drafts from this conversation**, or name the drafts yourself: `/bk:approve EP-draft-k3x9 EP-draft-k3x9-DD US-draft-m2p8 …`. Claude shows the whole set first, in the order it will be approved, parents and their documents before their children, with the number each will most likely get, and anything that would not pass, and why:
@@ -146,7 +148,7 @@ The number is assigned the next time the remote can be reached: at the next appr
 
 Most teams set BuildKeel up on code that already exists. What describes that code is **version 0** of its artifact; anything made in BuildKeel starts at version 1. Version 0 reads like any artifact of its type, as if BuildKeel had been used from the start: Claude drafts it from the code and from the material you bring, such as a ticket or a wiki page read through your own tools, a file, or what you tell it. A person reads it, completes it and approves it, and you can write or correct any of it by hand.
 
-Its draft is `onboard.md`, in the artifact's directory beside its working file, so version 0 and a change that builds on it can be drafted side by side. Approving version 0 checks only that its parent is approved, at any version. It is not held to the template or to the documents the process requires: a section nobody knows can stay empty, and the approval record lists it for a later version to fill in.
+Its draft is `onboard.md`, in the artifact's directory beside its working file, so version 0 and a change that builds on it can be drafted side by side. Approving version 0 checks only that its parent is approved, at any version, and that it leaves no question open: a question nobody could answer yet, between two sources that disagree, keeps it a draft until someone answers it (see [Questions left open](onboarding.md#questions-left-open)). It is not held to the template or to the documents the process requires: a section nobody knows can stay empty, and the approval record lists it for a later version to fill in.
 
 ```
 Ready to approve version 0 of user story US-draft-k3x9 "Password reset": it describes the code as it was before BuildKeel, so it is held to no template; a person reads it before it is approved. Approving will:
@@ -275,6 +277,14 @@ Found 1 problem:
 ```
 
 Validation never changes anything.
+
+## In a Spec-driven tree
+
+A Spec-driven tree has no approvals (see [Spec-driven and Full SDLC](modes.md)): a change's files stay editable while it is open, and finishing it archives it as the record of the work. `/bk:approve` writes nothing there, and says so:
+
+```
+Nothing was approved: this spec tree is Spec-driven, so it has no approvals. A change's files stay editable while it is open, and finishing it with /bk:done archives it as the record of the work, giving each capability spec it touches its next version. To have approvals (drafts reviewed and approved stage by stage, with gates), move the tree to Full SDLC with /bk:onboard: it converts the capability specs and archived changes into the team's process. The move is one way.
+```
 
 ## Gate mode
 

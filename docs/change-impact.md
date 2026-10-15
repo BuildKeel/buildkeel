@@ -127,12 +127,15 @@ Claude then goes through them one at a time. For each, it shows the suspect with
 
 - **Still valid** keeps it as it is. BuildKeel writes a re-pin record saying who reviewed it against which version, commits it on its own in the spec repo as `repin: TK-001 to US-001 v2`, and it is no longer suspect.
 - **Needs change** opens its next version as a draft, with its parent link moved to the new version; for a test case, the next version of its plan. Claude can make the change with you. It stays suspect until that version is approved. A finished unit's new version can then be started again to change its code.
+- A **bug** has no versions. For an open bug, needs change means updating its file with you, such as what it expects: saving it moves it to the new version and records the decision, in one commit, and it stays suspect until then. For a finished bug, whose fix may no longer hold, BuildKeel records a new bug to check it, naming the old one and the new version, and the finished bug is no longer suspect.
+
+A unit in progress that becomes suspect is decided before it is finished: `/bk:done` refuses it and names `/bk:impact`. Still valid lets it finish at once; needs change opens its next version, which it is finished against once approved. See [Finishing a unit](finishing-a-unit.md).
 
 You can also run `/bk:impact US-001-TC2` to review one suspect, or `/bk:impact US-001` to see what a new version of US-001 made suspect.
 
 ## Re-pin records
 
-Each "still valid" decision is a file in the `repins/` folder of what was kept: the artifact's own folder, or its test plan's for a test case, such as `stories/US-001/test-plan/repins/20261002T093000Z-jane-doe-us-001-tc2.yaml`:
+Each decision that re-pins something is a file in the `repins/` folder of what was kept: the artifact's own folder, or its test plan's for a test case, such as `stories/US-001/test-plan/repins/20261002T093000Z-jane-doe-us-001-tc2.yaml`:
 
 ```yaml
 target: US-001
@@ -150,5 +153,57 @@ decidedAt: 2026-10-02T09:30:00Z
 | `from`, `to` | The version it was built against, and the version it counts as built against from now on. |
 | `decidedBy` | The git identity set for the spec repo. |
 | `decidedAt` | When, in UTC. |
+| `decision` | `needs-change` for a bug that was changed to match, or followed up; not present for still valid. |
+| `followUp` | For a finished bug that needs change: the new bug recorded to check it. |
 
 Like approval and completion records, re-pin records are written once and never changed. Decisions made on different branches of the spec repo are separate files, so they merge without conflict; if two name different versions, the newer one counts.
+
+## In a Spec-driven tree
+
+In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), what code and tests are built against is a [capability spec](capability-specs.md) version, and what can change under them is a requirement:
+
+- **Tests** depend on the requirement of the scenario they are tagged with, at the version in force when the change they were written for was archived (its completion record lists them).
+- **An archived change** depends on each requirement it added or modified, at the version its archiving wrote.
+
+When a later version modifies or removes one of those requirements, compared by ID, what depends on it becomes suspect, with its commits and files. A new name for a requirement, or wording outside requirements, is not a change. What relies only on other requirements is left alone.
+
+### Before archiving a change
+
+Run `/bk:impact CH-002` on an open change to see what archiving it would make suspect. Nothing is marked yet:
+
+```
+Archiving CH-002 would make 2 items suspect. Nothing is marked yet.
+
+AUTH, from v1 to what CH-002 would make it:
+- AUTH-R2 removed by CH-002
+  was:
+    ### AUTH-R2 Request a reset link
+    The system SHALL email a password reset link to a registered address on request.
+
+    #### AUTH-R2-S1 Registered address
+    - **WHEN** a user asks for a reset link for a registered email
+    - **THEN** a reset link is emailed to that address
+Would become suspect (2):
+1. CH-001 "Sign in and reset", which built AUTH-R1, AUTH-R2.
+   Finished (changes/CH-001/completions/20261010T080000Z-jane-doe.yaml): 1 commit in accounts-api: a1b2c3d Sign in and reset.
+   Files: src/reset.ts, src/signin.ts.
+2. The tests of AUTH-R2-S1 "Registered address", as CH-001 recorded them: test/reset.test.ts > emails a link [AUTH-R2-S1].
+```
+
+You can decide each one right away. **Still valid** keeps it as it is. **Needs change** adds a task to the change to revisit it, such as:
+
+```
+- [ ] 2.2 Revisit the tests of AUTH-R2-S1 (test/reset.test.ts > emails a link [AUTH-R2-S1]) for AUTH-R2, changed by CH-002. Verify: they check AUTH-R2 as it now reads, and pass.
+```
+
+The decisions are kept in the change's `impact.yaml` and carried out when it is archived, so nothing decided becomes suspect. `/bk:done` shows them with the suspects archiving would raise.
+
+### After archiving
+
+Anything not decided becomes suspect once the change is archived, and the status overview lists it. Review it with `/bk:impact`:
+
+- **Still valid** writes a re-pin record now, in the directory of the archived change that holds the dependency, and commits it on its own.
+- **Needs change** adds the task to an open change you pick, or to a new change Claude drafts with you first. It stays suspect until that change is archived, which re-pins it to the version then in force.
+
+Suspects never block anything in a Spec-driven tree.
+

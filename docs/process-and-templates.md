@@ -177,6 +177,17 @@ process:
 
 A spec tree that is behind its remote is never a reason to stop: BuildKeel always warns about it, whatever the gate's mode, even with the gate off.
 
+### Task plans
+
+A task's own test plan is recorded as it is saved, with no approval: `taskPlans: record`, the default. To approve task plans like every other plan, set:
+
+```yaml
+process:
+  taskPlans: approve
+```
+
+The plans of stories, epics and business ideas are always approved. See [Test plans](test-plans.md#a-tasks-own-plan-is-recorded).
+
 ### When the process changes
 
 Changing the process never changes what is already approved. When you add a stage, stories approved under an epic stay approved; validation lists them under "Approved under earlier rules", and each is moved under a capability when its next version is approved.
@@ -237,7 +248,7 @@ Every artifact also has an `id` field, which BuildKeel manages. Every built-in t
 | `required` | The section must be present and not empty. A section holding only the template's guidance comments counts as empty. |
 | `tracked` | Whether a change to it makes work built on this artifact need review. Leave background sections untracked so that rewording them disturbs nothing. |
 | `offered` | A section the template offers but leaves out of its starting point, with one line saying what goes in it. It is added only when the work needs it, and then checked like any other section. |
-| `items` | The section is a list of numbered entries. `prefix` is the letters in each entry's ID. `style` is `list` for entries like `- **US-001-AC1** ...` or `heading` for entries like `### US-001-TC1 ...`. `covers: required` makes each entry say which criteria it tests. |
+| `items` | The section is a list of numbered entries. `prefix` is the letters in each entry's ID. `style` is `list` for entries like `- **US-001-AC1** ...` or `heading` for entries like `### US-001-TC1 ...`. `covers: required` makes each entry say which criteria it tests. With `style: heading`, `children` nests numbered `####` entries under each one, such as a requirement's scenarios: `children: { prefix: S, style: heading }` gives `### AUTH-R3 ...` its `#### AUTH-R3-S1 ...` entries. |
 
 Every built-in template has a section for further material, **Notes**, where anything that fits no other section goes, so content brought in from elsewhere is kept rather than dropped.
 
@@ -294,7 +305,7 @@ covers: [US-001-AC2]
 
 ### The design document
 
-The built-in design document is quick to fill in and complete in scope. Its starting point holds what most designs need; only the summary, context and design are required, so a small epic's design can be short. Further sections are offered, and added only when the work needs them. The design, the decisions, and the architecture, data and interfaces are tracked: a change to them makes the work built on the design suspect.
+The built-in design document is quick to fill in and complete in scope. Its starting point holds what most designs need; only the summary, context and design are required, so a small epic's design can be short. Further sections are offered, and added only when the work needs them. The design, the decisions, and the architecture, data and interfaces are tracked: a change to them makes the work built on the design suspect. A change in a Spec-driven tree uses the same design document, with the change as its parent.
 
 ```markdown
 ---
@@ -318,6 +329,7 @@ sections:
   Operations: { offered: "How it is deployed, monitored and supported." }
   Rollout and rollback: { offered: "How it is released, and how it is undone if something goes wrong." }
   Testing approach: { offered: "How the design is tested beyond the test cases in its test plans." }
+  Open questions: { offered: "Questions that can safely wait, each with who answers it and by when. A question whose answer would change the specs or tasks is answered first." }
   Notes: { offered: "Background, links, and anything from a source that fits no other section." }
 ---
 
@@ -354,6 +366,8 @@ BuildKeel uses your template in place of the built-in one for that type. Types y
 
 The built-in templates are `idea.md`, `epic.md`, `story.md`, `task.md`, `test-plan.md`, `design.md`, `bug.md` and `adhoc.md`.
 
+A Spec-driven tree has four more of its own: `capability.md`, `proposal.md`, `spec-change.md` and `tasks.md`, overridden the same way. A change's design uses `design.md`. A Full SDLC tree never falls back to these four, so a stage you add with one of their names still needs its own template. See [Capability specs](capability-specs.md).
+
 A stage you add has no built-in template, so it needs one of its own, named after its type. For the capability stage in the example above, `templates/capability.md`:
 
 ```markdown
@@ -386,6 +400,25 @@ sections:
 ### Changing a template
 
 A template change never changes what is already approved: an approval records the template and version it was checked against, and stays valid. Validation lists approved artifacts that do not follow the current template under "Approved under earlier rules", with what each lacks, and `/bk:status` counts them. Each is checked against the current template when its next version is approved.
+
+### Rules for each artifact type
+
+Rules add your team's conventions without changing a template. They sit in `buildkeel.yaml` under `rules`, by artifact type, in either mode:
+
+```yaml
+rules:
+  proposal:
+    sections: [Non-goals]
+    notes:
+      - Name the rollout plan for any change users can see.
+  story:
+    sections: [Notes]
+```
+
+- `sections` are required on top of the template's. The template check reports one that is missing or empty, saying the tree's rules require it. A section the template only offers becomes required.
+- `notes` are guidance Claude receives with the template whenever it drafts an artifact of that type.
+
+An artifact approved before a rule was added stays approved: validation lists it under "Approved under earlier rules", and its next version is checked against the rule. Validation reports rules for a type the tree does not have, such as `story` in a Spec-driven tree.
 
 ### Coverage declarations
 
