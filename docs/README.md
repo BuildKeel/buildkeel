@@ -8,6 +8,7 @@ User documentation, kept beside the code it describes.
 - [Install in Antigravity](install-antigravity.md): what you need, installing for every project or for one, updating and removing, installing without npm, and checking that it works.
 - [Getting started](getting-started.md): setting up a repository with /bk:init, what it adds, and a first piece of work from a conversation to finished code.
 - [Spec-driven and Full SDLC](modes.md): the two modes, what each holds, choosing one when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
+- [Spec-driven vs Full SDLC](comparing-modes.md): which mode to choose, the two side by side, the same piece of work in each, and moving to Full SDLC.
 
 ## Plan the work
 
@@ -39,3 +40,7 @@ User documentation, kept beside the code it describes.
 - [Process and templates](process-and-templates.md): the default process, documents attached to a stage and which each stage requires, the design document, setting up the process, renaming and adding stages, ID prefixes, gate modes, templates and what BuildKeel checks before approval.
 - [Organization templates](organization-templates.md): templates and a process shared across teams from a repository of their own, pinned to a version.
 - [Migrating a spec tree](migration.md): what happens when a spec tree is in an older format, and upgrading it with /bk:migrate.
+
+## Reference
+
+- [Commands](commands.md): every command, what you can type, what it asks, and how it behaves in each mode.
