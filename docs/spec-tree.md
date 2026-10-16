@@ -38,7 +38,7 @@ That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes 
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
 ```
 
-See [Capability specs](capability-specs.md) and [Spec-driven and Full SDLC](modes.md).
+See [Capability specs](capability-specs.md) and [The two modes](modes.md).
 
 Each artifact has its own directory, named by its ID, holding its working file. As the artifact moves through its life, BuildKeel adds records next to it:
 
@@ -113,7 +113,7 @@ settings:
 |---|---|
 | `format` | The version of the spec tree format. Required. |
 | `name` | A display name for the tree. |
-| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required in a format 2 tree. See [Spec-driven and Full SDLC](modes.md). |
+| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required in a format 2 tree. See [The two modes](modes.md). |
 | `repos` | The code repositories that use this tree. Each has a `name`, and optionally its `remote` and a `baseline` commit: commits up to the baseline predate BuildKeel and are never reported as untracked work. |
 | `templates` | An organization template source, with a fixed `version`. |
 | `process` | Your process: stages, ID prefixes, the letter of onboarded numbers (`onboarded.letter`, `E` by default) and gate settings. Leave it out to use the default process. |

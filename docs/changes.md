@@ -1,6 +1,6 @@
 # Changes
 
-In a Spec-driven spec tree, each piece of work is a **change**. It says why the work is done, how it changes the behavior described in the [capability specs](capability-specs.md), how it is built when that needs saying, and the tasks to get there. A change stays open and editable until it is finished, and nothing in it is ever approved. See [Spec-driven and Full SDLC](modes.md) for how the modes differ.
+In a Spec-driven spec tree, each piece of work is a **change**. It says why the work is done, how it changes the behavior described in the [capability specs](capability-specs.md), how it is built when that needs saying, and the tasks to get there. A change stays open and editable until it is finished, and nothing in it is ever approved. See [The two modes](modes.md) for how the modes differ.
 
 ## A change's files
 

@@ -160,7 +160,7 @@ Like approval and completion records, re-pin records are written once and never 
 
 ## In a Spec-driven tree
 
-In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), what code and tests are built against is a [capability spec](capability-specs.md) version, and what can change under them is a requirement:
+In a Spec-driven tree (see [The two modes](modes.md)), what code and tests are built against is a [capability spec](capability-specs.md) version, and what can change under them is a requirement:
 
 - **Tests** depend on the requirement of the scenario they are tagged with, at the version in force when the change they were written for was archived (its completion record lists them).
 - **An archived change** depends on each requirement it added or modified, at the version its archiving wrote.

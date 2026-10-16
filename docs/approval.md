@@ -280,7 +280,7 @@ Validation never changes anything.
 
 ## In a Spec-driven tree
 
-A Spec-driven tree has no approvals (see [Spec-driven and Full SDLC](modes.md)): a change's files stay editable while it is open, and finishing it archives it as the record of the work. `/bk:approve` writes nothing there, and says so:
+A Spec-driven tree has no approvals (see [The two modes](modes.md)): a change's files stay editable while it is open, and finishing it archives it as the record of the work. `/bk:approve` writes nothing there, and says so:
 
 ```
 Nothing was approved: this spec tree is Spec-driven, so it has no approvals. A change's files stay editable while it is open, and finishing it with /bk:done archives it as the record of the work, giving each capability spec it touches its next version. To have approvals (drafts reviewed and approved stage by stage, with gates), move the tree to Full SDLC with /bk:onboard: it converts the capability specs and archived changes into the team's process. The move is one way.

@@ -18,7 +18,7 @@ BuildKeel asks you a few questions, one at a time.
 - **An existing spec tree**, usually its own repository that several code repositories share. Clone it first, then give its path. You can also give the path straight away: `/bk:init ../payments-specs`.
 - **A new spec repository**, a repository of its own for the spec tree, which your other code repositories can then point at. Give a folder outside this repository, such as `../payments-specs`: one that does not exist yet, an empty folder, or an empty repository you have cloned from your git host.
 
-**2. The mode**, for a new spec tree. See [Spec-driven and Full SDLC](modes.md).
+**2. The mode**, for a new spec tree. See [The two modes](modes.md).
 
 - **Spec-driven**, the default: capability specs say how your system behaves, and each piece of work is a change to them, with no approvals or gates.
 - **Full SDLC**: work goes through your team's stages, from business idea down, with approvals and gates.

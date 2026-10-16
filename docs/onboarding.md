@@ -130,7 +130,7 @@ Once a version 0 or a map exists, `/bk:status` shows an **Existing code** sectio
 
 ## In a Spec-driven tree
 
-In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), existing code is described by [capability specs](capability-specs.md), and what describes code from before BuildKeel is a capability's **version 0**. It is written once a person has read and confirmed it, never drafted as a file first, and no change writes it.
+In a Spec-driven tree (see [The two modes](modes.md)), existing code is described by [capability specs](capability-specs.md), and what describes code from before BuildKeel is a capability's **version 0**. It is written once a person has read and confirmed it, never drafted as a file first, and no change writes it.
 
 `/bk:onboard` maps the code into areas as above, each to become one or more capabilities. For the next area, Claude reads its code and what you bring, then shows you each capability spec it drafts: a purpose, then requirements with their scenarios, under a code Claude proposes from its name, which you can change. Only when you confirm one is it saved:
 
@@ -169,7 +169,7 @@ As work touches undocumented code, capturing a change includes version 0 of a ca
 
 ## Moving a Spec-driven tree to Full SDLC
 
-A Spec-driven tree moves to Full SDLC through onboarding (see [Spec-driven and Full SDLC](modes.md#moving-to-full-sdlc)). Its capability specs and archived changes are the sources, in place of old code and tickets, and your stages are drafted from them area by area, as version 0, for you to review and approve. The move goes one way.
+A Spec-driven tree moves to Full SDLC through onboarding (see [The two modes](modes.md#moving-to-full-sdlc)). Its capability specs and archived changes are the sources, in place of old code and tickets, and your stages are drafted from them area by area, as version 0, for you to review and approve. The move goes one way.
 
 **Starting.** Ask for it in `/bk:onboard`. It is refused while a change is open, naming each one: finish or discard them first. Claude shows the process the tree will follow, as `/bk:init` shows it for a new Full SDLC tree, and you take it or adjust it. Bugs and ad-hoc units keep their numbering. BuildKeel then writes `onboarding/conversion.yaml` and commits it as `onboard: start conversion to Full SDLC`. From then on no change can be opened, while bugs, ad-hoc units and looking up capability specs work as usual.
 

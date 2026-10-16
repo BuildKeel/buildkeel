@@ -71,7 +71,7 @@ Run `/bk:stats` and choose **Change the record**, or say what you want:
 
 ## In a Spec-driven tree
 
-A Spec-driven tree has no gates (see [Spec-driven and Full SDLC](modes.md)), so `/bk:stats` shows changes and what finishing them reported instead:
+A Spec-driven tree has no gates (see [The two modes](modes.md)), so `/bk:stats` shows changes and what finishing them reported instead:
 
 ```
 In the last 30 days (since 2026-09-02): 4 changes finished, typically in 1 h 15 min; at finish, 4 findings and 3 untested scenarios were reported, and 1 change was finished anyway; 2 suspects were decided.

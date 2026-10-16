@@ -1,6 +1,6 @@
-# Spec-driven vs Full SDLC
+# Choosing a mode
 
-BuildKeel works in one of two modes, chosen when a spec tree is created. This page compares them, to help you choose. For how each mode works, see [Spec-driven and Full SDLC](modes.md).
+BuildKeel works in one of two modes, chosen when a spec tree is created. This page compares them, to help you choose. For how each mode works, see [The two modes](modes.md).
 
 ## Which to choose
 

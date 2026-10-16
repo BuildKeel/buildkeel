@@ -241,7 +241,7 @@ children:
 
 ## Finishing a change
 
-In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Bugs and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
+In a Spec-driven tree (see [The two modes](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Bugs and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
 
 A change does not have to be the active unit to be finished. Run `/bk:done CH-002`, or run `/bk:done` on its own with no active unit and pick from the open changes; those with every task ticked come first, and you can pick several.
 

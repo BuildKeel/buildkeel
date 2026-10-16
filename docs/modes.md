@@ -1,6 +1,6 @@
-# Spec-driven and Full SDLC
+# The two modes
 
-BuildKeel works in one of two modes. Each spec tree follows one of them, chosen when the tree is created. To help you choose, see [Spec-driven vs Full SDLC](comparing-modes.md).
+BuildKeel works in one of two modes. Each spec tree follows one of them, chosen when the tree is created. To help you choose, see [Choosing a mode](comparing-modes.md).
 
 - **Spec-driven.** Living specs of how the system behaves. Each piece of work is a change to them, with no approvals or gates.
   Change → Code and tests → Next spec versions
@@ -37,7 +37,7 @@ Code links, test tracking, change impact, bugs and ad-hoc units work as they do 
 
 Full SDLC follows your team's chain of stages, from business idea down, with approvals and gates. Stages, documents, templates and gates are all yours to set. See [Process and templates](process-and-templates.md) and [Approving artifacts](approval.md).
 
-## Choosing a mode
+## Setting the mode
 
 `/bk:init` asks for the mode when it creates a new spec tree, with Spec-driven first. Press Enter to take it. When you point a repository at an existing spec tree, nothing is asked: the closing summary names the tree's mode.
 

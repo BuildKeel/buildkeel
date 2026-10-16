@@ -215,7 +215,7 @@ A plan is approved like any other artifact, with `/bk:approve US-001-TP`, and ha
 
 ## In a Spec-driven tree
 
-A Spec-driven tree has no test plans (see [Spec-driven and Full SDLC](modes.md)). The scenarios of its [capability specs](capability-specs.md) are what tests check: Claude puts the scenario's ID in the name of each test it writes for one.
+A Spec-driven tree has no test plans (see [The two modes](modes.md)). The scenarios of its [capability specs](capability-specs.md) are what tests check: Claude puts the scenario's ID in the name of each test it writes for one.
 
 ```js
 it("refuses a link opened 31 minutes after it was sent [AUTH-R3-S1]", async () => {

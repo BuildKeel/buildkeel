@@ -153,7 +153,7 @@ The units that can be started now, the active unit first. `/bk:start` lists the 
 
 ## In a Spec-driven tree
 
-In a Spec-driven tree (see [Spec-driven and Full SDLC](modes.md)), the overview is about changes and capability specs:
+In a Spec-driven tree (see [The two modes](modes.md)), the overview is about changes and capability specs:
 
 ```
 BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 2)

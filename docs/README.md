@@ -7,8 +7,11 @@ User documentation, kept beside the code it describes.
 - [Install in Claude Code](install-claude-code.md): what you need, installing for you or for a repository, updating and removing, and checking that it works.
 - [Install in Antigravity](install-antigravity.md): what you need, installing for every project or for one, updating and removing, installing without npm, and checking that it works.
 - [Getting started](getting-started.md): setting up a repository with /bk:init, what it adds, and a first piece of work from a conversation to finished code.
-- [Spec-driven and Full SDLC](modes.md): the two modes, what each holds, choosing one when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
-- [Spec-driven vs Full SDLC](comparing-modes.md): which mode to choose, the two side by side, the same piece of work in each, and moving to Full SDLC.
+
+## Spec-driven vs Full SDLC
+
+- [The two modes](modes.md): what each mode holds, setting the mode when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
+- [Choosing a mode](comparing-modes.md): which mode to choose, the two side by side, the same piece of work in each, and moving to Full SDLC.
 
 ## Plan the work
 

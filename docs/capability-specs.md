@@ -1,6 +1,6 @@
 # Capability specs
 
-In a Spec-driven spec tree, capability specs describe how the system behaves now. Each covers one lasting behavior, such as authentication or notifications: a purpose, then requirements, and for each requirement the scenarios a test can check. Work never edits a capability spec directly. A change proposes how it should change, and finishing the change writes the capability spec's next version. See [Spec-driven and Full SDLC](modes.md) for how the modes differ.
+In a Spec-driven spec tree, capability specs describe how the system behaves now. Each covers one lasting behavior, such as authentication or notifications: a purpose, then requirements, and for each requirement the scenarios a test can check. Work never edits a capability spec directly. A change proposes how it should change, and finishing the change writes the capability spec's next version. See [The two modes](modes.md) for how the modes differ.
 
 ## Where they live
 

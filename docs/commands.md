@@ -1,6 +1,6 @@
 # Commands
 
-BuildKeel has 13 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [Spec-driven and Full SDLC](modes.md).
+BuildKeel has 13 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
 
 | Command | What it does | In Antigravity |
 |---|---|---|
@@ -36,7 +36,7 @@ An existing spec tree keeps its own mode and process, and setup names the mode:
 The spec tree follows Spec-driven: capability specs say how the system behaves, and each piece of work is a change to them, with no approvals or gates.
 ```
 
-**More:** [Getting started](getting-started.md#set-up-a-repository), [Choosing a mode](modes.md#choosing-a-mode).
+**More:** [Getting started](getting-started.md#set-up-a-repository), [Setting the mode](modes.md#setting-the-mode).
 
 ## /bk:capture
 
