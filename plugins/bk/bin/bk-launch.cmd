@@ -1,5 +1,6 @@
 @echo off
-rem Starts a BuildKeel component after checking for Node.js 20 or later.
+rem Starts a BuildKeel component after checking for Node.js 20 or later
+rem (the version itself is checked by bk-start.cjs).
 rem Usage: bk-launch <server|hook> [args...]
 rem BK_LAUNCH_DIST overrides the directory holding the built components.
 setlocal EnableDelayedExpansion
@@ -13,7 +14,9 @@ echo usage: bk-launch ^<server^|hook^> [args...] 1>&2
 exit /b 64
 
 :target_ok
-if defined BK_LAUNCH_DIST (set "DIST=%BK_LAUNCH_DIST%") else (set "DIST=%~dp0..\dist")
+rem Taken before the arguments are shifted: shift moves the script's own path too.
+set "HERE=%~dp0"
+if defined BK_LAUNCH_DIST (set "DIST=%BK_LAUNCH_DIST%") else (set "DIST=%HERE%..\dist")
 
 set "ARGS="
 :collect
@@ -28,20 +31,8 @@ if errorlevel 1 (
   set "REASON=Node.js was not found on your PATH."
   goto :fail
 )
-set "VERSION="
-for /f "delims=" %%v in ('node -p "process.versions.node" 2^>nul') do set "VERSION=%%v"
-if not defined VERSION (
-  set "REASON=Node.js could not be run."
-  goto :fail
-)
-for /f "tokens=1 delims=." %%m in ("%VERSION%") do set "MAJOR=%%m"
-set /a MAJOR_NUM=MAJOR 2>nul
-if %MAJOR_NUM% LSS %REQUIRED_MAJOR% (
-  set "REASON=Found Node.js %VERSION%."
-  goto :fail
-)
-
-node "%DIST%\%ENTRY%" %ARGS%
+rem bk-start.cjs checks the version and runs the component in one Node process.
+node "%HERE%bk-start.cjs" "%DIST%\%ENTRY%" %ARGS%
 exit /b %ERRORLEVEL%
 
 :fail

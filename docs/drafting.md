@@ -4,24 +4,29 @@ Claude drafts your business ideas, epics, stories, tasks, test plans and design 
 
 ## From a conversation
 
-Talk the idea through with Claude first, as you would without BuildKeel: what it is for, the options, the design, the code it touches. BuildKeel stays out of that conversation. When you are ready, run:
+Talk the idea through with Claude first, as you would without BuildKeel: what it is for, the options, the design, the code it touches. BuildKeel stays out of that conversation, and Claude explains options and trade-offs before it asks you to choose. When you say you are done, Claude asks once whether to explore more or capture it. Capture starts only when you run:
 
 ```
 /bk:capture
 ```
 
-Claude works in two steps, and asks before each:
+Claude goes step by step, and asks at each one:
 
-1. **What it heard.** A short summary in plain words: what you set out to do, the idea, and the approach and decisions discussed. Choose **Create the artifacts**, **Change something**, or **Keep talking**. Any other answer, such as a correction, simply goes on with the conversation; nothing is drafted.
-2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. Choose **Draft them all**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
+1. **What it heard.** A short summary in plain words: what you set out to do, the idea, the approach and decisions discussed, what was left open, and the pitfalls and constraints raised, each marked settled or open. Choose **Create the artifacts**, **Change something**, or **Keep talking**. Any other answer, such as a correction, simply goes on with the conversation; nothing is drafted.
+2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new and given its purpose, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. Choose **Looks right**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
+3. **The pace.** Claude asks every time: **Step by step** (the default) or **All at once**.
 
-Once you agree, Claude drafts every artifact with your templates, top down, and then asks you, one question at a time, for each required part the conversation never covered, such as how a feature will be rolled out. Nothing is invented to fill a gap. Approve the drafts in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
+Step by step, Claude drafts the epic first, then its design document, then each story with its test plan, then the tasks as one batch. Each is drafted against the ones you already agreed to, shown with the pitfalls it covers, and saved once you choose **Looks good, next**. You can choose **Change something**, or **Draft the rest at once** at any step. If you stop partway, what you agreed to stays saved as drafts. All at once, Claude drafts everything, then shows the set.
+
+Each pitfall you settled becomes a requirement, criterion or test case. Claude invents nothing: when a draft needs something the conversation did not settle, such as a required section, an open pitfall or a missing detail, Claude tells you and asks, with no recommendation: **Put it in the spec as stated**, **Record it as an open question** (kept in the artifact's Open questions section; it does not block approval), **Flesh it out now**, or **Not relevant: leave it out**. At the end, any pitfall from the summary that no artifact covers is raised the same way.
+
+Agreeing to an artifact here does not approve it. Approve the drafts in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
 
 To capture only part of a long conversation, say which: `/bk:capture the text message reset`.
 
 If you place the work somewhere other than Claude recommended, such as a new epic instead of under `EP-01`, the new artifact is linked to the recommended one (`related: [EP-01]`), so a change to either makes the other worth a look. If the work changes how something already built behaves, and a document describes how it works today, such as `EP-01-DD`, the plan includes a new version of that document. See [Change impact](change-impact.md).
 
-If the work changes code that nothing describes yet, Claude finds it from the files the work will change, and the plan includes a **version 0** of what the work touches: how that code works today, with your change as its version 1, so the change has a "before". It appears in the table as, for example, a story marked "version 0, then the change as version 1". Choose **Draft them all, without the version 0** to leave it out; the change is then drafted as new work. A version 0 drafted for a change covers only what the change touches, and a section nothing supports is left empty and listed for whoever approves it, with no question asked. Approving the plan approves version 0 first. See [Code from before BuildKeel](#code-from-before-buildkeel).
+If the work changes code that nothing describes yet, Claude finds it from the files the work will change, and the plan includes a **version 0** of what the work touches: how that code works today, with your change as its version 1, so the change has a "before". It appears in the table as, for example, a story marked "version 0, then the change as version 1". Choose **Looks right, without the version 0** to leave it out; the change is then drafted as new work. A version 0 drafted for a change covers only what the change touches, and a section nothing supports is left empty and listed for whoever approves it, with no question asked. Approving the plan approves version 0 first. See [Code from before BuildKeel](#code-from-before-buildkeel).
 
 ## Draft one artifact
 
@@ -87,10 +92,9 @@ Bugs are recorded with `/bk:new bug` too, but they are not drafts: a bug gets it
 
 In a Spec-driven tree, what Claude drafts is a [change](changes.md): a proposal, a spec change for each capability whose behavior it alters, a design only when needed, and tasks. Nothing in it is approved, and nothing is a draft: everything stays editable until the change is finished.
 
-- **`/bk:capture`** starts the same way, with a summary of what Claude heard. It then reads the capability specs the work touches and proposes the change as a table of capabilities, each new or modified, with what changes in it, saying whether the change needs a design. Choose **Draft the change**, **Change the plan** or **Keep talking**. Once you agree, Claude drafts the whole change in one save and asks, one question at a time, for anything the conversation left out.
+- **`/bk:capture`** starts the same way, with a summary of what Claude heard, pitfalls included. It then reads the capability specs the work touches and proposes the change as a table of capabilities, each new or modified, with what changes in it, saying whether the change needs a design. Choose **Looks right**, **Change the plan** or **Keep talking**, then the pace. Step by step, Claude shows the proposal and saves it once you agree, which creates the change, then each spec change, the design if needed, and the tasks, one at a time. All at once, it saves the whole change in one go. Gaps are raised as in Full SDLC.
 - **`/bk:new change for <what>`** drafts a change from what you type; **`/bk:new spec change for CH-012`**, or tasks or a design for an open change, adds or rewrites one file of it. Run `/bk:new` on its own and Claude asks what to draft, with examples, or suggests what an open change still lacks.
 - **IDs are given when the change is saved**, not at approval: the change's own, such as `CH-012`, and each new requirement and scenario, such as `AUTH-R3` and `AUTH-R3-S1`. See [Capability specs](capability-specs.md#ids).
-- To go one file at a time, say so: Claude saves the proposal first, then shows each other file before the next.
 
 When the change is drafted, start it with `/bk:start CH-012`.
 

@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Start work on a task, story, bug or ad-hoc unit: check it is ready, switch to its branch and load its context."
 argument-hint: "[unit ID], e.g. TK-001"
+disable-model-invocation: true
 ---
 
 Start work on a BuildKeel unit with the user. Every code change belongs to exactly one unit, and the unit's context tells you what to build.

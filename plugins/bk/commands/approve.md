@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Approve a draft or a new version after checking it, or a set of drafts, such as a captured plan, in one review."
 argument-hint: "[artifact IDs], e.g. US-draft-k3x9, US-001-TP, or several IDs for one review"
+disable-model-invocation: true
 ---
 
 Help the user approve a BuildKeel artifact. Approval is the user's decision: never approve anything they have not confirmed in this conversation.

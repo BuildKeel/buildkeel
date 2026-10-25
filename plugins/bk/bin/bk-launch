@@ -1,5 +1,6 @@
 #!/bin/sh
-# Starts a BuildKeel component after checking for Node.js 20 or later.
+# Starts a BuildKeel component after checking for Node.js 20 or later
+# (the version itself is checked by bk-start.cjs).
 # Usage: bk-launch <server|hook> [args...]
 # BK_LAUNCH_DIST overrides the directory holding the built components.
 set -u
@@ -28,11 +29,6 @@ MSG
 }
 
 command -v node >/dev/null 2>&1 || fail "Node.js was not found on your PATH."
-version=$(node -p "process.versions.node" 2>/dev/null) || fail "Node.js could not be run."
-major=${version%%.*}
-case "$major" in
-  ''|*[!0-9]*) fail "Could not read the Node.js version." ;;
-esac
-[ "$major" -ge "$REQUIRED_MAJOR" ] || fail "Found Node.js $version."
 
-exec node "$entry" "$@"
+# bk-start.cjs checks the version and runs the component in one Node process.
+exec node "$here/bk-start.cjs" "$entry" "$@"

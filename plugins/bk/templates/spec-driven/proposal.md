@@ -12,6 +12,7 @@ sections:
   Capabilities: { required: true }
   Impact: { required: true }
   Non-goals: { offered: "What the change deliberately leaves out, so nobody builds it by mistake." }
+  Open questions: { offered: "Questions left open, each with what it is about, to settle later. They do not block approval: the approval summary lists them." }
   Notes: { offered: "Background, links, and anything from a source that fits no other section." }
 ---
 

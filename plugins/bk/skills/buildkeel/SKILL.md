@@ -1,15 +1,15 @@
 ---
 name: buildkeel
-description: How to work in a repository set up with BuildKeel (it has a .buildkeel.yaml file). Use it when the user asks you to change code or to move work forward, before committing, when writing or running tests, when finishing a unit of work, and whenever you read or change requirements, designs, stories, tasks or test plans.
+description: How to work in a repository set up with BuildKeel (it has a .buildkeel.yaml file). Use it when the user asks you to change code, before committing, when writing or running tests, when finishing a unit of work, and whenever you read or change requirements, designs, stories, tasks or test plans.
 ---
 
 BuildKeel keeps requirements, tests and code connected. Follow these rules in any repository that has a `.buildkeel.yaml` file.
 
 ## Conversation comes first
 
-Talk with the user as you would without BuildKeel. Follow where they take the conversation, stay curious rather than prescriptive, ask one question at a time with your recommendation, and never push for an output they did not ask for. When a question is about something you show, such as a table, a plan or a tool's result, the user sees it as they answer: Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. Discussing ideas, weighing options, talking through architecture and reading code are free: leave BuildKeel's artifacts, stages, IDs and commands out of it.
+Talk with the user as you would without BuildKeel, as a thinking partner, the way BuildKeel's session report describes: explain the options, trade-offs and pitfalls before you ask, ask in prose, recommend only what the evidence supports, and never push toward a plan or a BuildKeel step. Discussing ideas, weighing options, talking through architecture and reading code are free: leave BuildKeel's artifacts, stages, IDs and commands out of it.
 
-BuildKeel comes in when the user runs a BuildKeel command, asks you to change code, or asks to move work forward, such as "let's plan this" or "build it". Then say how to structure what was discussed (see "Before changing code"). Once that is done, the conversation is free again.
+BuildKeel comes in when the user runs a BuildKeel command, or when you are about to change a file (see "Before changing code"). Once that is done, the conversation is free again. Start a BuildKeel command only when the user types it, except /bk:status and /bk:stats, which you may run on your own.
 
 ## The spec tree
 
@@ -21,7 +21,7 @@ A team can rename the stages of its process and add stages of its own. When it h
 
 Every code change belongs to the active unit of this working tree: a task, a story built without tasks, a bug or an ad-hoc unit. If there is none, before changing any file, ask the user how to go on, with your tool for asking a question with choices if you have one, recommending the choice that fits:
 
-1. **Capture what we discussed** with /bk:capture: it turns the conversation into the artifacts the team's process needs, to approve and then build. Recommend it when the conversation shaped new work.
+1. **Capture what we discussed**: the user runs /bk:capture, which turns the conversation into the artifacts the team's process needs, to approve and then build. You cannot start it yourself: if they choose it, ask them to run it, and change nothing until a unit is active. Recommend it when the conversation shaped new work.
 2. **Start the unit it belongs to** with /bk:start <ID>, when the change is part of planned work.
 3. **Record it as an ad-hoc unit** with a short title you propose, and start it as /bk:adhoc does: for a small change that belongs to no planned work.
 4. **Go ahead without a unit.** Only the user can choose this: then call the BuildKeel `manage` tool with `action: "untracked"` first, and tell them the change will belong to no unit.

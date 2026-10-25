@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Finish the active unit, or a story or epic once everything under it is done: check its tests pass, then write its completion record."
 argument-hint: "[ID], e.g. TK-001, or US-001 for a story built through tasks; the active unit when left out"
+disable-model-invocation: true
 ---
 
 Finish a BuildKeel unit with the user. Finishing writes a permanent record of what was built, against which approved versions and with which test results, so it is the user's decision: never finish a unit they have not confirmed in this conversation.

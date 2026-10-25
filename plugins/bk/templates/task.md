@@ -9,6 +9,7 @@ fields:
   scope: { type: list }
 sections:
   Description: { required: true, tracked: true }
+  Open questions: { offered: "Questions left open, each with what it is about, to settle later. They do not block approval: the approval summary lists them." }
   Notes: {}
 ---
 

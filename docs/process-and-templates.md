@@ -89,7 +89,7 @@ Commands and output then call it a tech spec, and it is checked and required exa
 
 ### Setting up the process
 
-When `/bk:init` creates a spec tree, it shows the default process as a table of the stages and the documents each requires, and you can use it as it is or adjust it there: rename a stage, add one, or change the documents a stage requires. The adjusted process is written to `buildkeel.yaml`. You can change it later in the same file.
+When `/bk:init` creates a Full SDLC spec tree, it shows the default process as a table: the stages with their first IDs and the documents each requires, the bug and ad-hoc prefixes, each gate's mode, and how a task's own test plan is kept. Use it as it is, or describe your team's process in your own words, all at once: Claude works out the stages, required documents, your own documents, ID prefixes, gate modes and task plans from it, and shows the table again. Anything the process cannot express is named, with the closest setting, rather than dropped. What you confirm is written to `buildkeel.yaml`. You can change it later in the same file.
 
 ## Changing the process
 
@@ -211,6 +211,7 @@ sections:
   Summary: { required: true }
   Story: { required: true, tracked: true }
   Acceptance criteria: { required: true, tracked: true, items: { prefix: AC, style: list } }
+  Open questions: { offered: "Questions left open, each with what it is about, to settle later. They do not block approval: the approval summary lists them." }
   Notes: {}
 ---
 
@@ -251,6 +252,8 @@ Every artifact also has an `id` field, which BuildKeel manages. Every built-in t
 | `items` | The section is a list of numbered entries. `prefix` is the letters in each entry's ID. `style` is `list` for entries like `- **US-001-AC1** ...` or `heading` for entries like `### US-001-TC1 ...`. `covers: required` makes each entry say which criteria it tests. With `style: heading`, `children` nests numbered `####` entries under each one, such as a requirement's scenarios: `children: { prefix: S, style: heading }` gives `### AUTH-R3 ...` its `#### AUTH-R3-S1 ...` entries. |
 
 Every built-in template has a section for further material, **Notes**, where anything that fits no other section goes, so content brought in from elsewhere is kept rather than dropped.
+
+Every built-in template also offers **Open questions**, for a question you chose to settle later, such as a gap `/bk:capture` found in the conversation. It is added only when it holds something. An open question never blocks approval: the approval preview and result list it, and in a Spec-driven tree the change's view shows a proposal's open questions at the top.
 
 Business ideas, epics, stories and design documents have a **Summary** section. It is approved with the artifact, and it is what the agent reads about an artifact that is further up the chain than the work at hand.
 

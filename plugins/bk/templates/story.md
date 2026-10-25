@@ -10,6 +10,7 @@ sections:
   Summary: { required: true }
   Story: { required: true, tracked: true }
   Acceptance criteria: { required: true, tracked: true, items: { prefix: AC, style: list } }
+  Open questions: { offered: "Questions left open, each with what it is about, to settle later. They do not block approval: the approval summary lists them." }
   Notes: {}
 ---
 

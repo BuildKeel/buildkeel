@@ -29,14 +29,14 @@ For installing in one project only, updating and removing, see [Install in Claud
 ## What it does
 
 - **Gives the agent the full "why".** Start a change, or a task, and the agent receives what it is for, the requirements and scenarios or acceptance criteria it must meet, the tests that apply, and the code already written for it.
-- **Turns a conversation into a plan.** Talk ideas through as usual; when you are ready, the agent drafts a change (Spec-driven) or the epics, stories, test plans and tasks your process needs (Full SDLC), in your templates.
+- **Turns a conversation into a plan, with you.** Talk ideas through as usual; when you are ready, the agent proposes a change (Spec-driven) or the epics, stories, test plans and tasks your process needs (Full SDLC), in your templates, and drafts them step by step or all at once, as you choose. It invents nothing: each gap is yours to decide.
 - **Builds what is ready.** After one confirmation, the agent works through the tasks, testing each, and stops when a test fails or a requirement is unclear.
 - **Reviews before it finishes.** Finishing a change checks its code against its requirements, scenarios and design, reports what is missing, and gives each capability spec it touched its next version. In Full SDLC, work is not done until its tests pass.
 - **Builds the audit trail for you.** Every commit is linked to its unit of work, and finishing records what was built, against which versions, verified by which tests.
 - **Catches untested requirements.** Tests carry the IDs of the scenarios or test cases they check, so a requirement with no test is reported.
 - **Shows what a change affects.** Change a requirement and see which tests, work and code are now in question.
 - **Keeps work in order, when you want it.** In Full SDLC, the agent does not start on a story that is not approved, or one whose requirements changed after it was planned.
-- **Leaves the conversation free.** BuildKeel steps in when you run one of its commands, ask for code to change, or ask to move work forward.
+- **Leaves the conversation free.** BuildKeel steps in when you run one of its commands, or when the agent is about to change code. Until then the agent is a thinking partner: it lays out options, trade-offs and pitfalls before asking, and gives its sources.
 - **Works on code you already have.** Existing code is described as work touches it, or all at once when you choose, from the code and your existing tickets and pages, confirmed by people.
 
 ## How it works
@@ -64,7 +64,7 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 | Command | What it does |
 |---|---|
 | `/bk:init` | Set up a spec tree, Spec-driven or Full SDLC, or point this repository at an existing one |
-| `/bk:capture` | Turn what you discussed into a change, or the artifacts your process needs, drafted once you agree |
+| `/bk:capture` | Turn what you discussed into a change, or the artifacts your process needs, agreed step by step or all at once |
 | `/bk:new` | Draft a change or an artifact, break a parent down, or record a bug |
 | `/bk:onboard` | Document code from before BuildKeel, area by area, or move a Spec-driven tree to Full SDLC |
 | `/bk:approve` | Full SDLC: validate and approve an artifact, or a whole plan in one review |
@@ -79,7 +79,7 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 
 ## Documentation
 
-Start with [Getting started](docs/getting-started.md), and see [Spec-driven and Full SDLC](docs/modes.md) for the two modes. On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
+Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
 
 ## License
 

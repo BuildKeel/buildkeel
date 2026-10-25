@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Build what is ready: start, build, test and finish each ready unit in turn, after one confirmation."
 argument-hint: "[parent ID], e.g. US-001 to build its tasks, or EP-01; everything ready when left out"
+disable-model-invocation: true
 ---
 
 Build every unit that is ready, one after another, with the user's one confirmation up front. Each unit still goes through its own start gate, gets its own branch, commits and completion record, and is tested before it is finished.

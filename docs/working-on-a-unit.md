@@ -140,13 +140,14 @@ settings:
 
 At the start of every session, when a session is resumed, and after Claude Code compacts the conversation, BuildKeel tells Claude only:
 
-- that BuildKeel is set up here, and that the conversation stays free: talk as you would without BuildKeel, and its artifacts, IDs and commands come in only when you run a BuildKeel command, ask for code to change, or ask to move work forward;
+- that BuildKeel is set up here, and that the conversation stays free: talk as you would without BuildKeel, and its artifacts, IDs and commands come in only when you run a BuildKeel command or Claude is about to change a file;
+- how to discuss: as a thinking partner, laying out options, trade-offs and pitfalls before asking, in prose, with sources for anything it looks up, recommending only what the evidence supports, and never pushing toward a plan. When you say the discussion has reached a point, Claude asks once whether there is more to explore or you are ready for `/bk:capture`, which only you start;
 - the active unit and its branch, followed by its context again, or that no unit is active;
 - your team's names for its stages, when your process renames or adds stages.
 
 Nothing else is raised at session start, so a question about the code gets a plain answer. Whether the spec tree is behind its remote, what is suspect, and what is not pushed are shown when you start, approve or finish work, and in `/bk:status`.
 
-When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed with `/bk:capture`, start the unit the change belongs to, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
+When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, start the unit the change belongs to, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
 
 BuildKeel checks the edits Claude makes with its file editing tools, and Claude is told to change files only with them. A change made another way, such as through a shell command, escapes these checks; if it is committed without a unit, `/bk:status` lists it under commits with no unit.
 

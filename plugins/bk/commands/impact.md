@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Review what a change to an approved artifact affects: preview a new version before approving it, or decide on each suspect with the user."
 argument-hint: "[ID], e.g. US-001 to preview its new version in draft, or US-001-TC2 to review one suspect; every suspect when left out"
+disable-model-invocation: true
 ---
 
 Review change impact in BuildKeel with the user. A suspect is a task, story, epic, bug or test case built against an older version of something that has changed since, in what it relies on. Deciding on a suspect is the user's choice: never record a decision they have not confirmed in this conversation.

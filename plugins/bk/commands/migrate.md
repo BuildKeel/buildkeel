@@ -1,5 +1,6 @@
 ---
 description: "BuildKeel: Upgrade a spec tree in an older format to the one this BuildKeel uses, in one commit, without touching approved versions."
+disable-model-invocation: true
 ---
 
 Upgrade the spec tree to the format this version of BuildKeel uses. A tree in an older format can be read but not changed until it is migrated.

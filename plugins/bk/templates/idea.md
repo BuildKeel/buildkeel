@@ -10,6 +10,7 @@ sections:
   Problem: { required: true, tracked: true }
   Goals: { required: true, tracked: true, items: { prefix: G, style: list } }
   Success measures: { tracked: true }
+  Open questions: { offered: "Questions left open, each with what it is about, to settle later. They do not block approval: the approval summary lists them." }
   Notes: {}
 ---
 

@@ -5,7 +5,7 @@ BuildKeel has 13 commands. They are the same in both modes, and each adapts to t
 | Command | What it does | In Antigravity |
 |---|---|---|
 | [/bk:init](#bkinit) | Sets up BuildKeel in this repository, with a new spec tree or an existing one. | `/bk-init` |
-| [/bk:capture](#bkcapture) | Turns what you discussed into a plan: a plain summary, then the artifacts or the change, drafted once you agree. | `/bk-capture` |
+| [/bk:capture](#bkcapture) | Turns what you discussed into a plan: a plain summary, then the artifacts or the change, agreed one by one or all at once. | `/bk-capture` |
 | [/bk:new](#bknew) | Drafts an artifact or a change, breaks a parent down into drafts of its children, or records a bug. | `/bk-new` |
 | [/bk:approve](#bkapprove) | Approves a draft or a new version after checking it, or a set of drafts in one review. | `/bk-approve` |
 | [/bk:start](#bkstart) | Starts work on a unit: checks it is ready, switches to its branch and loads its context. | `/bk-start` |
@@ -20,6 +20,8 @@ BuildKeel has 13 commands. They are the same in both modes, and each adapts to t
 
 When a command asks you something, the default is listed first: press Enter to take it.
 
+Only you start a command, by typing it. Claude may run `/bk:status` and `/bk:stats` on its own, since they only read; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
+
 ## /bk:init
 
 **What it does.** Sets up BuildKeel in this repository, with a new spec tree or an existing one. It asks one question at a time and lists every file and setting it will add before anything is written.
@@ -28,7 +30,7 @@ When a command asks you something, the default is listed first: press Enter to t
 
 **In Spec-driven.** There is no process to choose. Setup ends by asking whether to be guided: **Guide me through my first change** (the default) or **Jump right in**.
 
-**In Full SDLC.** It shows the default process as a table: **Set up with this process** (the default), **Adjust the process**, or **Stop, and set up nothing**.
+**In Full SDLC.** It shows the default process as a table, gates included, and asks whether to use it as it is or how your team works, in your own words. Once you have seen the table, the choices are **Set up with this process** (the default), **Change something**, or **Stop, and set up nothing**.
 
 An existing spec tree keeps its own mode and process, and setup names the mode:
 
@@ -40,13 +42,13 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 
 ## /bk:capture
 
-**What it does.** Turns the conversation into a plan. Claude first sums up what it heard in plain words, then proposes what to draft. Nothing is drafted until you agree.
+**What it does.** Turns the conversation into a plan. Claude first sums up what it heard in plain words, with the pitfalls raised, then proposes what to draft, then asks the pace: **Step by step** (the default), each artifact shown and agreed before the next, or **All at once**. Nothing is saved until you agree, and Claude invents nothing: each gap is yours to decide.
 
 **What you can type.** Which part of the conversation to capture, such as `/bk:capture the text message reset`. Typed on its own, it captures the whole conversation. After the summary, it asks: **Create the artifacts** (the default), **Change something**, or **Keep talking**.
 
-**In Spec-driven.** Claude reads the capability specs the work touches and proposes one change, as a table of the capabilities it adds or modifies, saying whether it needs a design. The choices are **Draft the change** (the default), **Change the plan** and **Keep talking**. The whole change is saved at once, and nothing is approved.
+**In Spec-driven.** Claude reads the capability specs the work touches and proposes one change, as a table of the capabilities it adds or modifies, saying whether it needs a design. The choices are **Looks right** (the default), **Change the plan** and **Keep talking**. Step by step saves the proposal first, which creates the change, then each other file in turn; all at once saves the whole change together. Nothing is approved.
 
-**In Full SDLC.** Claude proposes the artifacts your process needs as a table, level by level, and where the work fits in your tree. The choices are **Draft them all** (the default), **Place it somewhere else**, **Change the plan** and **Keep talking**. Every artifact stays a draft until it is approved.
+**In Full SDLC.** Claude proposes the artifacts your process needs as a table, level by level, and where the work fits in your tree. The choices are **Looks right** (the default), **Place it somewhere else**, **Change the plan** and **Keep talking**. Step by step goes epic, design document, each story with its test plan, then tasks as one batch. Every artifact stays a draft until it is approved.
 
 **More:** [Drafting with Claude](drafting.md#from-a-conversation), [Drafting in a Spec-driven tree](drafting.md#in-a-spec-driven-tree).
 

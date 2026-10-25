@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Draft an artifact, break a parent down into drafts of its children, or record a bug."
 argument-hint: <type> [parent ID] [what to draft], e.g. story EP-01, stories from EP-01, or bug TK-001
+disable-model-invocation: true
 ---
 
 Draft BuildKeel artifacts with the user. Everything you produce is a draft: drafting never approves anything, and every draft goes through the same checks and approval as one written by hand. A bug is the exception: it is recorded at once, with its permanent ID, and needs no approval (see "Bugs" below).

@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Document code that existed before BuildKeel, area by area: map the code, then draft each area for people to review and approve."
 argument-hint: "[an area to onboard, or nothing to choose]"
+disable-model-invocation: true
 ---
 
 Document the code that existed before BuildKeel with the user, one capability area at a time. People lead it: you propose and draft, the user corrects, completes and approves, and nothing is approved without them. They can stop after any area and carry on later; whatever they leave is documented as work touches it.

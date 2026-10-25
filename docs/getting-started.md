@@ -41,9 +41,12 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 | user story | US-001 | test plan |
 | task | TK-001 | nothing |
 Documents that can be attached at any stage: test plan and design document.
+Outside the stages, bug IDs start at BUG-001 and ad-hoc unit IDs at AH-001.
+Gates: approve block, start block, done block, lock block (block stops the action, warn lets it go ahead with a warning, off skips the check).
+A task's own test plan is recorded as it is saved, not approved.
 ```
 
-Use it as it is, or adjust it: rename a stage (such as calling stories "features"), add a stage between the business idea and the story, or change which documents each stage requires. BuildKeel shows the table again after each change, and changes nothing until you confirm. See [Process and templates](process-and-templates.md).
+Use it as it is, or describe how your team works, in your own words and all at once, such as "we call stories features, every feature needs a design doc, epics need a security review, and the gates should only warn while we try it out". Claude turns that into a process and shows the table again, saying plainly if something you asked for cannot be expressed, with the closest setting BuildKeel has. Nothing changes until you confirm. See [Process and templates](process-and-templates.md).
 
 A Spec-driven tree has no stages, so there is no process to choose. An existing spec tree keeps the process it already has.
 
@@ -89,7 +92,7 @@ Run `/bk:status`. It shows your spec tree, empty for now.
 In a Spec-driven tree:
 
 1. **Talk it through.** Discuss the idea with Claude as you would without BuildKeel. When behavior comes up, Claude looks up the capability specs first.
-2. **Capture it.** Run `/bk:capture`. Claude sums up what you discussed and proposes a change: a proposal saying why and what, a spec change for each capability it adds or alters, a design when it makes decisions worth keeping, and tasks. Nothing is saved until you agree. See [Changes](changes.md).
+2. **Capture it.** Run `/bk:capture`. Claude sums up what you discussed and proposes a change: a proposal saying why and what, a spec change for each capability it adds or alters, a design when it makes decisions worth keeping, and tasks. You choose the pace: step by step, each file agreed before the next, or all at once. Nothing is saved until you agree. See [Changes](changes.md).
 3. **Build it.** Run `/bk:start CH-001` to make the change the active unit on its own branch, then `/bk:build` to have Claude work through its tasks, ticking each as its verification passes. See [Working on a unit](working-on-a-unit.md).
 4. **Finish it.** `/bk:done` reviews the code against the change's requirements, scenarios and design, reports what is missing, and once you choose, archives the change: each capability it touched gets its next version. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
 
@@ -97,8 +100,8 @@ The change's files stay editable until it is finished, and nothing in it is appr
 
 In a Full SDLC tree:
 
-1. **Talk it through.** Discuss the idea with Claude as you would without BuildKeel: what it is for, the options, the design, the code it touches. BuildKeel stays out of the conversation until you ask to move work forward.
-2. **Capture it.** Run `/bk:capture`. Claude sums up what you discussed, then shows the artifacts your process needs, such as an epic with its design document, stories with their test plans, and tasks, and where they fit in your tree. Nothing is drafted until you agree; then Claude drafts them all, and asks for anything the conversation left out. See [Drafting with Claude](drafting.md).
+1. **Talk it through.** Discuss the idea with Claude as you would without BuildKeel: what it is for, the options, the design, the code it touches. BuildKeel stays out of the conversation: Claude explains the options and trade-offs before asking, and when you say you are done, it asks once whether you want to explore more or capture it.
+2. **Capture it.** Run `/bk:capture`. Claude sums up what you discussed, then shows the artifacts your process needs, such as an epic with its design document, stories with their test plans, and tasks, and where they fit in your tree. Then it asks the pace: step by step, each artifact agreed before the next, or all at once. Claude invents nothing: it asks you about each gap. See [Drafting with Claude](drafting.md).
 3. **Approve it.** Run `/bk:approve` and approve the whole plan in one review. Each artifact is checked and approved in turn, with its own record and commit. See [Approving artifacts](approval.md).
 4. **Build it.** Run `/bk:build` to have Claude start, build, test and finish every ready unit in turn, or `/bk:start TK-001` to work on one unit yourself. See [Working on a unit](working-on-a-unit.md).
 5. **Finish it.** `/bk:done` checks the unit's tests and records what was built. A build run does this for each unit. See [Finishing a unit](finishing-a-unit.md).

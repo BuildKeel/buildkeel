@@ -1,6 +1,7 @@
 ---
 description: "BuildKeel: Record a small change as an ad-hoc unit and start it, so its commits trace to something."
 argument-hint: '"<the change>", e.g. "Fix typo in the reset email"'
+disable-model-invocation: true
 ---
 
 Record a small change as a BuildKeel ad-hoc unit and start it. An ad-hoc unit needs no approval: it gets its permanent ID straight away, its commits carry that ID, and it is finished with /bk:done like any other unit.
