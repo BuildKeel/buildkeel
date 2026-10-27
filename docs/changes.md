@@ -5,12 +5,16 @@ In a Spec-driven spec tree, each piece of work is a **change**. It says why the 
 ## A change's files
 
 ```
-<spec root>/
-  changes/CH-012/proposal.md      why the change is made and what it changes
-  changes/CH-012/specs/AUTH.md    a spec change: how it alters the AUTH capability
-  changes/CH-012/design.md        how it is built, only when that needs recording
-  changes/CH-012/tasks.md         the tasks, as numbered checkboxes
+<spec root>/changes/CH-012-password-reset-by-text-message/
+  proposal.md      why the change is made and what it changes
+  specs/AUTH.md    a spec change: how it alters the AUTH capability
+  design.md        how it is built, only when that needs recording
+  tasks.md         the tasks, as numbered checkboxes
 ```
+
+A change's folder is named by its ID and a short name made from its title, the way its branch is: `CH-012-password-reset-by-text-message`, and the branch `bk/CH-012-password-reset-by-text-message`. While the change is open, a new title renames the folder; its ID, branch and commits stay as they are. Once the change is archived, its folder is frozen with the rest of it.
+
+BuildKeel names a change with its title wherever it shows one, such as `CH-012 "Password reset by text message"`, and Claude does the same. Commands and commit trailers take the bare ID: `/bk:done CH-012`, `BuildKeel-Unit: CH-012`.
 
 Claude drafts a change from a conversation with `/bk:capture`, or with `/bk:new` (see [Drafting with Claude](drafting.md#in-a-spec-driven-tree)). Each file follows its template, which your team can replace or add rules to (see [Process and templates](process-and-templates.md)).
 
@@ -104,7 +108,7 @@ Tasks are numbered checkboxes in groups, ordered so that each builds on the ones
 
 Every file of an open change can be changed at any time, by you or by Claude, with no new version and no approval: narrow the proposal after three tasks are done, rewrite a requirement, or add a task. Several changes can be open at once.
 
-When Claude edits one file of a change, it checks the others against the edit and proposes the follow-on edits in the same reply, for you to accept or decline: a design decision that changes may mean two tasks change too. It never edits code as part of this.
+When Claude edits one file of a change, it checks the others against the edit and names the follow-on edits in the same reply: a design decision that changes may mean two tasks change too. It shows each one, with what changes and why, and saves it only once you agree. It never edits code as part of this. Claude can read one file of a change on its own, change, add or remove one requirement by its ID, and tick tasks by number, without rewriting the rest of the file.
 
 ## What BuildKeel checks
 
@@ -115,11 +119,15 @@ CH-012: its proposal names AUTH, but it has no spec change for AUTH.
 To fix: Add a spec change for AUTH, or remove AUTH from the proposal's capabilities.
 ```
 
-The status overview and finishing a change report the same, and also references to requirements the change removes, scenarios with no tagged test, test tags naming no scenario, and ticked tasks whose requirement changed after the tick.
+The status overview and finishing a change report the same, and also references to requirements the change removes, scenarios with no tagged test, test tags naming no scenario, and ticked tasks whose requirement changed after the tick. A stray tag is reported with the file and line it is in, wherever it is, a docstring included:
+
+```
+CH-001: tests/scenarios.py:12 names [MDATA-R9-S1], a scenario of a requirement CH-001 removes.
+```
 
 ## Finishing a change
 
-`/bk:done` finishes a change by archiving it: its spec changes are merged into the capability specs, each capability it touches gets its next version, and its files are frozen as its record. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
+`/bk:done` finishes a change by archiving it: its spec changes are merged into the capability specs, each capability it touches gets its next version, and its files are frozen as its record. Tasks left unticked are checked first, and you choose to fix first, finish anyway, or reword the spec where the code is right. Finished anyway with work left, it offers a follow-up change to hold it. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
 
 ## Discarding a change
 
@@ -127,8 +135,8 @@ A change you will not go on with can be discarded: ask Claude to discard it, suc
 
 ```
 Discarding CH-002 "Reset links expire" will:
-- remove its 4 files: changes/CH-002/design.md, changes/CH-002/proposal.md, changes/CH-002/specs/AUTH.md, changes/CH-002/tasks.md
-- write its discard record, changes/CH-002/discarded.yaml: its ID, title, who discarded it, when, and the reason
+- remove its 4 files: changes/CH-002-reset-links-expire/design.md, changes/CH-002-reset-links-expire/proposal.md, changes/CH-002-reset-links-expire/specs/AUTH.md, changes/CH-002-reset-links-expire/tasks.md
+- write its discard record, changes/CH-002-reset-links-expire/discarded.yaml: its ID, title, who discarded it, when, and the reason
 - commit both as "discard: CH-002" in the spec repo
 
 No capability spec changes. The IDs it gave (AUTH-R3, AUTH-R3-S1) are never used again. Commits stamped with CH-002 stay with it, shown as belonging to a discarded change.
@@ -153,4 +161,4 @@ ids:
 - Commits stamped with the discarded change stay with it: the status overview shows them as belonging to a discarded change, with its reason.
 - The discard record is never edited; the agent is blocked from changing it.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-start`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-build`.

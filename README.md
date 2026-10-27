@@ -59,23 +59,21 @@ The plugin needs no server and no account. It works with git and your coding age
 
 ## Commands
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead of a colon: `/bk-init`, `/bk-start` and so on.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead of a colon: `/bk-init`, `/bk-build` and so on.
 
 | Command | What it does |
 |---|---|
 | `/bk:init` | Set up a spec tree, Spec-driven or Full SDLC, or point this repository at an existing one |
 | `/bk:capture` | Turn what you discussed into a change, or the artifacts your process needs, agreed step by step or all at once |
 | `/bk:new` | Draft a change or an artifact, break a parent down, or record a bug |
-| `/bk:onboard` | Document code from before BuildKeel, area by area, or move a Spec-driven tree to Full SDLC |
+| `/bk:onboard` | Document code from before BuildKeel, area by area |
 | `/bk:approve` | Full SDLC: validate and approve an artifact, or a whole plan in one review |
-| `/bk:start` | Load the context for a change or a unit of work and begin |
-| `/bk:build` | Build a change task by task, or every ready unit in turn |
-| `/bk:adhoc` | Record a small change as an ad-hoc unit and start it |
+| `/bk:build` | Start a change or a unit of work and build it: all of it, the next task only, or set up to work together; a small change described in words becomes an ad-hoc unit |
 | `/bk:done` | Review and archive a change, or check the tests and record what was built; close a bug that is not a defect |
 | `/bk:status` | Show the tree, work in progress, coverage gaps, what is not pushed and what to do next |
 | `/bk:impact` | Show what a change affects and resolve it |
 | `/bk:stats` | Show your own usage, kept on your machine |
-| `/bk:migrate` | Upgrade a spec tree to a newer format |
+| `/bk:migrate` | Move a Spec-driven tree to Full SDLC, or upgrade a spec tree to a newer format |
 
 ## Documentation
 

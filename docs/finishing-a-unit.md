@@ -69,6 +69,26 @@ A result that comes from a matched test alone says so, such as `- US-E001-TC1 Li
 
 Results are local: they are kept in `.buildkeel/` in your working tree, never committed, and only the completion record shares them.
 
+### Reminders to finish
+
+BuildKeel reminds you to run `/bk:done` when the work looks done. Neither reminder blocks anything.
+
+**When the work is done.** In a Spec-driven tree, ticking a change's last task tells Claude to say so:
+
+```
+Every task of CH-002 "Reset links expire" is done: tell the user they can run /bk:done to finish it.
+```
+
+In Full SDLC, recording the test results says the same once every test case that applies to the unit passes and its work is committed.
+
+**Before you share unfinished work.** When Claude is about to run `git push`, `gh pr create` or `gh pr merge` while a unit is active, BuildKeel tells it, and the command goes ahead:
+
+```
+BuildKeel: CH-002 "Reset links expire" is not finished: tell the user to run /bk:done before merging. The command goes ahead.
+```
+
+In Claude Code a hook adds this before the command runs. Antigravity cannot add a note before a command, so there Claude is told to give the reminder itself. A push you make in a terminal gets no reminder.
+
 ## Finish with `/bk:done`
 
 ```
@@ -107,7 +127,7 @@ When the unit's branch has commits without a `BuildKeel-Unit` line, Claude lists
 
 ### What finishing will record
 
-Before writing anything, Claude shows what finishing will do and asks you to confirm:
+Before writing anything, Claude shows what finishing will do, in its reply, and asks you in plain text to confirm:
 
 ```
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
@@ -207,10 +227,10 @@ The record stands on its own: after a squash merge replaces the commit IDs, it s
   ```
   TK-001 cannot be started.
   - TK-001 v1 was finished on 2026-10-01 by Jane Doe <jane@example.com> (tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml).
-    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a bug with /bk:new bug, or as an ad-hoc unit with /bk:adhoc.
+    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a bug with /bk:new bug, or as an ad-hoc unit with /bk:build and a description of the change.
   ```
 
-- `/bk:start` lists finished units under **Done**.
+- `/bk:build`, asked to show what can be started, lists finished units under **Done**.
 - Finishing a standalone bug also suggests where to attach it. See [Bugs and ad-hoc units](bugs-and-adhoc.md#attaching-a-standalone-bug).
 
 ## Finishing a story or an epic
@@ -249,22 +269,35 @@ A change does not have to be the active unit to be finished. Run `/bk:done CH-00
 
 Before anything is written, BuildKeel gathers, for Claude and for you:
 
+- the **unticked tasks**, each with how it is verified;
 - each capability spec as it will be after the merge: what the change adds or modifies in full, the rest one line each;
 - the design's Design and Decisions sections;
 - the code linked to the change: its commits (stamped `BuildKeel-Unit: CH-002`, or on its branch) and the files they changed;
 - where each scenario's tests stand, and the **gaps**: scenarios with no tagged test (see [Test plans](test-plans.md));
-- the consistency check: the proposal and spec changes disagreeing, tasks or the design naming a requirement the change removes, test tags naming no scenario, ticked tasks whose requirement changed after the tick;
+- the consistency check: the proposal and spec changes disagreeing, tasks or the design naming a requirement the change removes, test tags naming no scenario, each with its file and line, ticked tasks whose requirement changed after the tick;
 - the template check, including the capability specs after the merge;
 - the suspects archiving would raise (see [Change impact](change-impact.md));
 - **overlaps**: requirements this change modifies or removes that another change archived since its spec change was written.
 
 Nothing here stops the finish. The only things that do are uncommitted changes in the working tree, which the record would leave out, and for the active change, being off its branch.
 
+### Unticked tasks first
+
+A task can be done without being ticked. Before showing you anything else, Claude checks each unticked task against the code and the test results, tells you in a line each which now pass their verification, and offers to tick them. Once they are ticked, finishing is previewed again.
+
 ### The review, and your choice
 
 Claude then reviews the code against the change's requirements, scenarios and design, and reports which scenarios the code implements, which it does not, and anything at odds with the design. The report is headed as Claude's judgment, not a check: it is kept in the completion record as Claude wrote it, never as a pass or a fail.
 
-You then choose **Fix first** or **Finish anyway**. Fix first is the default when the review or the checks report something missing, such as a scenario not implemented, a gap or a failing test; otherwise finishing is the default. Finishing anyway is recorded, with what was reported.
+In the same reply, Claude shows what finishing will write: the capability specs after the merge, with the requirements the change adds or modifies in full and the others by name. Then it asks, in plain text at the end of the reply, whether to **Fix first** or **Finish anyway**. Fix first is the default when the review or the checks report something missing, such as a scenario not implemented, a gap or a failing test; otherwise finishing is the default. Finishing anyway is recorded, with what was reported.
+
+When the review finds a gap where the code is right and the spec is not, such as a requirement for a flag the code never needed, Claude also offers **Reword the spec, then finish**. It shows the requirement's new text and why, saves it once you agree, and previews again.
+
+Whenever anything is committed or changed after the preview, such as a fix to a docstring, Claude previews again and asks you on the new preview. A preview that no longer matches the change or its code cannot be applied.
+
+### Work left open
+
+When you finish anyway with tasks unticked or gaps reported, the result lists them, and Claude offers a **follow-up change** to hold them. If you agree, it is drafted and reviewed like any change, starting with its proposal. Either way the change is archived as it is, and its completion record keeps the tasks left unticked (`openTasks`) and what was reported.
 
 ### Overlaps
 
@@ -285,7 +318,8 @@ Several changes finish oldest first, each with its own review, versions and comm
 ```
 Archived CH-002 "Reset links expire".
 - Wrote AUTH v2 (capabilities/AUTH/versions/v2.md), naming CH-002.
-- Froze the change: changes/CH-002/archive.yaml, and its completion record changes/CH-002/completions/20261014T101500Z-jane-doe.yaml (1 commit, 2 files).
+- Froze the change: changes/CH-002-reset-links-expire/archive.yaml, and its completion record changes/CH-002-reset-links-expire/completions/20261014T101500Z-jane-doe.yaml (1 commit, 2 files).
+- Recorded the tasks left unticked: 1.2, 2.1.
 - Committed as "archive: CH-002" (4c1d2e9) in the spec repo.
 - Released its claim; there is no active unit in this working tree now.
 - The branch bk/CH-002-reset-links-expire is unchanged: push it and open a pull request as usual.
@@ -297,8 +331,8 @@ Everything is committed once, as `archive: CH-002`, and pushed only when `autoPu
 <spec root>/
   capabilities/AUTH/versions/v2.md      AUTH after the merge
   capabilities/AUTH/versions/v2.yaml    its record: the change, the hash, who, when
-  changes/CH-002/archive.yaml           the hash of every file of the change
-  changes/CH-002/completions/...yaml    the completion record
+  changes/CH-002-reset-links-expire/archive.yaml           the hash of every file of the change
+  changes/CH-002-reset-links-expire/completions/...yaml    the completion record
 ```
 
 The archive record freezes the change. Its files, and the capability versions, are never edited: the agent is blocked from changing them, and validation reports one changed, added or removed outside BuildKeel.
@@ -308,10 +342,10 @@ change: CH-002
 versions:
   AUTH: 2
 files:
-  changes/CH-002/design.md: sha256:7d1b0c4e9f2a8e3d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d
-  changes/CH-002/proposal.md: sha256:2b4c6d8e0f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c
-  changes/CH-002/specs/AUTH.md: sha256:9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d
-  changes/CH-002/tasks.md: sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+  changes/CH-002-reset-links-expire/design.md: sha256:7d1b0c4e9f2a8e3d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d
+  changes/CH-002-reset-links-expire/proposal.md: sha256:2b4c6d8e0f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c
+  changes/CH-002-reset-links-expire/specs/AUTH.md: sha256:9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d
+  changes/CH-002-reset-links-expire/tasks.md: sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
 archivedBy: Jane Doe <jane@example.com>
 archivedAt: 2026-10-14T10:15:00Z
 ```
@@ -325,5 +359,6 @@ A change's completion record has the fields above, for the change's commits, fil
 | `review` | Claude's review, as reported to you. |
 | `findings` | What the consistency and template checks reported. |
 | `finishedAnyway` | `true` when you finished it although something was reported missing. |
+| `openTasks` | The tasks left unticked when it was archived, each with its number and text. |
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`, `/bk-start`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`, `/bk-build`.

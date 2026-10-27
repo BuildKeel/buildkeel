@@ -27,9 +27,8 @@ Finishing a change archives it. Its files are frozen as the record of what was d
 
 ### The change is the unit of work
 
-1. **Start:** `/bk:start CH-012` switches to the change's branch and loads its context.
-2. **Build:** `/bk:build`: Claude builds the change task by task.
-3. **Finish:** `/bk:done CH-012` reviews the code against the change's requirements, scenarios and design, then archives it once you choose to finish.
+1. **Build:** `/bk:build CH-012` switches to the change's branch, loads its context, and Claude builds the change task by task.
+2. **Finish:** `/bk:done CH-012` reviews the code against the change's requirements, scenarios and design, then archives it once you choose to finish.
 
 Code links, test tracking, change impact, bugs and ad-hoc units work as they do in Full SDLC, but they report and never block.
 
@@ -70,12 +69,12 @@ To fix: Plan the work as a change, then remove the directory. A spec tree follow
 
 A Spec-driven tree can move to Full SDLC when your team needs approvals and gates. The move goes one way: a Full SDLC tree cannot become Spec-driven.
 
-Ask for it in `/bk:onboard` once no change is open. You choose your process as `/bk:init` would show it, then your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve, the same way onboarding documents existing code. Scenarios become test cases or acceptance criteria, as fits your stages, and each one's new place is recorded. While the move is under way:
+Run `/bk:migrate` once no change is open, and choose **Move this tree to Full SDLC**. You choose your process as `/bk:init` would show it, then your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve, the same way onboarding documents existing code. Scenarios become test cases or acceptance criteria, as fits your stages, and each one's new place is recorded. While the move is under way:
 
 - the tree is still Spec-driven: bugs, ad-hoc units and looking up capability specs work as usual, but no new change can be opened;
-- you can stop after any area, and the next `/bk:onboard` carries on;
+- you can stop after any area, and the next `/bk:migrate` carries on;
 - you can cancel the move until the first area is approved.
 
-Once every area is converted, `/bk:onboard` switches the tree, in a commit of its own. Tests tagged with scenario IDs count for the test cases those scenarios became, code linked to changes stays linked, and bugs found in a change keep their link to it. The capability specs and archived changes stay in the tree, read-only, as the history of how the system came to be. See [Moving a Spec-driven tree to Full SDLC](onboarding.md#moving-a-spec-driven-tree-to-full-sdlc).
+Once every area is converted, `/bk:migrate` switches the tree, in a commit of its own. Tests tagged with scenario IDs count for the test cases those scenarios became, code linked to changes stays linked, and bugs found in a change keep their link to it. The capability specs and archived changes stay in the tree, read-only, as the history of how the system came to be. See [Moving a Spec-driven tree to Full SDLC](onboarding.md#moving-a-spec-driven-tree-to-full-sdlc).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-start`, `/bk-done`, `/bk-new`, `/bk-approve`, `/bk-onboard`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-build`, `/bk-done`, `/bk-new`, `/bk-approve`, `/bk-migrate`.

@@ -33,7 +33,7 @@ That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes 
   buildkeel.yaml                 settings, with mode: spec-driven
   templates/                     your own templates (optional)
   capabilities/AUTH/versions/    each version of a capability spec, with its record
-  changes/CH-012/                one directory per change
+  changes/CH-012-<short name>/   one directory per change, named by its ID and title
   bugs/BUG-001/bug.md            one directory per bug
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
 ```

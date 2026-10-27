@@ -1,7 +1,7 @@
 {
   "name": "bk",
   "displayName": "BuildKeel",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Keeps requirements, tests and code connected, from the business idea down to the commit, and gives Claude that full picture before it writes anything.",
   "author": {
     "name": "BuildKeel"

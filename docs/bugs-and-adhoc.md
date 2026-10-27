@@ -5,7 +5,7 @@ Every code change belongs to a unit of work. Planned work arrives as tasks and s
 - an **ad-hoc unit** records a small change that belongs to no planned work, such as fixing a typo;
 - a **bug** records a defect, found while building or testing planned work, or reported later.
 
-Both get a permanent ID the moment they are created, because their commits are stamped with it straight away. Both are started with `/bk:start`, have a branch, and are finished with `/bk:done`, which writes a completion record like any unit's.
+Both get a permanent ID the moment they are created, because their commits are stamped with it straight away. Both are started and built with `/bk:build`, have a branch, and are finished with `/bk:done`, which writes a completion record like any unit's.
 
 ## Ad-hoc units
 
@@ -14,7 +14,7 @@ Both get a permanent ID the moment they are created, because their commits are s
 When you ask Claude to change code and no unit is active in the working tree, BuildKeel holds the edit and Claude asks you first:
 
 ```
-BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture (you cannot start it), turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:start <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose (then call the BuildKeel manage tool with action untracked). Make the change once one of these is done.
+BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture (you cannot start it), turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:build <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose (then call the BuildKeel manage tool with action untracked). Make the change once one of these is done.
 ```
 
 Run `/bk:capture` to capture what you discussed, name the unit the change belongs to, accept the ad-hoc unit, or say to go ahead without a unit. Claude asks before changing code, so you usually see the question rather than the hold. Claude makes the change once a unit is active, or once you have chosen to go ahead without one.
@@ -24,17 +24,17 @@ Going ahead without a unit lasts in that working tree until a unit is started: e
 ### Recording one directly
 
 ```
-/bk:adhoc "Fix the footer link"
+/bk:build fix the footer link
 ```
 
-Run it on its own and Claude asks what the change is. Claude creates the unit and starts it:
+Describe the change in place of an ID, and Claude compares your words with the titles of the units that can start. When nothing matches, it offers **Record the ad-hoc unit "Fix the footer link" and build it**; when a title matches, it offers that unit first, and records an ad-hoc unit only if you pick it. Claude creates the unit and starts it:
 
 ```
 Created ad-hoc unit AH-002 "Fix the footer link" at adhoc/AH-002/adhoc.md.
 - Committed alone as "new: AH-002" (5e2b7c1) in the spec repo.
 - Not pushed: push the spec repo to share it.
 
-Start it with /bk:start AH-002.
+Build it with /bk:build AH-002.
 ```
 
 Its file holds a title and a short description:
@@ -68,7 +68,7 @@ Created bug BUG-002 "Reset link lasts 3 minutes" at bugs/BUG-002/bug.md, attache
 - Not pushed: push the spec repo to share it.
 - Finishing it needs a regression test with [BUG-002] in its name, passing.
 
-Start it with /bk:start BUG-002.
+Build it with /bk:build BUG-002.
 ```
 
 ```markdown
@@ -88,7 +88,7 @@ To change a bug's file later, such as to add steps to reproduce, ask Claude; it 
 
 ### Fixing it
 
-Start the bug with `/bk:start BUG-002`. Its context gives the bug, the work it was found in, and what to test. Write a **regression test**, a test that fails without the fix and passes with it, with the bug's ID in its name:
+Start the bug with `/bk:build BUG-002`. Its context gives the bug, the work it was found in, and what to test. Write a **regression test**, a test that fails without the fix and passes with it, with the bug's ID in its name:
 
 ```js
 it("keeps reset links for 30 minutes [BUG-002]", async () => {
@@ -181,4 +181,4 @@ Created ad-hoc unit AH-k3x9 "Fix the footer link" at adhoc/AH-k3x9/adhoc.md.
 
 It is never renumbered: its commits already carry it.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-adhoc`, `/bk-new bug`, `/bk-start`, `/bk-done`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`, `/bk-new bug`, `/bk-done`.

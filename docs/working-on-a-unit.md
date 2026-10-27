@@ -5,10 +5,12 @@ A unit is a piece of work that code changes belong to: a task, a story built wit
 ## Start a unit
 
 ```
-/bk:start TK-001
+/bk:build TK-001
 ```
 
-Run `/bk:start` on its own and Claude asks what you want to start. Press Enter on the first choice to see what can be started:
+`/bk:build` starts the unit when it is not started yet, then asks how far to go (see [How far to build](#how-far-to-build)). When the unit is already active, it is not started again: Claude goes on from its context.
+
+Run `/bk:build` on its own and Claude asks what you want to build: **The active unit** (the default, when there is one), **Show what can be started**, or **Type an ID or describe the change**. Showing what can be started lists the units:
 
 ```
 Ready to start (2):
@@ -26,6 +28,20 @@ Starting a unit:
 3. claims it on this machine, so another working tree cannot start it too;
 4. makes it the **active unit** of this working tree;
 5. loads its context for Claude.
+
+### Words in place of an ID
+
+Describe the work instead of naming it, such as `/bk:build fix the footer link`, and Claude compares your words with the titles of the units that can start and, in a Spec-driven tree, of the open changes. When one matches, Claude offers it by its ID and title, such as **Build CH-001 "Download historical market data"**. When nothing matches, it offers to record an ad-hoc unit with a title made from your words, then starts and builds it (see [Bugs and ad-hoc units](bugs-and-adhoc.md)). Nothing is started until you choose.
+
+### How far to build
+
+Once the unit is started, Claude shows what it would build: a unit's acceptance criteria and test cases, a change's unticked tasks with how each is verified, or the ready units under a parent. Then it asks, in plain text:
+
+- **Build them all** (the default): Claude builds, tests and commits everything in turn. A single unit is offered as **Build it**.
+- **Build the next one only**: Claude builds the first, then stops and names the next.
+- **Set it up and work together**: the unit is active on its branch with its context loaded, nothing is built, and Claude asks how you want to begin.
+
+When a change's tasks are all ticked already, Claude says so and that you can finish it with `/bk:done`.
 
 ### Its branch
 
@@ -147,7 +163,7 @@ At the start of every session, when a session is resumed, and after Claude Code 
 
 Nothing else is raised at session start, so a question about the code gets a plain answer. Whether the spec tree is behind its remote, what is suspect, and what is not pushed are shown when you start, approve or finish work, and in `/bk:status`.
 
-When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, start the unit the change belongs to, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
+When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, build the unit the change belongs to with `/bk:build`, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
 
 BuildKeel checks the edits Claude makes with its file editing tools, and Claude is told to change files only with them. A change made another way, such as through a shell command, escapes these checks; if it is committed without a unit, `/bk:status` lists it under commits with no unit.
 
@@ -205,7 +221,7 @@ Each working tree has its own active unit and branch, and commits made in each a
 /bk:build
 ```
 
-Claude lists the units ready to start, at the lowest level (tasks, and stories without tasks), or only those under a story or epic you name, such as `/bk:build US-001`, and asks you once. Then, for each unit in turn, it starts it, writes the code and the tests for its test cases, runs the tests, and finishes it with its own completion record, before going on to the next. Each unit's branch is stacked on the one before, so later units build on the earlier ones' code.
+Claude lists the units ready to start, at the lowest level (tasks, and stories without tasks), or only those under a story or epic you name, such as `/bk:build US-001`, and asks you once: **Build them all**, **Build the next one only**, or **Set it up and work together**. Then, for each unit in turn, it starts it, writes the code and the tests for its test cases, runs the tests, and finishes it with its own completion record, before going on to the next. Each unit's branch is stacked on the one before, so later units build on the earlier ones' code.
 
 The run stops and asks you when a start is refused, a test keeps failing after Claude has tried to fix it, or a requirement is unclear: Claude never guesses a requirement. At the end it shows each unit with its branch, commits and record, and the last branch, which holds the whole run.
 
@@ -214,7 +230,7 @@ The run stops and asks you when a start is refused, a test keeps failing after C
 In a [Spec-driven](modes.md) tree, the units are [changes](changes.md), bugs and ad-hoc units. Starting one works as above, with two differences: no gate runs, so a unit starts unless another working tree on this machine holds it, and a change gets its branch from its ID and title, such as `bk/CH-002-reset-links-expire`.
 
 ```
-/bk:start CH-002
+/bk:build CH-002
 ```
 
 ### A change's context
@@ -225,9 +241,9 @@ A change's context holds its proposal, every spec change in full, its design and
 # Active unit: CH-002 "Reset links expire" (change)
 Progress: 1 of 3 tasks done.
 Commits: end every message with "BuildKeel-Unit: CH-002", and add "BuildKeel-Task: <number>" when the commit does exactly one task.
-Tests: put the scenario ID in each test's name, such as [AUTH-R1-S1]. Record each run's JUnit XML report with test_results.
-Tasks: work through the unticked ones in order, and tick each with save_draft once its verification passes. Finish with /bk:done.
-Keep the change consistent: when you edit one of its files, check the others and propose the follow-on edits.
+Tests: put the scenario ID in each test's name, such as [AUTH-R1-S1], one ID per bracket: [AUTH-R1-S1] [AUTH-R2-S1]. Record each run's JUnit XML report with test_results.
+Tasks: work through the unticked ones in order, and tick each once its verification passes, with save_draft, type tasks, id CH-002 and tick (its number); say so in a line. Finish with /bk:done.
+Keep the change consistent: when you edit one of its files, check the others and propose the follow-on edits, each through the review. Read one file with query (view changes, id CH-002, file); change one requirement with save_draft, type spec-change, its capability and requirement.
 
 ## Proposal
 ### Why
@@ -307,7 +323,7 @@ The system SHALL email a password reset link to a registered address on request.
 
 ### Building a change's tasks
 
-`/bk:build` builds the active change's unticked tasks, in order, on its branch, after one confirmation. Each test is named with the scenario it checks, such as `[AUTH-R3-S1]`. A commit that does exactly one task names it too:
+`/bk:build` builds the change's unticked tasks, in order, on its branch, once you choose **Build them all** or **Build the next one only**. Each test is named with the scenario it checks, such as `[AUTH-R3-S1]`. A commit that does exactly one task names it too:
 
 ```
 Refuse reset links older than 30 minutes
@@ -316,10 +332,14 @@ BuildKeel-Unit: CH-002
 BuildKeel-Task: 1.2
 ```
 
-so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and the run stops to ask when a test fails and cannot be fixed, or a requirement is unclear. Finish the change with `/bk:done` when its tasks are done.
+so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and Claude says so in a line, without asking. The run stops to ask when a test fails and cannot be fixed, a requirement is unclear, or the work needs a change to what you agreed, such as a requirement or a task's wording, which Claude shows you before saving. Finish the change with `/bk:done` when its tasks are done.
+
+If you ask in words, such as "let's build the rest now", Claude suggests `/bk:build` once. Say "just go ahead" and it builds the tasks anyway, by the same rules; say "not now" and it builds nothing.
 
 ## When the work is done
 
 Finish the unit with `/bk:done`: it checks the tests and records what was built. See [Finishing a unit](finishing-a-unit.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-start`, `/bk-approve`, `/bk-build`, `/bk-done`.
+Claude reminds you when the work looks done: when the last task of a change is ticked, or, in Full SDLC, when every test case of the unit passes and its work is committed. It reminds you again before it pushes, opens a pull request or merges while the unit is unfinished; the command still goes ahead. See [Reminders to finish](finishing-a-unit.md#reminders-to-finish).
+
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`, `/bk-approve`, `/bk-done`.

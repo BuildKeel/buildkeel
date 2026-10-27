@@ -10,17 +10,19 @@ Talk the idea through with Claude first, as you would without BuildKeel: what it
 /bk:capture
 ```
 
-Claude goes step by step, and asks at each one:
+Claude goes step by step, and asks at each one. Whatever it asks you to agree, it writes out in full in its reply, in the normal window, and asks in plain text at the end, never inside a question box:
 
 1. **What it heard.** A short summary in plain words: what you set out to do, the idea, the approach and decisions discussed, what was left open, and the pitfalls and constraints raised, each marked settled or open. Choose **Create the artifacts**, **Change something**, or **Keep talking**. Any other answer, such as a correction, simply goes on with the conversation; nothing is drafted.
 2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new and given its purpose, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. Choose **Looks right**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
 3. **The pace.** Claude asks every time: **Step by step** (the default) or **All at once**.
 
-Step by step, Claude drafts the epic first, then its design document, then each story with its test plan, then the tasks as one batch. Each is drafted against the ones you already agreed to, shown with the pitfalls it covers, and saved once you choose **Looks good, next**. You can choose **Change something**, or **Draft the rest at once** at any step. If you stop partway, what you agreed to stays saved as drafts. All at once, Claude drafts everything, then shows the set.
+Step by step, Claude drafts the epic first, then its design document, then each story with its test plan, then the tasks as one batch. Each is drafted against the ones you already agreed to, shown with the pitfalls it covers, and saved once you agree, such as with **Looks good, next**. You can say **Draft the rest at once** at any step. If you stop partway, what you agreed to stays saved as drafts. All at once, Claude drafts everything, then shows the set, and saves it once you agree.
+
+Any other answer is feedback, "ok, but…" included. Discuss it as long as you like; then Claude lists each point you raised with how it addressed it, or why it did not, shows the final version, and saves it only once you agree. When later discussion would change something you already agreed, Claude says which artifact, what changes and why, and takes it through the same review. It never adds a requirement, criterion or test case on its own.
 
 Each pitfall you settled becomes a requirement, criterion or test case. Claude invents nothing: when a draft needs something the conversation did not settle, such as a required section, an open pitfall or a missing detail, Claude tells you and asks, with no recommendation: **Put it in the spec as stated**, **Record it as an open question** (kept in the artifact's Open questions section; it does not block approval), **Flesh it out now**, or **Not relevant: leave it out**. At the end, any pitfall from the summary that no artifact covers is raised the same way.
 
-Agreeing to an artifact here does not approve it. Approve the drafts in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
+Agreeing to an artifact here does not approve it. Once the last one is agreed, Claude asks whether to approve the set now, after showing what approving it will write, or leave the drafts for another approver, who approves them in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
 
 To capture only part of a long conversation, say which: `/bk:capture the text message reset`.
 
@@ -92,14 +94,14 @@ Bugs are recorded with `/bk:new bug` too, but they are not drafts: a bug gets it
 
 In a Spec-driven tree, what Claude drafts is a [change](changes.md): a proposal, a spec change for each capability whose behavior it alters, a design only when needed, and tasks. Nothing in it is approved, and nothing is a draft: everything stays editable until the change is finished.
 
-- **`/bk:capture`** starts the same way, with a summary of what Claude heard, pitfalls included. It then reads the capability specs the work touches and proposes the change as a table of capabilities, each new or modified, with what changes in it, saying whether the change needs a design. Choose **Looks right**, **Change the plan** or **Keep talking**, then the pace. Step by step, Claude shows the proposal and saves it once you agree, which creates the change, then each spec change, the design if needed, and the tasks, one at a time. All at once, it saves the whole change in one go. Gaps are raised as in Full SDLC.
+- **`/bk:capture`** starts the same way, with a summary of what Claude heard, pitfalls included. It then reads the capability specs the work touches and proposes the change as a table of capabilities, each new or modified, with what changes in it, saying whether the change needs a design. Choose **Looks right**, **Change the plan** or **Keep talking**, then the pace. Step by step, Claude shows the proposal and saves it once you agree, which creates the change, then each spec change, the design if needed, and the tasks, one at a time. All at once, it shows the whole change and saves it in one go once you agree. Feedback is answered as in Full SDLC: each point with how it was addressed, then the final version. Gaps are raised as in Full SDLC.
 - **`/bk:new change for <what>`** drafts a change from what you type; **`/bk:new spec change for CH-012`**, or tasks or a design for an open change, adds or rewrites one file of it. Run `/bk:new` on its own and Claude asks what to draft, with examples, or suggests what an open change still lacks.
 - **IDs are given when the change is saved**, not at approval: the change's own, such as `CH-012`, and each new requirement and scenario, such as `AUTH-R3` and `AUTH-R3-S1`. See [Capability specs](capability-specs.md#ids).
 
-When the change is drafted, start it with `/bk:start CH-012`.
+When the change is drafted, start and build it with `/bk:build CH-012`.
 
 ## Next
 
 Approve drafts with `/bk:approve`, one at a time or as a whole plan.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-status`, `/bk-start`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`, `/bk-new`, `/bk-status`, `/bk-build`.

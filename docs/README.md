@@ -23,9 +23,9 @@ User documentation, kept beside the code it describes.
 
 ## Build the work
 
-- [Working on a unit](working-on-a-unit.md): starting a unit with /bk:start, building everything ready with /bk:build, what must be true, its branch and claim, the context Claude receives, sessions, freshness and working on several units at once.
+- [Working on a unit](working-on-a-unit.md): starting and building a unit with /bk:build, building everything ready, what must be true, its branch and claim, the context Claude receives, sessions, freshness and working on several units at once.
 - [Finishing a unit](finishing-a-unit.md): commit lines and test tags, recording test results, finishing with /bk:done, what must be true, commits without a unit line, the completion record, the next unit, and finishing a story or an epic.
-- [Bugs and ad-hoc units](bugs-and-adhoc.md): changes with nothing started, /bk:adhoc, recording bugs with /bk:new bug, regression tests, open bugs, attaching a standalone bug, and IDs given offline.
+- [Bugs and ad-hoc units](bugs-and-adhoc.md): changes with nothing started, ad-hoc units through /bk:build, recording bugs with /bk:new bug, regression tests, open bugs, attaching a standalone bug, and IDs given offline.
 
 ## Change and track
 
@@ -42,7 +42,7 @@ User documentation, kept beside the code it describes.
 - [The spec tree](spec-tree.md): where BuildKeel keeps your plan, the pointer file in each code repository, and format versions.
 - [Process and templates](process-and-templates.md): the default process, documents attached to a stage and which each stage requires, the design document, setting up the process, renaming and adding stages, ID prefixes, gate modes, templates and what BuildKeel checks before approval.
 - [Organization templates](organization-templates.md): templates and a process shared across teams from a repository of their own, pinned to a version.
-- [Migrating a spec tree](migration.md): what happens when a spec tree is in an older format, and upgrading it with /bk:migrate.
+- [Migrating a spec tree](migration.md): moving a Spec-driven tree to Full SDLC with /bk:migrate, and upgrading a spec tree in an older format.
 
 ## Reference
 

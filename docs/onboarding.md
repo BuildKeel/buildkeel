@@ -169,9 +169,9 @@ As work touches undocumented code, capturing a change includes version 0 of a ca
 
 ## Moving a Spec-driven tree to Full SDLC
 
-A Spec-driven tree moves to Full SDLC through onboarding (see [The two modes](modes.md#moving-to-full-sdlc)). Its capability specs and archived changes are the sources, in place of old code and tickets, and your stages are drafted from them area by area, as version 0, for you to review and approve. The move goes one way.
+A Spec-driven tree moves to Full SDLC with `/bk:migrate` (see [The two modes](modes.md#moving-to-full-sdlc)), the same way onboarding documents code: `/bk:onboard` itself only documents code, and sends you to `/bk:migrate` when you ask it to move the tree. Its capability specs and archived changes are the sources, in place of old code and tickets, and your stages are drafted from them area by area, as version 0, for you to review and approve. The move goes one way.
 
-**Starting.** Ask for it in `/bk:onboard`. It is refused while a change is open, naming each one: finish or discard them first. Claude shows the process the tree will follow, as `/bk:init` shows it for a new Full SDLC tree, and you take it or adjust it. Bugs and ad-hoc units keep their numbering. BuildKeel then writes `onboarding/conversion.yaml` and commits it as `onboard: start conversion to Full SDLC`. From then on no change can be opened, while bugs, ad-hoc units and looking up capability specs work as usual.
+**Starting.** Run `/bk:migrate`. When the tree's format needs no upgrade, Claude explains the move and asks: **Not now** (the default) or **Move this tree to Full SDLC**. It is refused while a change is open, naming each one: finish or discard them first. Claude shows the process the tree will follow, as `/bk:init` shows it for a new Full SDLC tree, and you take it or adjust it. Bugs and ad-hoc units keep their numbering. BuildKeel then writes `onboarding/conversion.yaml` and commits it as `onboard: start conversion to Full SDLC`. From then on no change can be opened, while bugs, ad-hoc units and looking up capability specs work as usual.
 
 **The map.** Each area holds one or more capability specs, and each capability spec is in one area:
 
@@ -200,10 +200,10 @@ placed:
 dropped: {}
 ```
 
-An area is converted once each of its scenarios is placed or left out. Where it stands, from `/bk:onboard`:
+An area is converted once each of its scenarios is placed or left out. Where it stands, from `/bk:migrate`:
 
 ```
-Converting to Full SDLC, started by Jane Doe <jane@example.com> on 2026-10-14: 0 of 2 areas converted. The tree stays Spec-driven until every area is.
+Converting to Full SDLC, started by Jane Doe <jane@example.com> on 2026-10-14: 0 of 2 areas converted. The tree stays Spec-driven until every area is; /bk:migrate carries the conversion on.
 
 | Area | Capability specs | Where it stands |
 |---|---|---|

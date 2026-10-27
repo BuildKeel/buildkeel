@@ -42,7 +42,7 @@ Ready to start (3):
 - TK-001 task "Reset endpoint": the active unit here
 - AH-001 ad-hoc unit "Fix typo in reset email"
 - BUG-001 bug "Reset link expires early"
-Not ready yet: 1; /bk:start lists them with the reason.
+Not ready yet: 1; /bk:build lists them with the reason.
 ```
 
 Sections with nothing to report are left out.
@@ -149,7 +149,7 @@ Validation reports the same.
 
 ### Ready to start
 
-The units that can be started now, the active unit first. `/bk:start` lists the ones that are not ready yet, each with the reason.
+The units that can be started now, the active unit first. `/bk:build` lists the ones that are not ready yet, each with the reason.
 
 ## In a Spec-driven tree
 
@@ -159,7 +159,7 @@ In a Spec-driven tree (see [The two modes](modes.md)), the overview is about cha
 BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 2)
 In short: CH-002 is in progress here; 2 open changes; 2 findings in open changes; 4 scenarios with no tagged test; 1 failing; commits with no unit.
 
-Active unit here: CH-002 change "Reset links expire" on branch bk/CH-002-reset-links-expire.
+Active unit here: CH-002 "Reset links expire" (change) on branch bk/CH-002-reset-links-expire.
 Spec repo: not checked yet in this session.
 
 Open changes (2):
@@ -190,8 +190,8 @@ Commits with no unit, after each repo's baseline:
 - accounts-api: 1 commit: e41b7d2 "Initial commit"
 
 Ready to start (4):
-- CH-002 change "Reset links expire" (1 of 3 tasks done): the active unit here
-- CH-003 change "Remember devices" (1 of 2 tasks done)
+- CH-002 "Reset links expire" (change, 1 of 3 tasks done): the active unit here
+- CH-003 "Remember devices" (change, 1 of 2 tasks done)
 - AH-001 ad-hoc unit "Fix typo in sign-in page"
 - BUG-001 bug "Reset email lands in spam"
 
@@ -209,4 +209,4 @@ Offer to review CH-002 now: call finish_work without apply (it writes nothing), 
 
 When a change is active, Claude offers to review it: the same review as finishing (see [Finishing a change](finishing-a-unit.md#finishing-a-change)), reported as Claude's judgment, with nothing written.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`, `/bk-start`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`, `/bk-build`.

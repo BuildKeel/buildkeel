@@ -1,5 +1,7 @@
 # Migrating a spec tree
 
+`/bk:migrate` does two things: it upgrades a spec tree in an older format, and it moves a Spec-driven tree to Full SDLC. It looks for a format upgrade first.
+
 A spec tree declares its format in `buildkeel.yaml`, such as `format: 1`. Each version of BuildKeel reads and writes the formats it knows. Today that is format 1, used by Full SDLC trees, including every tree made before modes existed, and format 2, used by Spec-driven trees. Both are current, so neither needs migrating. When a later version of BuildKeel changes the format in a way older trees must follow, a tree in the older one is upgraded with `/bk:migrate`, in one commit you can review. Nothing is ever rewritten silently.
 
 ## A tree in an older format
@@ -37,5 +39,9 @@ To fix: Update the BuildKeel plugin, then start a new session.
 ```
 
 A tree is never migrated back to an older format.
+
+## Moving a Spec-driven tree to Full SDLC
+
+In a Spec-driven tree with no format upgrade due, `/bk:migrate` offers to move the tree to Full SDLC: **Not now** (the default) or **Move this tree to Full SDLC**. It is refused while a change is open. Your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve; the tree stays Spec-driven until every area is approved, and the next `/bk:migrate` carries on where you stopped. In a Full SDLC tree there is nothing to move. See [Moving a Spec-driven tree to Full SDLC](onboarding.md#moving-a-spec-driven-tree-to-full-sdlc).
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-migrate`.

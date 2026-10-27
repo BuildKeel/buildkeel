@@ -24,7 +24,7 @@ Gates stop work until it is ready: no coding against an unapproved or outdated r
 | **Editing** | Every file of an open change can be edited at any time, with no new version | An approved artifact is locked; a change to it becomes a draft of its next version |
 | **Gates** | Only the lock gate, which protects finished records | Approve, start, done and lock, each set to block, warn or off |
 | **The unit of work** | A change, whose tasks are checkboxes inside it; bugs; ad-hoc units | A task, or a story with no tasks; bugs; ad-hoc units |
-| **Starting work** | `/bk:start CH-012` starts it at once; no gate runs | `/bk:start TK-047` starts it once the start gate passes: everything above it approved and current |
+| **Starting work** | `/bk:build CH-012` starts it at once; no gate runs | `/bk:build TK-047` starts it once the start gate passes: everything above it approved and current |
 | **Context for Claude** | The change's proposal, spec changes, design and tasks, each capability it touches at the version in force, its open bugs and linked code | The task, its story and acceptance criteria, the epic, the business idea, the test cases that apply, open bugs and linked code |
 | **Building** | `/bk:build` builds one change's tasks in order, on the change's branch | `/bk:build` builds every ready task in turn, each on its own branch, stacked on the one before |
 | **Tests** | Each test names the scenario it checks, such as `[ACCT-R2-S1]`; there are no test plans | Test plans at every level; each test case says what it covers, and each test names its test case, such as `[US-012-TC3]` |
@@ -45,8 +45,7 @@ The same in both: commits are linked to their unit automatically, test results a
 ### In Spec-driven
 
 - `/bk:capture`: drafts the change
-- `/bk:start CH-012`: starts it, no gate
-- `/bk:build`: builds its tasks
+- `/bk:build CH-012`: starts it, no gate, and builds its tasks
 - `/bk:done`: reviews, then archives
 
 You talk it through with Claude, and `/bk:capture` drafts a change:
@@ -74,14 +73,14 @@ The system SHALL email a verification link to a new account's address, and SHALL
 - **THEN** they are told the link has expired, and offered a new one
 ```
 
-You start it with `/bk:start CH-012`, and Claude builds the tasks with `/bk:build`, naming each test after its scenario, such as `[ACCT-R2-S2]`. `/bk:done` reviews the code against `ACCT-R2` and its scenarios, and, once you choose to finish, writes the next version of `ACCT` naming `CH-012`. Nothing was approved along the way, and the change is kept as the record of why the behavior changed.
+You start it with `/bk:build CH-012`, and Claude builds its tasks, naming each test after its scenario, such as `[ACCT-R2-S2]`. `/bk:done` reviews the code against `ACCT-R2` and its scenarios, and, once you choose to finish, writes the next version of `ACCT` naming `CH-012`. Nothing was approved along the way, and the change is kept as the record of why the behavior changed.
 
 ### In Full SDLC
 
 - `/bk:capture`: drafts the new versions
 - `/bk:impact US-012`: shows what is suspect
 - `/bk:approve`: approves both
-- `/bk:start TK-047`: start gate checks
+- `/bk:build TK-047`: start gate checks
 - `/bk:done`: every test case passes
 
 You talk it through with Claude, and `/bk:capture` drafts what your process needs: here, a new version of the story `US-012` "Email verification flow" with a changed criterion, and the test case that checks it in its test plan, `US-012-TP`:
@@ -101,12 +100,12 @@ covers: [US-012-AC2]
 2. The link is refused, and a new one is offered.
 ```
 
-Before approving, `/bk:impact US-012` shows what the new version puts in question, such as a finished task built against version 1 and the tests of the changed criterion. You approve both with `/bk:approve`, decide on each suspect, and start the task `TK-047` with `/bk:start TK-047`: the start gate checks that the story and its test plan are approved and current. Claude names each test after its test case, such as `[US-012-TC3]`, and `/bk:done` finishes the task only when every test case that applies passes.
+Before approving, `/bk:impact US-012` shows what the new version puts in question, such as a finished task built against version 1 and the tests of the changed criterion. You approve both with `/bk:approve`, decide on each suspect, and build the task `TK-047` with `/bk:build TK-047`: the start gate checks that the story and its test plan are approved and current. Claude names each test after its test case, such as `[US-012-TC3]`, and `/bk:done` finishes the task only when every test case that applies passes.
 
 ## Moving to Full SDLC
 
-A Spec-driven tree moves to Full SDLC with `/bk:onboard`, once no change is open. You choose your process, and your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve. Scenarios become test cases or acceptance criteria, tests tagged with scenario IDs count for what those scenarios became, and code linked to changes stays linked. The capability specs and archived changes stay in the tree, read-only, as its history.
+A Spec-driven tree moves to Full SDLC with `/bk:migrate`, once no change is open. You choose your process, and your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve. Scenarios become test cases or acceptance criteria, tests tagged with scenario IDs count for what those scenarios became, and code linked to changes stays linked. The capability specs and archived changes stay in the tree, read-only, as its history.
 
 A Full SDLC tree cannot become Spec-driven. See [Moving to Full SDLC](modes.md#moving-to-full-sdlc) for the steps.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-start`, `/bk-build`, `/bk-done`, `/bk-impact`, `/bk-onboard`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-impact`, `/bk-migrate`.

@@ -172,7 +172,7 @@ When a later version modifies or removes one of those requirements, compared by 
 Run `/bk:impact CH-002` on an open change to see what archiving it would make suspect. Nothing is marked yet:
 
 ```
-Archiving CH-002 would make 2 items suspect. Nothing is marked yet.
+Archiving CH-002 "Reset links expire" would make 2 items suspect. Nothing is marked yet.
 
 AUTH, from v1 to what CH-002 would make it:
 - AUTH-R2 removed by CH-002

@@ -19,7 +19,7 @@ Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving 
 - commit only those files in the spec repo as "approve: US-002 v1", without pushing
 ```
 
-Nothing is approved until you confirm.
+Claude writes this out in its reply and asks in plain text whether to approve. Nothing is approved until you confirm.
 
 Run `/bk:approve` on its own and Claude asks what you want to approve. Press Enter on the first choice to see what is waiting, or type an ID:
 
@@ -42,7 +42,9 @@ A task's own test plan is not approved: it is recorded as it is saved (see [Test
 
 ## Approve a whole plan in one review
 
-After `/bk:capture` has drafted a plan, run `/bk:approve` and press Enter on the first choice, **The drafts from this conversation**, or name the drafts yourself: `/bk:approve EP-draft-k3x9 EP-draft-k3x9-DD US-draft-m2p8 …`. Claude shows the whole set first, in the order it will be approved, parents and their documents before their children, with the number each will most likely get, and anything that would not pass, and why:
+When you have agreed the last artifact of a `/bk:capture`, Claude asks whether to **Approve them now** or **Leave them as drafts**. Leave them when someone else approves your team's plans: they run `/bk:approve` later. Approving them now shows the set first, as below, and approves nothing until you confirm.
+
+Later, or for drafts from an earlier conversation, run `/bk:approve` and press Enter on the first choice, **The drafts from this conversation**, or name the drafts yourself: `/bk:approve EP-draft-k3x9 EP-draft-k3x9-DD US-draft-m2p8 …`. Claude shows the whole set first, in the order it will be approved, parents and their documents before their children, with the number each will most likely get, and anything that would not pass, and why:
 
 ```
 Ready to approve 4 of 6 in one review, each with its own approval record and commit. US-draft-q7w4 would not pass, so it stays a draft, with what needs it.
@@ -253,7 +255,7 @@ Ask Claude for the change as usual. Saving it opens the next version as a draft:
 Saved US-002 v2 as a draft at stories/US-002/story.md. v1 stays approved and in force until v2 is approved.
 ```
 
-The working file now holds v2; `versions/v1.md` is untouched. Approve v2 with `/bk:approve US-002`. Its number stays the same.
+The working file now holds v2; `versions/v1.md` is untouched. Approve v2 with `/bk:approve US-002`. Its number stays the same. This holds even when v1 was approved minutes ago and nothing is built on it: an approved version is never changed in place, so anyone who built on it is told through [suspects](change-impact.md).
 
 ## Locked files
 
@@ -280,10 +282,15 @@ Validation never changes anything.
 
 ## In a Spec-driven tree
 
-A Spec-driven tree has no approvals (see [The two modes](modes.md)): a change's files stay editable while it is open, and finishing it archives it as the record of the work. `/bk:approve` writes nothing there, and says so:
+A Spec-driven tree has no approvals (see [The two modes](modes.md)): a change's files stay editable while it is open, and finishing it archives it as the record of the work. Agreeing is part of the review instead: while Claude shows you a document, such as a spec change during `/bk:capture`, typing `/bk:approve`, or replying "approved", agrees it, and Claude saves it and goes on. Nothing is frozen, and the change stays editable until it is finished; a later change to it goes through the review again.
+
+With nothing under review, `/bk:approve` writes nothing, and says so, naming the open changes:
 
 ```
-Nothing was approved: this spec tree is Spec-driven, so it has no approvals. A change's files stay editable while it is open, and finishing it with /bk:done archives it as the record of the work, giving each capability spec it touches its next version. To have approvals (drafts reviewed and approved stage by stage, with gates), move the tree to Full SDLC with /bk:onboard: it converts the capability specs and archived changes into the team's process. The move is one way.
+Nothing is waiting for agreement, and nothing was written: this spec tree is Spec-driven, so it has no approvals. While a document is under review in the conversation, /bk:approve or a reply such as "approved" agrees it.
+Open changes, editable until each is finished with /bk:done:
+- CH-002 "Reset links expire": 1 of 3 tasks done
+Approvals, with drafts approved stage by stage and gates, come with Full SDLC: move the tree with /bk:migrate. The move is one way.
 ```
 
 ## Gate mode

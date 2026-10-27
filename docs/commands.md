@@ -1,6 +1,6 @@
 # Commands
 
-BuildKeel has 13 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
+BuildKeel has 11 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
 
 | Command | What it does | In Antigravity |
 |---|---|---|
@@ -8,17 +8,15 @@ BuildKeel has 13 commands. They are the same in both modes, and each adapts to t
 | [/bk:capture](#bkcapture) | Turns what you discussed into a plan: a plain summary, then the artifacts or the change, agreed one by one or all at once. | `/bk-capture` |
 | [/bk:new](#bknew) | Drafts an artifact or a change, breaks a parent down into drafts of its children, or records a bug. | `/bk-new` |
 | [/bk:approve](#bkapprove) | Approves a draft or a new version after checking it, or a set of drafts in one review. | `/bk-approve` |
-| [/bk:start](#bkstart) | Starts work on a unit: checks it is ready, switches to its branch and loads its context. | `/bk-start` |
-| [/bk:build](#bkbuild) | Builds what is ready, unit by unit or task by task, after one confirmation. | `/bk-build` |
-| [/bk:adhoc](#bkadhoc) | Records a small change as an ad-hoc unit and starts it. | `/bk-adhoc` |
+| [/bk:build](#bkbuild) | Starts a unit and builds it: all of it, the next piece only, or set up to work together. | `/bk-build` |
 | [/bk:done](#bkdone) | Finishes a unit: checks its tests, then writes its completion record, or archives a change. | `/bk-done` |
 | [/bk:status](#bkstatus) | Shows the overview: the tree, work in progress, claims, gaps and what can be started next. | `/bk-status` |
 | [/bk:impact](#bkimpact) | Reviews what a change to an approved artifact or a capability spec affects, one suspect at a time. | `/bk-impact` |
-| [/bk:onboard](#bkonboard) | Documents code from before BuildKeel, area by area, or moves a Spec-driven tree to Full SDLC. | `/bk-onboard` |
+| [/bk:onboard](#bkonboard) | Documents code from before BuildKeel, area by area. | `/bk-onboard` |
 | [/bk:stats](#bkstats) | Shows your own BuildKeel usage over a period, kept on this machine only. | `/bk-stats` |
-| [/bk:migrate](#bkmigrate) | Upgrades a spec tree in an older format, in one commit, without touching approved versions. | `/bk-migrate` |
+| [/bk:migrate](#bkmigrate) | Moves a Spec-driven tree to Full SDLC, or upgrades a spec tree in an older format, without touching approved versions. | `/bk-migrate` |
 
-When a command asks you something, the default is listed first: press Enter to take it.
+When a command asks a quick choice with nothing to read, such as the pace, it asks with choices, the default listed first: press Enter to take it. When it shows you something to agree, such as a summary, a plan, a document or what finishing will write, Claude writes it out in its reply and asks in plain text at the end: answer in your own words. Agreement goes on; anything else is feedback, which Claude answers point by point, with the final version, before it saves anything.
 
 Only you start a command, by typing it. Claude may run `/bk:status` and `/bk:stats` on its own, since they only read; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
 
@@ -89,15 +87,15 @@ Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving 
 
 **More:** [Approving artifacts](approval.md), [Approving in a Spec-driven tree](approval.md#in-a-spec-driven-tree).
 
-## /bk:start
+## /bk:build
 
-**What it does.** Starts work on a unit: checks it is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude.
+**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how far to go: **Build them all** (the default), **Build the next one only**, or **Set it up and work together**. A run stops and asks you when a test keeps failing, a requirement is unclear, or the work would change what you agreed.
 
-**What you can type.** A unit ID, such as `/bk:start TK-001` or `/bk:start CH-012`. Typed on its own, it asks what to start: **Show what can be started** (the default) or **Type a unit ID**.
+**What you can type.** A unit's ID, such as `/bk:build TK-001` or `/bk:build CH-012`; a parent's ID, such as `/bk:build US-001` to build its tasks; or the change in words, such as `/bk:build fix the footer link`, which Claude matches to the titles of the units that can start, or else offers to record as an ad-hoc unit. Typed on its own, it asks what to build: **The active unit** (the default, when there is one), **Show what can be started**, or **Type an ID or describe the change**.
 
-**In Spec-driven.** The units are changes, bugs and ad-hoc units. No gate runs: a unit starts unless another working tree on this machine holds it. A change's branch comes from its ID and title, such as `bk/CH-002-reset-links-expire`.
+**In Spec-driven.** The units are changes, bugs and ad-hoc units. No gate runs: a unit starts unless another working tree on this machine holds it. A change's branch comes from its ID and title, such as `bk/CH-002-reset-links-expire`. Claude builds the change's unticked tasks in order, ticking each once its verification passes and saying so in a line. It does not finish the change: it offers `/bk:done`.
 
-**In Full SDLC.** The units are tasks, stories built without tasks, bugs and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect.
+**In Full SDLC.** The units are tasks, stories built without tasks, bugs and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect. Under a parent, each ready unit is started, built, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record.
 
 ```text title="Example output"
 Ready to start (2):
@@ -108,37 +106,7 @@ Not ready yet (1):
 - TK-002 task "Reset email": The test plan US-001-TP is not approved.
 ```
 
-**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Working in a Spec-driven tree](working-on-a-unit.md#in-a-spec-driven-tree).
-
-## /bk:build
-
-**What it does.** Builds what is ready, one piece after another, after you confirm once. The run stops and asks you when a test keeps failing or a requirement is unclear.
-
-**What you can type.** A parent ID, such as `/bk:build US-001` to build its tasks, or `/bk:build EP-01`. Typed on its own, it asks what to build: **Everything that is ready** (the default) or **Only what is under one story or epic**. Before the run, it shows the list and asks: **Build them** (the default), **Change the list**, or **Stop**.
-
-**In Spec-driven.** A run builds one change's unticked tasks, in order, on the change's branch, ticking each once its verification passes. With no change named or active, it asks: **Show what can be started** (the default) or **Type a change ID**. It does not finish the change: it offers `/bk:done`.
-
-**In Full SDLC.** Each ready unit is started, built, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record.
-
-**More:** [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks).
-
-## /bk:adhoc
-
-**What it does.** Records a small change that belongs to no planned work as an ad-hoc unit, and starts it. It needs no approval: it gets its permanent ID at once, and its commits carry it.
-
-**What you can type.** The change, such as `/bk:adhoc "Fix the footer link"`. Typed on its own, it asks what the change is: **The change we were just discussing** (the default, offered only when the conversation names one) or **Type a short description**.
-
-The same in both modes.
-
-```text title="Example output"
-Created ad-hoc unit AH-002 "Fix the footer link" at adhoc/AH-002/adhoc.md.
-- Committed alone as "new: AH-002" (5e2b7c1) in the spec repo.
-- Not pushed: push the spec repo to share it.
-
-Start it with /bk:start AH-002.
-```
-
-**More:** [Bugs and ad-hoc units](bugs-and-adhoc.md#recording-one-directly).
+**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks), [Bugs and ad-hoc units](bugs-and-adhoc.md#recording-one-directly).
 
 ## /bk:done
 
@@ -213,7 +181,7 @@ Suspect (2):
 
 **What you can type.** An area to onboard, such as `/bk:onboard Billing`. Typed on its own, it shows where onboarding stands and asks what to do. With no map yet: **Map the code** (the default), **Fill in what onboarding left empty** (only when something was), or **Stop**. With a map: **Continue with an area**, **Adjust the map**, **Fill in what onboarding left empty** or **Stop**.
 
-**In Spec-driven.** Each area is documented as capability specs, version 0, each saved once you confirm it. Here you can also ask to move the tree to Full SDLC, once no change is open. The move is one way.
+**In Spec-driven.** Each area is documented as capability specs, version 0, each saved once you confirm it. Moving the tree to Full SDLC is `/bk:migrate`'s, not onboarding's.
 
 **In Full SDLC.** Each area is drafted as version 0 of every stage from the business idea down to the story, and its drafts are approved in one review. Then Claude matches the existing tests to the new test cases.
 
@@ -229,7 +197,7 @@ Onboarding: 1 of 3 areas onboarded, from the map in onboarding/map.yaml.
 Next area: Billing.
 ```
 
-**More:** [Documenting existing code](onboarding.md#area-by-area), [Onboarding in a Spec-driven tree](onboarding.md#in-a-spec-driven-tree), [Moving to Full SDLC](onboarding.md#moving-a-spec-driven-tree-to-full-sdlc).
+**More:** [Documenting existing code](onboarding.md#area-by-area), [Onboarding in a Spec-driven tree](onboarding.md#in-a-spec-driven-tree).
 
 ## /bk:stats
 
@@ -254,16 +222,18 @@ Time from start to done: 1 h 3 min typically (the median), 2 h 30 min at the lon
 
 ## /bk:migrate
 
-**What it does.** Upgrades a spec tree in an older format to the one this version of BuildKeel uses, in one commit you can review. Approved versions and records are left exactly as they are.
+**What it does.** Upgrades a spec tree in an older format to the one this version of BuildKeel uses, in one commit you can review, with approved versions and records left exactly as they are. With no upgrade due, it moves a Spec-driven tree to Full SDLC.
 
-**What you can type.** Nothing: `/bk:migrate` takes no arguments. It shows what migrating changes, then asks: **Migrate** (the default) or **Not now**.
+**What you can type.** Nothing: `/bk:migrate` takes no arguments. When an upgrade is due, it shows what migrating changes, then asks: **Migrate** (the default) or **Not now**.
 
-The same in both modes.
+**In Spec-driven.** With no upgrade due, it offers to move the tree to Full SDLC: **Not now** (the default) or **Move this tree to Full SDLC**, once no change is open. Your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve, and the next `/bk:migrate` carries on where you stopped. The move is one way.
+
+**In Full SDLC.** It upgrades the format when an update needs it; otherwise there is nothing to do.
 
 ```text title="Example output"
 The spec tree is already in format 1, the one this version of BuildKeel uses; there is nothing to migrate.
 ```
 
-**More:** [Migrating a spec tree](migration.md#migrate-it).
+**More:** [Migrating a spec tree](migration.md#migrate-it), [Moving a Spec-driven tree to Full SDLC](migration.md#moving-a-spec-driven-tree-to-full-sdlc).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-start`, `/bk-build`, `/bk-adhoc`, `/bk-done`, `/bk-status`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-status`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.

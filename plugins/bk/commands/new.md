@@ -89,7 +89,7 @@ A bug is a defect in work that was planned: it is recorded straight away with it
 2. **The test case that found it**, when a test failed: call `query` with `view: "coverage"` and the unit's ID to see the test cases that apply there, and offer them, with **none** last. A standalone bug has none.
 3. **What is wrong.** Use the user's description, or ask for it in their own words: never offer descriptions you made up as choices, since a bug records what someone saw. Write a title that names the defect, such as "Reset link expires after 3 minutes".
 4. Call `get_template` for `bug`, then `save_draft` with `type: "bug"` and the whole file: `id: {{id}}`, the title, `parent` set to the unit's ID and `testCase` to the test case's ID when there are any, and the sections filled in (what is wrong, steps to reproduce, expected, actual). Leave out sections you know nothing about rather than inventing them.
-5. Show the result: the bug's ID, where it is attached, and that it can be started with /bk:start <ID>. If fixing it means a requirement must change, say so: that change is made as a new version of the story or task, approved as usual.
+5. Show the result: the bug's ID, where it is attached, and that it can be started with /bk:build <ID>. If fixing it means a requirement must change, say so: that change is made as a new version of the story or task, approved as usual.
 
 ## Finish
 
@@ -104,6 +104,6 @@ What you draft is a change, or a file of an open change: its proposal, a spec ch
 - **If the user typed nothing**, ask what to draft, offering **Suggest what to draft next** (the default) and **Type what to draft**. The question itself gives examples: `change for reset by text message`, `spec change for CH-012` and `bug CH-012`. For a suggestion, call `query` with `view: "changes"` and propose what an open change still lacks, such as tasks or a spec change its proposal names.
 - **Read before writing.** Call `query` with `view: "capabilities"`, and with the `id` of each capability the work touches. For a file of an open change, read the change with `view: "changes"` and its `id`. Call `get_template` for each file you draft.
 - **A new change**: draft its proposal, a spec change per capability it adds or modifies, a design only when it makes decisions worth recording, and tasks, and save them in one `save_draft` call with `type: "change"`, the proposal as `content` and the rest in `files`. Before saving a new capability, propose its code from its name and let the user change it.
-- **A file of an open change**: save it with `save_draft`, its type and the change's `id`. Then check the change's other files against it and propose the follow-on edits, such as a task for a new requirement.
+- **A file of an open change**: save it with `save_draft`, its type and the change's `id`; read it first with `query`, `view: "changes"`, the change's `id` and `file`. To change one requirement of a spec change, pass `capability` and `requirement` in place of `content`. Then check the change's other files against it and propose the follow-on edits, such as a task for a new requirement.
 - Ask one question at a time, for what you cannot work out. If the user asks to go one artifact at a time, save and show each before the next.
-- Finish by listing what was saved and anything `save_draft` lists as worth fixing, and offer /bk:start with the change's ID.
+- Finish by listing what was saved and anything `save_draft` lists as worth fixing, and offer /bk:build with the change's ID.

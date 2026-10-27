@@ -10,6 +10,16 @@ The user typed: $ARGUMENTS
 
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow step 1, then "In a Spec-driven tree" at the end in place of steps 2 to 6.
 
+## How each review goes
+
+The summary, the plan and each artifact are reviewed the same way: shown in full in your reply, with your question in plain text at its end. The user's reply decides what follows:
+
+- **Agreement**, such as "looks good", "yes" or "next": go on, and for an artifact, save it.
+- **"Draft the rest"**: draft what is left in one go, and show it as a set, as "All at once" says.
+- **Anything else is feedback**, "ok, but…" included: discuss it for as long as the user wants. Then list each point they raised with how you addressed it, or why you did not, show the final version, and ask again. Save nothing until they agree. When the only change is small, the final version may be just the changed parts, with a note that nothing else changed. When you cannot tell whether a reply agrees, ask.
+
+When later discussion in this capture would change something the user already agreed, such as a story agreed before a decision on the next one, say so openly: which artifact, what changes and why. Show the change and take it through the same review, and save it with `save_draft` only once the user agrees. In a Spec-driven tree, read one file of the change with `query`, `view: "changes"`, its `id` and `file`, and save a change to one requirement with `save_draft`, `type: "spec-change"`, the change's `id`, its `capability` and `requirement`, rather than resending the whole file. Never change an agreed artifact silently, and never add a requirement, criterion or test case that was not discussed.
+
 ## 1. Say what you heard
 
 Before calling any tool, sum up the discussion in plain words, with no BuildKeel terms yet (no stages, IDs or templates):
@@ -21,10 +31,10 @@ Before calling any tool, sum up the discussion in plain words, with no BuildKeel
 
 If the user typed something above, sum up that part of the conversation. If there is nothing to capture yet, say so, ask what they want to plan, and stop. If the conversation was compacted, say that its earlier parts may be missing from the summary, and ask the user to add anything left out.
 
-Then ask, with your tool for asking a question with choices if you have one, showing the summary. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices:
+Then ask whether to go on, with the summary in that same reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices:
 
 1. **Create the artifacts** (the default, listed first).
-2. **Change something.** Take in what they say and show the summary again.
+2. **Change something.** Take it as feedback, as "How each review goes" says, and show the summary again.
 3. **Keep talking.** Stop here: nothing is drafted, and the conversation goes on.
 
 Any other answer, such as a correction or a new thought, is more conversation: answer it as you would, and draft nothing.
@@ -51,11 +61,11 @@ Show the plan as a table, top down, each row with a one-line purpose, and say wh
 | Design document | EP-01-DD | new version | password reset now works differently |
 | Story | "Password reset" | version 0, then the change as version 1 | how reset by email works today, which nothing describes yet |
 
-Then ask, the same way, showing the table and that sentence. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices:
+Then ask, the same way, with the table and that sentence in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices:
 
 1. **Looks right** (the default).
 2. **Place it somewhere else.** Ask where. The new artifact is drafted where the user says, with a link to the one you recommended (`related: [EP-01]`).
-3. **Change the plan.** Take in what they say and show the table again.
+3. **Change the plan.** Take it as feedback, as "How each review goes" says, and show the table again.
 4. **Keep talking.** Stop here; nothing is drafted.
 
 When the plan holds a version 0, offer **Looks right, without the version 0** in place of the second choice; placing the work somewhere else is then a change to the plan. Without the version 0, the change is drafted as version 1 of a new artifact, as for any new work.
@@ -79,7 +89,7 @@ Ask, every time, how the user wants to go through the drafts. Never assume it, a
 - A design document has no `id`; its `parent` is the artifact it describes. Add an offered section (`get_template` lists them) only when the discussion covered it.
 - When the work changes how an existing capability works: save the new version of that capability's document with `save_draft` and its ID, and give the new artifact `changes: [<that document's ID>]`, so it cannot be finished until that version is approved.
 - A **version 0** in the plan is drafted before the change, by the rules below, with `save_draft` and `version: 0`. Name the paths it covers in its `scope`. Then draft the change: as its version 1, with `save_draft`, the version 0's draft ID as `id` and no `version`, holding the whole artifact as it will be after the change. Start from version 0's text as saved, with its entry IDs: keep the ID of every entry that stays, changed or not (a criterion whose limit changes keeps its ID), and write `{{new}}` only for an entry the change adds. Or, when the change is new work under it, as a new artifact whose `parent` is that draft ID.
-- Save each one with `save_draft`.
+- Save each one with `save_draft`, and only once the user has agreed to it.
 
 ### Step by step
 
@@ -87,14 +97,14 @@ Go through the plan in this order, leaving out what already exists: a version 0 
 
 1. Draft it against the artifacts already saved in this capture.
 2. Show it, with a line naming the pitfalls and constraints from the summary that it covers. Ask about each gap it has, as "Gaps" says, before going on.
-3. Ask, showing it. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices: **Looks good, next** (the default), **Change something** (take in what they say and show it again), and **Draft the rest at once** (draft what is left in one go, then show it as a set).
+3. Ask, with it in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices: **Looks good, next** (the default), **Change something** (feedback, as "How each review goes" says: the points with how each was addressed, then the final version), and **Draft the rest at once** (draft what is left in one go, then show it as a set).
 4. Save it with `save_draft` once the user agrees, before drafting the next.
 
 If the user stops partway, what they agreed to stays saved as drafts; draft nothing more.
 
 ### All at once
 
-Draft everything, asking about gaps as you go, and save each one with `save_draft`. Then show what was drafted as a table: ID, title, and the pitfalls each covers.
+Draft everything, asking about gaps as you go. Show the set in full, each artifact with the pitfalls it covers, then a table of them all: title and the pitfalls each covers. Take the set through the review: feedback on any of them is answered as "How each review goes" says, with the final version of each artifact it changed. Once the user agrees, save them with `save_draft`, top down, each child naming the draft ID its parent was given.
 
 ### Gaps
 
@@ -121,9 +131,14 @@ Version 0 describes what the code does today, as if BuildKeel had been used from
 
 List each pitfall or constraint from the summary that no saved artifact covers, and treat each as a gap, as above. Then show what was drafted as a table: ID, title, and its open questions, if any.
 
-## 6. Next step
+## 6. Approve them, or leave them as drafts
 
-Agreeing to an artifact here does not approve it. Offer approval as the next step: /bk:approve shows the drafts from this capture as one set, with anything that would not pass, and approves them in one review once the user confirms, a version 0 before the change built on it. A task's own test plan is not in the set unless the process approves task plans: it is recorded when its task is approved. Do not approve anything yourself here.
+Agreeing to an artifact here does not approve it: approving is a separate choice, with permanent numbers and frozen versions. Once the last artifact is agreed, ask in plain text, at the end of the reply with the table: **Approve them now** (the default), or **Leave them as drafts**, for another approver to approve later with /bk:approve.
+
+- **Approve them now:** call the BuildKeel `approve` tool with `ids` set to every artifact agreed in this capture, without `apply`. Name a version 0 with `@v0`, such as `US-draft-k3x9@v0`, and keep the version built on it in the set too. A task's own test plan is not in the set unless the process approves task plans: it is recorded when its task is approved. Show the set as `approve` gives it, in the order it will be approved, with what each will become and anything that would not pass, and why. Then ask: **Approve them** (the default; any that would not pass stay drafts), **Fix what would not pass first** (each fix shown and saved with `save_draft` once the user agrees, then the set checked again), or **Stop**. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Only when the user confirms, call `approve` again with the same `ids` and `apply: true`, and show the result as it is.
+- **Leave them as drafts:** approve nothing. Say that the drafts wait for /bk:approve, which shows them as one set.
+
+Never approve anything the user has not confirmed in this conversation.
 
 Do not create or edit spec tree files yourself; `save_draft` does all writing.
 
@@ -132,9 +147,12 @@ Do not create or edit spec tree files yourself; `save_draft` does all writing.
 The plan is one change: a proposal, a spec change for each capability whose behavior it alters, a design only when needed, and tasks. Nothing is approved.
 
 1. **Read the capability specs first.** Call `query` with `view: "capabilities"`, then with the `id` of each capability the work touches, so the change starts from how the system behaves now. Check `view: "changes"` for an open change that already covers the work.
-2. **Propose the change**, showing a table of the capabilities it adds or modifies, by code, with what changes in each, and say in a sentence whether it needs a design: only when it makes decisions worth recording, such as a new component, data, an interface or a trade-off. A change that alters no behavior, such as a refactor, says so and has no spec changes. For a new capability, propose a short code from its name, such as SMS, which the user can change before anything is saved. Then ask, the same way as in step 1, showing the table and that sentence. Put what you show in your call to the question tool, since what you write before it may not be shown: a table as the preview of each choice, where its columns are lined up, keeping each row to about 80 characters; anything else in the question itself, after a question of one sentence. The choices: **Looks right** (the default), **Change the plan**, **Keep talking**.
+   - **A late addition.** When the work would add a requirement to an open change with more than half its tasks ticked, ask once, in plain text, before drafting anything: does it belong in that change, or in a new one? Draft nothing until the user answers, and go on with the change they choose.
+2. **Propose the change**, showing a table of the capabilities it adds or modifies, by code, with what changes in each, and say in a sentence whether it needs a design: only when it makes decisions worth recording, such as a new component, data, an interface or a trade-off. A change that alters no behavior, such as a refactor, says so and has no spec changes. For a new capability, propose a short code from its name, such as SMS, which the user can change before anything is saved. Then ask, the same way as in step 1, with the table and that sentence in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices: **Looks right** (the default), **Change the plan**, **Keep talking**.
+   - **Revising an open change.** When the work revises a change that is already open, call `query` with `view: "changes"` and its `id` first: besides its files, it gives what the work so far traces to, the files each ticked task's commits changed and the tests tagged with each requirement's scenarios. Add an **Affected** part to the table, for each requirement the revision removes or modifies: the tests tagged with its scenarios, the tasks that name it with the files their commits changed, and which ticked tasks no longer apply or now build on a changed requirement. Take the code from that trace, never from file names. Then ask the user about each affected ticked task, one at a time: **Keep it ticked**, **Rework it** (untick it and reword it as the revision needs), or **Drop it** (take it out of the tasks, with the code it leaves to remove named as a task when the user wants one). What the user decides goes into the tasks through the review.
+   - **A new title.** When the revision changes what the change is about, show its current title beside the one you propose, and ask whether to change it. Change it only when the user agrees: the proposal is saved with the new title, and the change's folder is renamed with it. If the user says the title still fits, keep it.
 3. **Ask the pace**, as in step 3 above: **Step by step** (the default) or **All at once**, every time.
 4. **Draft the change.** Call `get_template` for proposal, spec-change, tasks and, when needed, design. Draft by "How to draft" and "Gaps" above: each settled pitfall becomes a requirement or scenario, and nothing is invented. A modified requirement keeps its ID and holds its full new text; a removed one says why and what replaces it. Each task says how its completion is verified, and each group holds the tests and docs its work needs.
-   - **Step by step:** show the proposal, with the pitfalls it covers, and save it once the user agrees, with `save_draft`, `type: "change"` and the proposal as `content`: that creates the change. Then each spec change, then the design if one is needed, then the tasks, each shown, agreed and saved in turn with `save_draft`, its `type` (`spec-change`, `design` or `tasks`) and the change's `id`. Offer **Looks good, next** (the default), **Change something** and **Draft the rest at once** at each step, as above.
-   - **All at once:** save them in one `save_draft` call with `type: "change"`, the proposal as `content`, and the others in `files`, then show them.
-5. **Show what was saved**: the change's ID, its files, the IDs given, and anything `save_draft` lists as worth fixing. Treat each pitfall from the summary that no file covers as a gap, and each missing part `save_draft` names. Then offer /bk:start with the change's ID as the next step.
+   - **Step by step:** show the proposal, with the pitfalls it covers, and save it once the user agrees, with `save_draft`, `type: "change"` and the proposal as `content`: that creates the change. Then each spec change, then the design if one is needed, then the tasks, each shown, agreed and saved in turn with `save_draft`, its `type` (`spec-change`, `design` or `tasks`) and the change's `id`. Offer **Looks good, next** (the default), **Change something** and **Draft the rest at once** at each step, and answer feedback as "How each review goes" says.
+   - **All at once:** show the whole change in full and take it through the review. Once the user agrees, save it in one `save_draft` call with `type: "change"`, the proposal as `content`, and the others in `files`.
+5. **Show what was saved**: the change's ID, its files, the IDs given, and anything `save_draft` lists as worth fixing. Treat each pitfall from the summary that no file covers as a gap, and each missing part `save_draft` names. Then offer /bk:build with the change's ID as the next step.

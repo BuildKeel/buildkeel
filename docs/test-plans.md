@@ -112,7 +112,11 @@ Bringing back a removed entry unchanged, under its own ID, is fine.
 
 If you edit a spec file yourself, ask Claude to show the artifact: it ends with the next number for each kind of entry, such as `Next entry numbers: US-001-TC5`, and you can use that number or write `{{new}}` and save through Claude.
 
-Tests in your code carry the test case's ID in their name, such as `[US-001-TC2]`, so a number that never changes keeps that link intact.
+Tests in your code carry the test case's ID in their name, such as `[US-001-TC2]`, so a number that never changes keeps that link intact. A test that checks several test cases carries one ID per bracket: `[US-001-TC2] [US-001-TC3]`. A bracket holding several IDs, such as `[US-001-TC2+US-001-TC3]` or `[US-001-TC2, US-001-TC3]`, tags nothing, and recording the results names it:
+
+```
+Tags that do not parse: test/reset.test.ts > link expires [US-001-TC2+US-001-TC3]: [US-001-TC2+US-001-TC3]. Write one ID per bracket: [US-001-TC2] [US-001-TC3]. Until then, that bracket tags nothing.
+```
 
 ## What is checked
 
