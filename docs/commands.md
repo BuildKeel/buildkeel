@@ -1,16 +1,17 @@
 # Commands
 
-BuildKeel has 11 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
+BuildKeel has 12 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
 
 | Command | What it does | In Antigravity |
 |---|---|---|
 | [/bk:init](#bkinit) | Sets up BuildKeel in this repository, with a new spec tree or an existing one. | `/bk-init` |
 | [/bk:capture](#bkcapture) | Turns what you discussed into a plan: a plain summary, then the artifacts or the change, agreed one by one or all at once. | `/bk-capture` |
-| [/bk:new](#bknew) | Drafts an artifact or a change, breaks a parent down into drafts of its children, or records a bug. | `/bk-new` |
+| [/bk:new](#bknew) | Drafts an artifact or a change, breaks a parent down into drafts of its children, or records a defect. | `/bk-new` |
 | [/bk:approve](#bkapprove) | Approves a draft or a new version after checking it, or a set of drafts in one review. | `/bk-approve` |
 | [/bk:build](#bkbuild) | Starts a unit and builds it: all of it, the next piece only, or set up to work together. | `/bk-build` |
 | [/bk:done](#bkdone) | Finishes a unit: checks its tests, then writes its completion record, or archives a change. | `/bk-done` |
 | [/bk:status](#bkstatus) | Shows the overview: the tree, work in progress, claims, gaps and what can be started next. | `/bk-status` |
+| [/bk:settings](#bksettings) | Shows how the repository is set up: the mode, the process and its gates or the numbering, and the templates. | `/bk-settings` |
 | [/bk:impact](#bkimpact) | Reviews what a change to an approved artifact or a capability spec affects, one suspect at a time. | `/bk-impact` |
 | [/bk:onboard](#bkonboard) | Documents code from before BuildKeel, area by area. | `/bk-onboard` |
 | [/bk:stats](#bkstats) | Shows your own BuildKeel usage over a period, kept on this machine only. | `/bk-stats` |
@@ -18,17 +19,19 @@ BuildKeel has 11 commands. They are the same in both modes, and each adapts to t
 
 When a command asks a quick choice with nothing to read, such as the pace, it asks with choices, the default listed first: press Enter to take it. When it shows you something to agree, such as a summary, a plan, a document or what finishing will write, Claude writes it out in its reply and asks in plain text at the end: answer in your own words. Agreement goes on; anything else is feedback, which Claude answers point by point, with the final version, before it saves anything.
 
-Only you start a command, by typing it. Claude may run `/bk:status` and `/bk:stats` on its own, since they only read; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
+A command that asks you something first checks that the repository is set up; when it is not, it says so and names `/bk:init`, and asks nothing.
+
+Only you start a command, by typing it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
 
 ## /bk:init
 
 **What it does.** Sets up BuildKeel in this repository, with a new spec tree or an existing one. It asks one question at a time and lists every file and setting it will add before anything is written.
 
-**What you can type.** The path of an existing spec tree, such as `/bk:init ../payments-specs`. Typed on its own, it asks where the spec tree lives: **In this repository**, **An existing spec tree** or **A new spec repository**, with Claude's recommendation first. For a new spec tree, it then asks for the mode: **Spec-driven** (the default) or **Full SDLC**. Then it asks whether to stamp your own commits.
+**What you can type.** The path of an existing spec tree, such as `/bk:init ../payments-specs`. Before any question, it checks that the folder is a git repository, and offers **Run git init for me** (the default) or **Stop** when it is not. Typed on its own, it asks where the spec tree lives: **In this repository**, **An existing spec tree** or **A new spec repository**, with Claude's recommendation first. For a new spec tree, it then asks for the mode: **Spec-driven** (the default) or **Full SDLC**. Then it asks whether to stamp your own commits.
 
-**In Spec-driven.** There is no process to choose. Setup ends by asking whether to be guided: **Guide me through my first change** (the default) or **Jump right in**.
+**In Full SDLC.** It shows the default process as a table, gates included, and asks whether to use it as it is or how your team works, in your own words. It then asks about each topic your answer left out, one at a time, shows the whole process again, and asks whether to go ahead, change something, or stop. Each stage, kind or document you added then gets a template: **Claude drafts it** (the default) or **I'll provide a file**. See [Setting up a Full SDLC tree](setting-up-full-sdlc.md).
 
-**In Full SDLC.** It shows the default process as a table, gates included, and asks whether to use it as it is or how your team works, in your own words. Once you have seen the table, the choices are **Set up with this process** (the default), **Change something**, or **Stop, and set up nothing**.
+**In Spec-driven.** There is no process to choose. It shows how the tree's IDs read, changes, requirements, scenarios, defects and ad-hoc units, and asks whether to keep them (the default) or change them. Setup ends by asking whether to be guided: **Guide me through my first change** (the default) or **Jump right in**. See [Setting up a Spec-driven tree](setting-up-spec-driven.md).
 
 An existing spec tree keeps its own mode and process, and setup names the mode:
 
@@ -52,19 +55,19 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 
 ## /bk:new
 
-**What it does.** Drafts one artifact, breaks a parent down into drafts of its children, or records a bug. After each save, Claude tells you what the draft still lacks.
+**What it does.** Drafts one artifact, breaks a parent down into drafts of its children, or records a defect. After each save, Claude tells you what the draft still lacks.
 
-**What you can type.** The type, the parent and what to draft, such as `/bk:new story EP-01`, `/bk:new stories from EP-01` or `/bk:new bug TK-001`. Typed on its own, it asks what to draft, with examples: **Suggest what to draft next** (the default) or **Type what to draft**.
+**What you can type.** The type, the parent and what to draft, such as `/bk:new story EP-01`, `/bk:new stories from EP-01` or `/bk:new defect TK-001`. Typed on its own, it asks what to draft, with examples: **Suggest what to draft next** (the default) or **Type what to draft**.
 
-**In Spec-driven.** What you draft is a change, or one file of an open change: `/bk:new change for reset by text message`, `/bk:new spec change for CH-012`. A bug is attached to the change whose work found it, such as `/bk:new bug CH-012`, or stands alone.
+**In Spec-driven.** What you draft is a change, or one file of an open change: `/bk:new change for reset by text message`, `/bk:new spec change for CH-012`. A defect found while building is attached to the change whose work found it, such as `/bk:new defect CH-012`; a reported one names the requirement it affects, or stands alone. A reported problem is checked against the spec and the code first, and Claude proposes whether it is a defect or a change in behavior.
 
-**In Full SDLC.** Types are `idea`, `epic`, `story`, `task`, `test-plan`, `design` and `bug`, or your team's own names for its stages and documents. Every draft goes through approval, except a bug, which gets its permanent ID at once.
+**In Full SDLC.** Types are `idea`, `epic`, `story`, `task`, `test-plan`, `design` and `defect`, or your team's own names for its stages and documents. Every draft goes through approval, including a reported defect, which has the work it affects as its parent. A defect found while building gets its permanent ID at once.
 
 ```text title="Example output"
 Created draft EP-01-DD (design document) at epics/EP-01/design/design.md. It is saved; 2 things stand in the way of approval, listed below.
 ```
 
-**More:** [Drafting with Claude](drafting.md#draft-one-artifact), [Changes](changes.md), [Recording a bug](bugs-and-adhoc.md#recording-a-bug).
+**More:** [Drafting with Claude](drafting.md#draft-one-artifact), [Changes](changes.md), [Defects](defects-and-adhoc.md#defects).
 
 ## /bk:approve
 
@@ -89,24 +92,24 @@ Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving 
 
 ## /bk:build
 
-**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how far to go: **Build them all** (the default), **Build the next one only**, or **Set it up and work together**. A run stops and asks you when a test keeps failing, a requirement is unclear, or the work would change what you agreed.
+**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how far to go: **Build them all** (the default), **Build the next one only**, or **Set it up and work together**. A run stops and asks you when a test keeps failing, a requirement is unclear, agreed behavior looks wrong, or the work would change what you agreed. When you change behavior, the spec changes first: see [How Full SDLC mode works](how-full-sdlc-works.md#behavior-questioned-while-building) and [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building).
 
 **What you can type.** A unit's ID, such as `/bk:build TK-001` or `/bk:build CH-012`; a parent's ID, such as `/bk:build US-001` to build its tasks; or the change in words, such as `/bk:build fix the footer link`, which Claude matches to the titles of the units that can start, or else offers to record as an ad-hoc unit. Typed on its own, it asks what to build: **The active unit** (the default, when there is one), **Show what can be started**, or **Type an ID or describe the change**.
 
-**In Spec-driven.** The units are changes, bugs and ad-hoc units. No gate runs: a unit starts unless another working tree on this machine holds it. A change's branch comes from its ID and title, such as `bk/CH-002-reset-links-expire`. Claude builds the change's unticked tasks in order, ticking each once its verification passes and saying so in a line. It does not finish the change: it offers `/bk:done`.
+**In Spec-driven.** The units are changes, defects and ad-hoc units. No gate runs: a unit starts unless another working tree on this machine holds it. A change's branch comes from its ID and title, such as `bk/CH-002-reset-links-expire`. Claude builds the change's unticked tasks in order, ticking each once its verification passes and saying so in a line. It does not finish the change: it offers `/bk:done`.
 
-**In Full SDLC.** The units are tasks, stories built without tasks, bugs and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect. Under a parent, each ready unit is started, built, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record.
+**In Full SDLC.** The units are tasks, stories built without tasks, defects and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect. Under a parent, each ready unit is started, built, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record.
 
 ```text title="Example output"
 Ready to start (2):
-- BUG-001 bug "Reset link expires early"
+- DEF-001 defect "Reset link expires early"
 - TK-001 task "Reset endpoint"
 
 Not ready yet (1):
 - TK-002 task "Reset email": The test plan US-001-TP is not approved.
 ```
 
-**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks), [Bugs and ad-hoc units](bugs-and-adhoc.md#recording-one-directly).
+**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks), [Defects and ad-hoc units](defects-and-adhoc.md#recording-one-directly).
 
 ## /bk:done
 
@@ -116,7 +119,9 @@ Not ready yet (1):
 
 **In Spec-driven.** Finishing a change archives it: its spec changes are merged, and each capability it touches gets its next version. Claude reviews the code against the change first, and you choose **Fix first** or **Finish anyway**. Nothing blocks the finish but uncommitted work. A change need not be the active unit.
 
-**In Full SDLC.** The done gate checks the unit's tests and its branch. A story or an epic is finished once every unit under it is done and its own test cases pass.
+**In Full SDLC.** The done gate checks the unit's tests and its branch. A story or an epic is finished once every unit under it is done, its defects fixed or closed, and its own test cases pass.
+
+**For a defect.** Beside finishing it, `/bk:done` offers **Close without a fix**, for a defect that turns out not to be one: a duplicate, one that cannot be reproduced, behavior that works as intended, a test that was wrong, or a change in behavior, naming the change, version or item that takes it over. Nothing is written until you confirm. See [Closing a defect without a fix](defects-and-adhoc.md#closing-a-defect-without-a-fix).
 
 ```text title="Example output"
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
@@ -147,15 +152,29 @@ Spec repo: up to date at the last check (2026-10-01T09:00:00Z). Not pushed yet: 
 
 **More:** [The status overview](status.md), [The overview in a Spec-driven tree](status.md#in-a-spec-driven-tree).
 
+## /bk:settings
+
+**What it does.** Shows how this repository is set up, at any time: the mode, where the spec tree lives, whether your own commits are stamped, organization templates, whether your usage record is kept, the process with its gates or the numbering, and each template with where it comes from. Then it offers to show any template in full. It changes nothing.
+
+**What you can type.** Nothing: `/bk:settings` takes no arguments and asks nothing first. You can also ask in words, such as "what's our process?".
+
+**In Spec-driven.** It shows the numbering (changes, requirements and scenarios, defects and ad-hoc units) and the lock gate, and the templates of capability specs, a change's files, defects and ad-hoc units.
+
+**In Full SDLC.** It shows the process table setup showed, with the documents each stage requires, the gates and task test plans, and the template of each stage, kind and document.
+
+To change a setting, edit `buildkeel.yaml` or `templates/` in the spec tree and commit the change; BuildKeel does not change them after setup. See [Process and templates](process-and-templates.md#seeing-and-changing-your-settings).
+
+**More:** [Process and templates](process-and-templates.md), [The status overview](status.md).
+
 ## /bk:impact
 
 **What it does.** Shows what a change makes suspect: work and tests built against an older version of something that has changed since. Claude goes through each suspect with you and records only what you decide: still valid, or needs change.
 
 **What you can type.** An ID, such as `/bk:impact US-001` to preview what approving its new version would affect, or `/bk:impact US-001-TC2` to review one suspect. Typed on its own, it asks what to review: **Every suspect** (the default) or **Type an ID**.
 
-**In Spec-driven.** Suspects are tests tagged with a scenario, and archived changes, built against a requirement a later capability version modified or removed. `/bk:impact CH-002` previews what archiving an open change would make suspect. Needs change adds a task to revisit it. Suspects never block anything.
+**In Spec-driven.** Suspects are tests tagged with a scenario, archived changes, and open defects linked to a requirement, built against a requirement a later capability version modified or removed. An open defect is decided in its own file: it names the version it still applies to, or it is closed. `/bk:impact CH-002` previews what archiving an open change would make suspect. Needs change adds a task to revisit it. Suspects never block anything.
 
-**In Full SDLC.** A suspect is a task, story, epic, bug or test case. Needs change opens its next version as a draft, and a suspect stops work from starting until it is decided.
+**In Full SDLC.** A suspect is a task, story, epic, defect or test case. Needs change opens its next version as a draft, and a suspect stops work from starting until it is decided.
 
 ```text title="Example output"
 2 items are suspect: built against an older version of something that has changed since in what they rely on.
@@ -226,7 +245,7 @@ Time from start to done: 1 h 3 min typically (the median), 2 h 30 min at the lon
 
 **What you can type.** Nothing: `/bk:migrate` takes no arguments. When an upgrade is due, it shows what migrating changes, then asks: **Migrate** (the default) or **Not now**.
 
-**In Spec-driven.** With no upgrade due, it offers to move the tree to Full SDLC: **Not now** (the default) or **Move this tree to Full SDLC**, once no change is open. Your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve, and the next `/bk:migrate` carries on where you stopped. The move is one way.
+**In Spec-driven.** With no upgrade due, it offers to move the tree to Full SDLC: **Not now** (the default) or **Move this tree to Full SDLC**, once no change is open. Your process is set up first, as `/bk:init` sets up a new Full SDLC tree, templates included. Then your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve, and the next `/bk:migrate` carries on where you stopped. Each open defect keeps its ID and goes under the artifact it affects, chosen with you when its requirement does not say. The move is one way.
 
 **In Full SDLC.** It upgrades the format when an update needs it; otherwise there is nothing to do.
 
@@ -236,4 +255,4 @@ The spec tree is already in format 1, the one this version of BuildKeel uses; th
 
 **More:** [Migrating a spec tree](migration.md#migrate-it), [Moving a Spec-driven tree to Full SDLC](migration.md#moving-a-spec-driven-tree-to-full-sdlc).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-status`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-status`, `/bk-settings`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.

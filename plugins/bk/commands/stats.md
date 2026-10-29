@@ -7,11 +7,13 @@ Show the user their own use of BuildKeel in this spec tree, from the record kept
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 ## Choose the period
 
 If the user typed a number of days, use it. If they typed off, on, delete or export, change the record as below.
 
-If the user typed nothing, ask straight away, before calling any tool: "Which period?" Offer the choices with your tool for asking a question with choices, if you have one:
+If the user typed nothing, ask straight away: "Which period?" Offer the choices with your tool for asking a question with choices, if you have one:
 
 1. **The last 30 days** (the default, listed first).
 2. **The last 7 days.**

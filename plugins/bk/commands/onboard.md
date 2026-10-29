@@ -21,6 +21,14 @@ Call the BuildKeel `query` tool with `view: "onboarding"`; it changes nothing. T
 
 If the user typed an area's name above, onboard that area. Ask one question at a time, each with your recommendation, and only for what you cannot work out. Two kinds of question carry no recommendation, because only the user knows the answer: which of two disagreeing sources is intended, and what a section nothing supports should say.
 
+Topics for this step, for each area, in this order:
+
+- **the artifacts** the area needs, and the kind of each where a stage holds more than one;
+- **each disagreement** between a source and the code, or between two sources;
+- **each required section** nothing supports.
+
+Work from the topics listed for this step. The user may answer in their own words, several topics at once or part of one. After each answer, say which topics it settled, with what you understood for each, and which are left; then ask the next one left, one topic per message. Where a topic has a default, list keeping it first, naming its actual value, and give examples where they help. Anything you work out that the user did not say is a proposal: ask it as that topic's question, with it as the default, and never use it without the user's answer. Ask about an unclear answer; name a conflicting one beside the earlier answer and ask which holds. Never guess. When every topic is settled, show all of it, as a review.
+
 ## Map the code
 
 1. Read the code's layout: its top-level folders, entry points, routes or handlers, and what the README says. Call `query` with `view: "tree"` for what the spec tree already holds.
@@ -45,20 +53,23 @@ Offer each area that is not onboarded yet as its own choice, in the map's order,
 
 Show a table of the artifacts the area needs, top down, in the team's stage names, each existing or to draft:
 
-| Level | Artifact | Version | From |
-|---|---|---|---|
-| Business idea | BI-01 "Self-service account recovery" | exists | |
-| Epic | "Password reset" | version 0 | the code, Confluence "Reset design" |
-| Design document | of that epic | version 1 | the code: no source has one |
-| Story | "Reset by email" | version 0 | the code, PAY-12 |
-| Test plan | of that story | version 1 | one test case per criterion |
-| Task | PAY-14 "Email template" | version 0 | finished in Jira |
-| Left out | PAY-31 "Reset by text" | | open in Jira: drafted with /bk:new when someone takes it up |
+| Level | Kind | Artifact | Version | From |
+|---|---|---|---|---|
+| Business idea | business idea | BI-01 "Self-service account recovery" | exists | |
+| Epic | epic | "Password reset" | version 0 | the code, Confluence "Reset design" |
+| Design document | | of that epic | version 1 | the code: no source has one |
+| Story | user story | "Reset by email" | version 0 | the code, PAY-12 |
+| Story | feature | "Reset by text" | version 0 | the code, PAY-20, labelled a feature |
+| Test plan | | of each story | version 1 | one test case per criterion |
+| Task | task | PAY-14 "Email template" | version 0 | finished in Jira |
+| Left out | | PAY-31 "Reset by security question" | | open in Jira: drafted with /bk:new when someone takes it up |
+
+When a stage holds more than one kind (`query` with `view: "process"` lists them), propose the kind of each artifact at that stage from where it came from, such as a ticket labelled a feature or a change to existing behavior, and say why in the table. The user confirms or changes each kind before anything is drafted; never pick one without their answer. Each is drafted with its kind as `type`, from that kind's template.
 
 Once the area's drafts are approved, or all but those waiting on a question left open, record every ticket you read for it with `manage`, `action: "map"`, `map: "tickets"`, the area and its `tickets`: each with its `key`, `link` and `title`, and either `outcome: "carried"` with the `artifact` it became (its approved ID), or `outcome: "left-out"` with `why`: `open`, `in-progress`, or `choice` when the team chose not to carry it over. Nothing read is left off the list.
 
 - Document every stage from the business idea down to the story, with the documents the process requires of each.
-- Tasks and bugs come in only when a source has them and they are finished: each as version 0, with its tracker key. Open or in-progress work is left out, and listed as such.
+- Tasks and defects come in only when a source has them and they are finished: each as version 0, with its tracker key. Open or in-progress work is left out, and listed as such.
 - A required document no source provides, such as a design document or a test plan, is drafted as version 1, under the normal rules, so that new work under the area can start as usual.
 - When an artifact in BuildKeel already describes part of the area, see "Version 0 under an existing artifact" below.
 
@@ -77,7 +88,7 @@ Only once the user agrees. Draft top down, parents before children, so each chil
 - When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended before drafting that part. Offer both answers as equals and recommend neither: **The code is right; the ticket is out of date** and **The ticket is right; the code has a defect**. When the ticket is out of date, version 0 follows the code. When the code is wrong, see "Known defects" below. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
 - For each required section nothing supports, ask the user, one question at a time, with your tool for asking a question with choices: **Leave it empty** (listed first) or **Type it in**, and put no answer of your own in the choices. A version 0 may leave a section empty: the approval records it, and it can be filled in later.
 
-**Each finished task, and each bug fixed before BuildKeel**, is a version 0 too: `save_draft` with `type: "task"` or `"bug"`, `version: 0`, its `parent` the story or task it belongs to (a draft's ID is fine), and its tracker issue in `sources`. It is approved with the area, counts as done, and is linked to the commits before the baseline that name its key. Never record a bug that was already fixed as an open bug.
+**Each finished task, and each defect fixed before BuildKeel**, is a version 0 too: `save_draft` with `type: "task"` or `"defect"`, `version: 0`, its `parent` the story or task it belongs to (a draft's ID is fine), and its tracker issue in `sources`. It is approved with the area, counts as done, and is linked to the commits before the baseline that name its key. Never record a defect that was already fixed as an open defect.
 
 **Each version 1**, such as a design document or test plan no source has: draft it with `save_draft` and no `version`, from the code, as for any new artifact. It is held to its template, so it cannot leave a required section empty, and "Leave it empty" is never a choice for it. For each required section the code does not give, such as a design's context, ask the user, with what the code shows as a starting point they can accept or change: for code from before BuildKeel, "Built before BuildKeel; why is not recorded" is a fair answer when nobody knows.
 
@@ -102,7 +113,7 @@ Call `query` with `view: "onboarding"` and ask which area to onboard next, as in
 
 ## Known defects
 
-When the user says a drafted behavior is a defect, not what was intended: revise version 0 to state the intended behavior, and once the area is approved, record the defect as a bug against that story: `save_draft` with `type: "bug"`, `parent` set to the story's ID, `testCase` set to the test case that covers that criterion when the story's test plan has one, its Expected naming the criterion (its ID and text), and its Actual saying what the code does instead. Fixing it is then work like any bug, and a test matched to that test case is tagged as the fix changes it.
+When the user says a drafted behavior is a defect, not what was intended: revise version 0 to state the intended behavior, and once the area is approved, record the defect against that story: `save_draft` with `type: "defect"`, `parent` set to the story's ID, `testCase` set to the test case that covers that criterion when the story's test plan has one, its Expected naming the criterion (its ID and text), and its Actual saying what the code does instead. Fixing it is then work like any defect, and a test matched to that test case is tagged as the fix changes it.
 
 ## Version 0 under an existing artifact
 

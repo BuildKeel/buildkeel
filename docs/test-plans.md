@@ -28,7 +28,7 @@ process:
   taskPlans: approve
 ```
 
-Bugs and ad-hoc units have no test plan.
+Defects and ad-hoc units have no test plan.
 
 Draft a plan with `/bk:new test-plan US-001`. When Claude breaks an epic down into stories, it drafts each story's plan with it.
 

@@ -54,7 +54,7 @@ git push origin main v1.0.0
 In the spec tree's `buildkeel.yaml`, name the repository and the tag:
 
 ```yaml
-format: 1
+format: 3
 templates:
   org:
     source: git@github.com:acme/buildkeel-templates.git
@@ -65,7 +65,7 @@ templates:
 
 The first time BuildKeel works in the project on a machine, it fetches that tag once and keeps a copy under `~/.buildkeel/org-templates/`. After that, nothing is fetched again for that version, and everything works offline. If the tag cannot be fetched (no connection, no access, a mistyped source), validation and `/bk:status` say why, and the types the spec tree does not override have no template until it is fetched: BuildKeel never quietly falls back to its built-in templates, since that would change what artifacts are checked against.
 
-To see where each template comes from, ask the agent for a type's template (the `get_template` tool names its source), or run validation: it lists the templates and process settings the spec tree overrides.
+To see where each template comes from, run `/bk:settings`: it lists every type with its template's source and version. Asking for one type's template names its source too, and validation lists the templates and process settings the spec tree overrides.
 
 ## Pinned versions
 
@@ -78,7 +78,7 @@ When the organization publishes a new version, nothing changes for a team until 
 A team can still differ where it needs to:
 
 - a template in the spec tree's `templates/` folder replaces the organization's for that type;
-- a setting in the `process` section of `buildkeel.yaml` replaces the organization's: the chain, `bug`, `adhoc`, or one gate's mode.
+- a setting in the `process` section of `buildkeel.yaml` replaces the organization's: the chain, `defect`, `adhoc`, or one gate's mode.
 
 Validation lists each local override, so the difference from the organization stays visible:
 

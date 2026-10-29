@@ -8,6 +8,8 @@ Turn the conversation into a plan the team's process can build from, with the us
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow step 1, then "In a Spec-driven tree" at the end in place of steps 2 to 6.
 
 ## How each review goes
@@ -22,7 +24,7 @@ When later discussion in this capture would change something the user already ag
 
 ## 1. Say what you heard
 
-Before calling any tool, sum up the discussion in plain words, with no BuildKeel terms yet (no stages, IDs or templates):
+Once that check is done, and before any other tool call, sum up the discussion in plain words, with no BuildKeel terms yet (no stages, IDs or templates):
 
 - **What you set out to do**: the user's intent, in a sentence.
 - **The idea**: what it is, and who it is for.
@@ -39,27 +41,45 @@ Then ask whether to go on, with the summary in that same reply. Show it in full 
 
 Any other answer, such as a correction or a new thought, is more conversation: answer it as you would, and draft nothing.
 
+### A problem someone reported
+
+When the discussion is about a problem someone reported with how the system behaves, sort it once the user chooses to create the artifacts, before step 2.
+
+**Sorting a report.** When someone reports that the system does something wrong, check it before recording anything: what the spec says about that behavior now (in a Spec-driven tree, `query` with `view: "capabilities"` and the capability's `id`; otherwise the stories and their acceptance criteria, with `query`), and the code linked to it (`query` with `view: "describes"` and the files involved). Then propose one reading, labelled as yours, such as "My reading: a defect", with what it rests on:
+
+- **A defect**: the code does not do what the spec says. The code is fixed and the spec keeps its version. It is recorded as a defect with `source: reported`.
+- **A change in behavior**: the code does what the spec says, and the user wants something else. The spec changes and gets a new version: in a Spec-driven tree through a change, otherwise through a new version of the story, or a new item of the team's kind for it, such as an enhancement.
+- **A gap**: the spec says nothing about it. Settle with the user what it should do; that goes into the spec as a change in behavior.
+- **Nothing describes this code yet**: `describes` finds no artifact for it. In Full SDLC, draft version 0 of the story the code belongs to first, stating the intended behavior, and record the defect with that draft as its parent; both are reviewed and approved together, version 0 first. In a Spec-driven tree, ask **Record it standalone** (the default) or **Document this code first**, as version 0 of a capability spec, then link the defect to its requirement.
+
+Ask with your tool for asking a question with choices, your reading first, then the other readings, so the user confirms or overrides it. Record nothing until they answer. A defect found while building, such as a failing test of the work under way, needs no sorting: it is a defect of that work.
+
+A defect is recorded as /bk:new defect records one: `get_template` for `defect`, then `save_draft` with `type: "defect"`, `source: reported` and the parent agreed. A change in behavior or a gap goes on to step 2 as work to plan, with the reading the user confirmed.
+
 ## 2. Propose the plan
 
 1. Call the BuildKeel `query` tool with `view: "process"` for the stages and the documents each requires, and with `view: "tree"` for what exists. Read an existing artifact with `view: "artifact"` when you need to know what it covers.
 2. Work out the artifacts the work needs, level by level, from the business idea down to the tasks, in the team's stage names: which already exist, which are new, and the documents each stage requires, such as a design document for a new epic and a test plan for each new story. For each task, work out which of its story's test cases its tests will implement. A task whose tests implement none of them, such as a building block (a client, a data model, a migration), needs a test plan of its own, or it can never be finished: put it in the table.
 3. Recommend where the work fits in the tree, and say why: under an existing business idea or epic, or as something new.
 4. If the work changes how something already built behaves, and a document describes how it works today (such as EP-01's design document for password reset), the plan includes a new version of that document.
-5. If the work changes code that already exists, work out which files it will change, from the discussion and the code, and call `query` with `view: "describes"` and their `paths`. Where an artifact describes them, the work builds on it. Where nothing describes the behavior the work changes, the plan includes a **version 0**: one artifact, usually a story, describing only what the work touches, as it works today, before the change. The change is then its version 1, or an artifact under it. A version 0 is a proposal: the user can drop it.
+5. When a stage holds more than one kind of work (`view: "process"` lists the kinds at each stage), propose a kind for each new artifact at that stage, from where the work came from, and say why in the table: an enhancement when it improves existing behavior, a feature when it adds something new, as the team's kinds are named. The user confirms or changes each kind as part of the plan; never draft one as a kind the user has not agreed to. Each is drafted with its kind as `type`, from that kind's template, and numbered in that kind's sequence.
+6. If the work changes code that already exists, work out which files it will change, from the discussion and the code, and call `query` with `view: "describes"` and their `paths`. Where an artifact describes them, the work builds on it. Where nothing describes the behavior the work changes, the plan includes a **version 0**: one artifact, usually a story, describing only what the work touches, as it works today, before the change. The change is then its version 1, or an artifact under it. A version 0 is a proposal: the user can drop it.
 
 Show the plan as a table, top down, each row with a one-line purpose, and say where the work fits and why, in a sentence:
 
-| Level | Artifact | Status | Purpose |
-|---|---|---|---|
-| Business idea | BI-01 "Self-service account recovery" | exists | the goal this serves |
-| Epic | "Reset by text message" | new | the new capability |
-| Design document | of the new epic | new, required | how it is built |
-| Story | "Request a code by text" | new | one per user-facing behavior |
-| Test plan | one per story | new, required | covers every criterion |
-| Task | "SMS gateway client" | new | one per piece of code, with its repository |
-| Test plan | of "SMS gateway client" | new | its tests are none of the story's test cases |
-| Design document | EP-01-DD | new version | password reset now works differently |
-| Story | "Password reset" | version 0, then the change as version 1 | how reset by email works today, which nothing describes yet |
+| Level | Kind | Artifact | Status | Purpose |
+|---|---|---|---|---|
+| Business idea | business idea | BI-01 "Self-service account recovery" | exists | the goal this serves |
+| Epic | epic | "Reset by text message" | new | the new capability |
+| Design document | | of the new epic | new, required | how it is built |
+| Story | user story | "Request a code by text" | new | one per user-facing behavior |
+| Test plan | | one per story | new, required | covers every criterion |
+| Task | task | "SMS gateway client" | new | one per piece of code, with its repository |
+| Test plan | | of "SMS gateway client" | new | its tests are none of the story's test cases |
+| Design document | | EP-01-DD | new version | password reset now works differently |
+| Story | user story | "Password reset" | version 0, then the change as version 1 | how reset by email works today, which nothing describes yet |
+
+The Kind column names each artifact's kind; when every stage holds one kind, it is the stage's name, and you may leave the column out.
 
 Then ask, the same way, with the table and that sentence in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices:
 
@@ -124,7 +144,7 @@ Version 0 describes what the code does today, as if BuildKeel had been used from
 - Reword what the code and the sources say into the template's form, such as a ticket's description written as testable criteria. Add nothing they do not support.
 - Describe only what the work touches, not the whole area around it.
 - Keep each source as you read it: pass it to `save_draft` in `sources`, with where it came from, its key and link, and its text exactly as your tool returned it (description, fields and comments). Never copy code into a source: the baseline commit names the code.
-- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended, before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it with /bk:new bug once version 0 is approved. When the source is out of date, version 0 follows the code. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
+- When a source and the code disagree, or two sources do (a ticket says a reset link lasts 30 minutes, the code makes it 60), ask the user which is intended, before drafting that part. Only the user knows, so recommend neither answer, and offer both as equals: **The code is right; the source is out of date** and **The source is right; the code has a defect**. When the code is wrong, version 0 states the intended behavior, and the defect is recorded against it with /bk:new defect once version 0 is approved. When the source is out of date, version 0 follows the code. Offer a third answer after those two, still with no recommendation: **Not sure: leave it open**. Then keep the question in the version 0 draft's front matter, under `openQuestions`, with an `id` (Q1, Q2, ...), what it is `about`, what the `code` does, what the `source` says and the `sources`' keys, and leave the part it concerns out of version 0: BuildKeel records who left it open, and version 0 waits for an answer before it can be approved. Someone who knows answers it later with /bk:onboard: add `answer: code` or `answer: source` to it, save the draft, and draft the part it concerns.
 - Supported means the code or a source says it. A plausible guess is not support: who a story is for and why, a business idea's problem and goals, or a design's context are rarely in the code. Leave a required section empty when nothing supports it, and do not ask about it here: `save_draft` lists what version 0 leaves empty, and the reviewer sees it.
 
 ## 5. What is left

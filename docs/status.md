@@ -21,7 +21,7 @@ BI-01 business idea "Self-service account recovery": approved v1
     EP-01-DD design document: approved v1
     US-001 user story "Request a reset link": approved v1
       TK-001 task "Reset endpoint": approved v1 · in progress here
-        BUG-001 bug "Reset link expires early": open
+        DEF-001 defect "Reset link expires early": open
       US-001-TP test plan: approved v1
     US-002 user story "Reset by text message": approved v1 · no test plan
 
@@ -32,6 +32,9 @@ A claim is released when its unit is finished. One whose work has stopped can be
 Coverage gaps:
 - US-002 user story "Reset by text message" has no test plan, so no work under it can start.
 
+Defects: 1 open, 0 done.
+- DEF-001 "Reset link expires early": in TK-001, found while building
+
 Ad-hoc work: 1 open ad-hoc unit, 0 done.
 - AH-001 "Fix typo in reset email"
 
@@ -41,8 +44,10 @@ Commits with no unit, after each repo's baseline:
 Ready to start (3):
 - TK-001 task "Reset endpoint": the active unit here
 - AH-001 ad-hoc unit "Fix typo in reset email"
-- BUG-001 bug "Reset link expires early"
+- DEF-001 defect "Reset link expires early"
 Not ready yet: 1; /bk:build lists them with the reason.
+
+How this repository is set up (the mode, the process and its gates, the templates): /bk:settings.
 ```
 
 Sections with nothing to report are left out.
@@ -76,8 +81,8 @@ Every artifact, in its hierarchy, with its state:
 | `approved v0 (code as it was before BuildKeel, reviewed by Ana Lima on 2026-10-03)` | [Version 0](approval.md#version-0-code-from-before-buildkeel) is in force: it describes code that existed before BuildKeel, and counts as done. |
 | `v0 in draft` | A version 0 is drafted and waits for approval. |
 | `approved, number pending` | Approved while the number counter could not be reached; it gets its number the next time it can. |
-| `open`, `done on 2026-10-01` | For bugs and ad-hoc units, which are never approved. |
-| `closed on 2026-10-15 as a duplicate of BUG-001` | A bug [closed without a fix](bugs-and-adhoc.md#closing-a-bug-without-a-fix), with its reason and any note. It counts as done. |
+| `open`, `done on 2026-10-01` | For ad-hoc units and defects found while building, which are never approved. A reported defect shows its approval state like any artifact. |
+| `closed on 2026-10-15 as a duplicate of DEF-001` | A defect [closed without a fix](defects-and-adhoc.md#closing-a-defect-without-a-fix), with its reason and any note. It counts as done. |
 
 After the state, the work on it:
 
@@ -109,9 +114,13 @@ Approved artifacts that do not follow a template or process changed since they w
 
 Approvals recorded while the number counter could not be reached. They get their numbers the next time it can be; approving one again tries straight away.
 
+### Defects
+
+How many defects are open, done and closed without a fix; each open one with its parent and where it came from, found while building or reported, and whether it waits for approval or is in progress; and each closed one with its reason. See [Defects and ad-hoc units](defects-and-adhoc.md).
+
 ### Ad-hoc work
 
-Open ad-hoc units, and how many are done. See [Bugs and ad-hoc units](bugs-and-adhoc.md).
+Open ad-hoc units, and how many are done. See [Defects and ad-hoc units](defects-and-adhoc.md).
 
 ### Commits with no unit
 
@@ -151,6 +160,10 @@ Validation reports the same.
 
 The units that can be started now, the active unit first. `/bk:build` lists the ones that are not ready yet, each with the reason.
 
+### Your settings
+
+The last line names `/bk:settings`, which shows how the repository is set up: the mode, the process and its gates, and the templates. See [Process and templates](process-and-templates.md#seeing-and-changing-your-settings).
+
 ## In a Spec-driven tree
 
 In a Spec-driven tree (see [The two modes](modes.md)), the overview is about changes and capability specs:
@@ -179,8 +192,8 @@ Scenarios: 5, 1 with a tagged test (local results in this working tree).
 - No tagged test (4): AUTH-R1-S1, AUTH-R1-S2, AUTH-R2-S1, NOTIF-R1-S1
 - Failing (1): AUTH-R3-S1
 
-Bugs: 1 open, 0 done.
-- BUG-001 "Reset email lands in spam"
+Defects: 1 open, 0 done.
+- DEF-001 "Reset email lands in spam": standalone, reported
 
 Ad-hoc work: 1 open, 0 done.
 - AH-001 "Fix typo in sign-in page"
@@ -193,19 +206,21 @@ Ready to start (4):
 - CH-002 "Reset links expire" (change, 1 of 3 tasks done): the active unit here
 - CH-003 "Remember devices" (change, 1 of 2 tasks done)
 - AH-001 ad-hoc unit "Fix typo in sign-in page"
-- BUG-001 bug "Reset email lands in spam"
+- DEF-001 defect "Reset email lands in spam"
 
 Offer to review CH-002 now: call finish_work without apply (it writes nothing), review the code against its requirements, scenarios and design, and report as your judgment what is implemented, missing or at odds with the design. Do not finish it unless the user asks.
+
+How this repository is set up (the mode, the numbering, the templates): /bk:settings.
 ```
 
 - **Open changes**: each with its progress, its files, whether it is in progress here or in another working tree, and what the consistency check finds in it (see [What BuildKeel checks](changes.md#what-buildkeel-checks)). Archived and discarded changes are counted below them.
 - **Capability specs**: each at its version in force, the change that wrote it, and the open changes that alter it.
 - **Scenarios**: how many have a tagged test, then those with none (the gaps), those whose test fails, and those whose result is stale. Results are this working tree's. None of these ever stops anything.
-- **Suspect**: tests and archived changes built against a capability version that a later one changed where they rely on it. See [Change impact](change-impact.md).
-- **Bugs** and **ad-hoc work**: the open ones, and the bugs closed without a fix, with their reason.
+- **Suspect**: tests, archived changes and open defects linked to a requirement, built against a capability version that a later one changed where they rely on it. See [Change impact](change-impact.md).
+- **Defects**: each open one with what it is linked to (its change, the requirement it affects, or standalone) and where it came from, and those closed without a fix, with their reason. **Ad-hoc work**: the open ones.
 - **Commits with no unit**, as above, and the **commits of discarded changes**, with the reason each was discarded.
 - **Changed outside BuildKeel**: a capability version, or a file of an archived change, edited after it was written.
-- **Ready to start**: open changes, bugs and ad-hoc units. No gate applies.
+- **Ready to start**: open changes, defects and ad-hoc units. No gate applies.
 
 When a change is active, Claude offers to review it: the same review as finishing (see [Finishing a change](finishing-a-unit.md#finishing-a-change)), reported as Claude's judgment, with nothing written.
 

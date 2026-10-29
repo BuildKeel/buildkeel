@@ -13,7 +13,7 @@ What describes code from before BuildKeel is **version 0** of its artifact; anyt
 
 - **Its sources** are kept beside it, exactly as they were read, and frozen with it when it is approved. See [Sources kept with version 0](approval.md#sources-kept-with-version-0).
 - **Its number** comes from its type's onboarded sequence, such as `US-E001`; new work keeps the normal one, `US-002`. See [Onboarded numbers](approval.md#onboarded-numbers).
-- **When sources disagree** with each other or with the code, Claude asks which is intended. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug. When a ticket is out of date, version 0 follows the code. When you do not know, answer **Not sure: leave it open**: see [Questions left open](#questions-left-open).
+- **When sources disagree** with each other or with the code, Claude asks which is intended. When the code is wrong, version 0 states the intended behavior, and the defect is recorded. When a ticket is out of date, version 0 follows the code. When you do not know, answer **Not sure: leave it open**: see [Questions left open](#questions-left-open).
 - **It counts as done:** its code already exists. Changing it starts with its version 1, held to the template, the gates and change impact like any version.
 
 ## Area by area
@@ -43,7 +43,7 @@ The map now has 3 areas, in onboarding/map.yaml, committed as "onboard: map of 3
 For each area, Claude reads its code as it was at the baseline and asks what you have about it: a project in your issue tracker, wiki pages, documents. Then it shows what the area needs, every stage of your process from the business idea down to the story, with the documents each stage requires:
 
 - What a source or the code describes is drafted as version 0.
-- Tasks and bugs come in only when a source has them and they are **finished**, as version 0 with their tracker keys. When one is approved, the commits made before the baseline that name its key are linked to it, so its old code is known. Open work is left out: it is drafted with `/bk:new` when someone takes it up.
+- Tasks and defects come in only when a source has them and they are **finished**, as version 0 with their tracker keys. When one is approved, the commits made before the baseline that name its key are linked to it, so its old code is known. Open work is left out: it is drafted with `/bk:new` when someone takes it up.
 - A document your process requires that no source has, such as an epic's design document or a story's test plan, is drafted as **version 1**, under the normal rules, so new work under the area can start as usual.
 
 Once you agree, Claude drafts them all. For each required section nothing supports, it asks you, one question at a time, and **Leave it empty** is always an answer. Then the area's drafts are approved in one review, each version 0 before what builds on it.
@@ -100,7 +100,7 @@ openQuestions:
     leftOpenAt: 2026-10-15T09:12:00Z
 ```
 
-A version 0 with a question left open cannot be approved, nor can what depends on it, such as its test plan; the rest of the area's drafts are approved in the same review. `/bk:onboard` lists the questions left open, and `/bk:status` counts them, so someone who knows can answer later: Claude asks them, records `answer: code` or `answer: source` with who answered and when, and drafts the part it concerns. When the source was right, the defect is recorded as a bug, as for any known defect. Answered questions are frozen with version 0.
+A version 0 with a question left open cannot be approved, nor can what depends on it, such as its test plan; the rest of the area's drafts are approved in the same review. `/bk:onboard` lists the questions left open, and `/bk:status` counts them, so someone who knows can answer later: Claude asks them, records `answer: code` or `answer: source` with who answered and when, and drafts the part it concerns. When the source was right, the defect is recorded, as for any known defect. Answered questions are frozen with version 0.
 
 In a Spec-driven tree, where a capability's version 0 is written once, the question is kept on its area of the map instead, and the requirement it concerns is left out of version 0. Answering it is followed by a change that adds the requirement.
 
@@ -122,7 +122,7 @@ Choose **Fill in what onboarding left empty**, and Claude asks for each empty se
 
 ## Known defects
 
-When you tell Claude a drafted behavior is a defect, not what was intended, version 0 is changed to state the intended behavior. Once the area is approved, the defect is recorded as a bug against that story, naming the criterion and what the code does instead, and is fixed like any bug. See [Bugs and ad-hoc units](bugs-and-adhoc.md).
+When you tell Claude a drafted behavior is a defect, not what was intended, version 0 is changed to state the intended behavior. Once the area is approved, the defect is recorded against that story as a reported defect, naming the criterion and what the code does instead, and is approved and fixed like any defect. See [Defects and ad-hoc units](defects-and-adhoc.md).
 
 ## In the status overview
 
@@ -171,7 +171,7 @@ As work touches undocumented code, capturing a change includes version 0 of a ca
 
 A Spec-driven tree moves to Full SDLC with `/bk:migrate` (see [The two modes](modes.md#moving-to-full-sdlc)), the same way onboarding documents code: `/bk:onboard` itself only documents code, and sends you to `/bk:migrate` when you ask it to move the tree. Its capability specs and archived changes are the sources, in place of old code and tickets, and your stages are drafted from them area by area, as version 0, for you to review and approve. The move goes one way.
 
-**Starting.** Run `/bk:migrate`. When the tree's format needs no upgrade, Claude explains the move and asks: **Not now** (the default) or **Move this tree to Full SDLC**. It is refused while a change is open, naming each one: finish or discard them first. Claude shows the process the tree will follow, as `/bk:init` shows it for a new Full SDLC tree, and you take it or adjust it. Bugs and ad-hoc units keep their numbering. BuildKeel then writes `onboarding/conversion.yaml` and commits it as `onboard: start conversion to Full SDLC`. From then on no change can be opened, while bugs, ad-hoc units and looking up capability specs work as usual.
+**Starting.** Run `/bk:migrate`. When the tree's format needs no upgrade, Claude explains the move and asks: **Not now** (the default) or **Move this tree to Full SDLC**. It is refused while a change is open, naming each one: finish or discard them first. Claude shows the process the tree will follow and sets it up with you exactly as `/bk:init` does for a new Full SDLC tree: you use it as it is, or describe how your team works and answer each topic left, one at a time, then settle a template for each stage, kind or document you add (see [Setting up a Full SDLC tree](setting-up-full-sdlc.md)). No area is drafted until the process and its templates are settled. Defects and ad-hoc units keep their numbering. BuildKeel then writes `onboarding/conversion.yaml`, with the templates, and commits them as `onboard: start conversion to Full SDLC`. From then on no change can be opened, while defects, ad-hoc units and looking up capability specs work as usual.
 
 **The map.** Each area holds one or more capability specs, and each capability spec is in one area:
 
@@ -200,7 +200,7 @@ placed:
 dropped: {}
 ```
 
-An area is converted once each of its scenarios is placed or left out. Where it stands, from `/bk:migrate`:
+An area is converted once each of its scenarios is placed or left out, and each open defect in it has a parent. Where it stands, from `/bk:migrate`:
 
 ```
 Converting to Full SDLC, started by Jane Doe <jane@example.com> on 2026-10-14: 0 of 2 areas converted. The tree stays Spec-driven until every area is; /bk:migrate carries the conversion on.
@@ -210,20 +210,26 @@ Converting to Full SDLC, started by Jane Doe <jane@example.com> on 2026-10-14: 0
 | Signing in | AUTH | 3 of 4 scenarios placed or left out |
 | Notifications | NOTIF | not started |
 
+Open defects, carried over with their IDs:
+- DEF-001 "Reset email lands in spam" (in no area): no parent yet; it could go under US-E001
+An open defect with no parent keeps its area from being converted. Ask the user which approved artifact it affects, then record it with manage action=convert, convert=place and defects, such as { DEF-006: US-E001 }.
+
 Not placed yet, in areas already begun: AUTH-R1-S2 "Wrong password". Place each on the criterion or test case it became, or leave it out if the user says so; nothing is dropped without their choice.
 
 Next: Signing in.
 ```
 
-You can stop after any area: the tree stays Spec-driven, and the next `/bk:onboard` carries on. Until the first area is approved you can also cancel, which removes the conversion and its drafts in one commit.
+Open defects keep their IDs. A defect linked to a requirement goes under the artifact that requirement's scenarios became, such as US-E001. Any other open defect is listed with the area its change or its code falls in, and Claude asks you which approved artifact it affects; its area is not converted until you choose. When the tree switches, each open defect's file names its new parent, and a scenario that found it becomes the test case it was placed on.
 
-**The switch.** Once every area is converted, Claude asks you to confirm the switch. BuildKeel writes `mode: full-sdlc` and your process to `buildkeel.yaml`, marks the conversion finished with who and when, and commits both on their own as `onboard: switch to Full SDLC`. From then on work goes through your stages, approvals and gates.
+You can stop after any area: the tree stays Spec-driven, and the next `/bk:migrate` carries on. Until the first area is approved you can also cancel, which removes the conversion and its drafts in one commit.
+
+**The switch.** Once every area is converted, Claude asks you to confirm the switch. BuildKeel writes `mode: full-sdlc` and your process to `buildkeel.yaml`, marks the conversion finished with who and when, writes each open defect's new parent, and commits them on their own as `onboard: switch to Full SDLC`. From then on work goes through your stages, approvals and gates.
 
 **After the switch:**
 
 - A test tagged with a scenario, such as `[AUTH-R3-S1]`, counts for the test case it became. Recording a report names each one, and Claude retags the test with the test case's ID the next time it changes it.
 - Code that archived changes wrote stays linked: asking what describes a file names the change and the artifacts its requirements became.
-- A bug found in a change keeps its link to that change, and its scenario stands for the test case it became.
+- Each open defect goes under the artifact the conversion gave it, and a scenario that found it becomes the test case it was placed on.
 - Each converted artifact names where its entries came from, so you can find the change behind a criterion:
 
 ```

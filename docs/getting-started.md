@@ -10,7 +10,10 @@ Open a session in your repository and run:
 /bk:init
 ```
 
-BuildKeel asks you a few questions, one at a time.
+BuildKeel first checks that the folder is a git repository, and offers to run `git init` for you when it is not. Then it asks you a few questions, one at a time. You can answer in your own words: after each answer, Claude says what it settled and what is left, and it never fills in what you did not say. This page gives an overview; the setup guide for your mode explains every question in detail, with examples:
+
+- [Setting up a Spec-driven tree](setting-up-spec-driven.md), then [How Spec-driven mode works](how-spec-driven-works.md)
+- [Setting up a Full SDLC tree](setting-up-full-sdlc.md), then [How Full SDLC mode works](how-full-sdlc-works.md)
 
 **1. Where your spec tree lives.**
 
@@ -18,7 +21,7 @@ BuildKeel asks you a few questions, one at a time.
 - **An existing spec tree**, usually its own repository that several code repositories share. Clone it first, then give its path. You can also give the path straight away: `/bk:init ../payments-specs`.
 - **A new spec repository**, a repository of its own for the spec tree, which your other code repositories can then point at. Give a folder outside this repository, such as `../payments-specs`: one that does not exist yet, an empty folder, or an empty repository you have cloned from your git host.
 
-**2. The mode**, for a new spec tree. See [The two modes](modes.md).
+**2. The mode**, for a new spec tree. See [The two modes](modes.md) and [Choosing a mode](comparing-modes.md).
 
 - **Spec-driven**, the default: capability specs say how your system behaves, and each piece of work is a change to them, with no approvals or gates.
 - **Full SDLC**: work goes through your team's stages, from business idea down, with approvals and gates.
@@ -34,21 +37,23 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 **4. Your process**, for a new Full SDLC spec tree. BuildKeel lists every file and setting it will add, then shows its default process as a table: each stage, and the documents it needs approved before work under it starts.
 
 ```
-| Stage | First ID | Requires before work under it starts |
-|---|---|---|
-| business idea | BI-01 | nothing |
-| epic | EP-01 | design document |
-| user story | US-001 | test plan |
-| task | TK-001 | nothing |
+| Stage | Kind | First ID | Requires before work under it starts |
+|---|---|---|---|
+| business idea | business idea | BI-01 | nothing |
+| epic | epic | EP-01 | design document |
+| user story | user story | US-001 | test plan |
+| task | task | TK-001 | nothing |
 Documents that can be attached at any stage: test plan and design document.
-Outside the stages, bug IDs start at BUG-001 and ad-hoc unit IDs at AH-001.
+Outside the stages, defect IDs start at DEF-001 and ad-hoc unit IDs at AH-001. A reported defect's parent is the work it affects: a user story.
 Gates: approve block, start block, done block, lock block (block stops the action, warn lets it go ahead with a warning, off skips the check).
 A task's own test plan is recorded as it is saved, not approved.
 ```
 
-Use it as it is, or describe how your team works, in your own words and all at once, such as "we call stories features, every feature needs a design doc, epics need a security review, and the gates should only warn while we try it out". Claude turns that into a process and shows the table again, saying plainly if something you asked for cannot be expressed, with the closest setting BuildKeel has. Nothing changes until you confirm. See [Process and templates](process-and-templates.md).
+Use it as it is, or say how your team works differently, in your own words, as much or as little as you like. Claude then asks about each topic your answer did not cover, one at a time: the stages, kinds of work within a stage, ID prefixes, the documents each stage requires, task test plans and the gates. It shows the whole process again in the same layout, saying plainly if something you asked for cannot be expressed, with the closest setting BuildKeel has. Each stage, kind or document you add needs a template: Claude drafts it, or you provide your own, and each is agreed before anything is written. See [Setting up a Full SDLC tree](setting-up-full-sdlc.md).
 
-A Spec-driven tree has no stages, so there is no process to choose. An existing spec tree keeps the process it already has.
+**4. Your numbering**, for a new Spec-driven spec tree. BuildKeel shows how the tree's IDs read: changes `CH-001`, requirements `AUTH-R1`, scenarios `AUTH-R1-S1`, defects and ad-hoc units. Keep them, or change them to match your team's, such as `RFC-0012`. See [Setting up a Spec-driven tree](setting-up-spec-driven.md#4-numbering).
+
+An existing spec tree keeps the process and numbering it already has.
 
 **5. Whether to be guided**, in a Spec-driven tree, new or existing. Press Enter to be guided through your first change: at each step, Claude adds a line or two on what just happened and what comes next, until that change is finished. Choose **Jump right in** to skip it. The answer is kept on your machine only, and you can change it at any time by saying so, such as "stop explaining".
 
@@ -63,7 +68,7 @@ For a new spec tree in this repository:
 | `.gitignore` | Gains `.buildkeel/`, where BuildKeel keeps local state that is never committed |
 | `.git/hooks/commit-msg` | Only if you chose to stamp your own commits |
 
-A new Spec-driven tree's `buildkeel.yaml` says `mode: spec-driven`, in format 2, which BuildKeel 0.1.0 opens read-only; a new Full SDLC tree's says `mode: full-sdlc`, in format 1.
+A new tree's `buildkeel.yaml` names its mode, `mode: spec-driven` or `mode: full-sdlc`, in format 3, which a version of BuildKeel from before 0.5.0 opens read-only.
 
 For an existing spec tree, your repository gets only `.buildkeel.yaml`, the `.gitignore` entry and, if you chose it, the hook. The spec tree's `buildkeel.yaml` gains an entry for your repository.
 
@@ -85,7 +90,7 @@ Setting BuildKeel up in a repository is your team's agreement to follow its proc
 
 ## Check the result
 
-Run `/bk:status`. It shows your spec tree, empty for now.
+Run `/bk:status`. It shows your spec tree, empty for now. Run `/bk:settings` to see how the repository is set up, at any time: the mode, the process and its gates or the numbering, and the templates.
 
 ## A first piece of work
 
@@ -108,4 +113,4 @@ In a Full SDLC tree:
 
 To draft one artifact at a time instead, use `/bk:new`, such as `/bk:new change`, or `/bk:new idea` for a first business idea in Full SDLC.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-status`, `/bk-settings`.

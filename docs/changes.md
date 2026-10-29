@@ -129,6 +129,10 @@ CH-001: tests/scenarios.py:12 names [MDATA-R9-S1], a scenario of a requirement C
 
 `/bk:done` finishes a change by archiving it: its spec changes are merged into the capability specs, each capability it touches gets its next version, and its files are frozen as its record. Tasks left unticked are checked first, and you choose to fix first, finish anyway, or reword the spec where the code is right. Finished anyway with work left, it offers a follow-up change to hold it. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
 
+## Defects and a change
+
+A defect found while building a change is attached to it, such as `parent: CH-002`, with the scenario whose test found it, and shows in the change's context while it is open. A reported defect names the requirement it affects, such as `AUTH-R3`, and becomes suspect if a later change modifies that requirement while it is open. A fix that changes a requirement is a change in behavior, made through a change. See [Defects and ad-hoc units](defects-and-adhoc.md#in-a-spec-driven-tree).
+
 ## Discarding a change
 
 A change you will not go on with can be discarded: ask Claude to discard it, such as "discard CH-002, it was replaced by CH-016". Claude first shows what goes:

@@ -87,7 +87,7 @@ Approval of US-draft-k3x9 refused by the approve gate: 1 check failed.
    To fix: Approve EP-01 first with /bk:approve EP-01.
 ```
 
-Bugs and ad-hoc units are not approved.
+Ad-hoc units and defects found while building are not approved. A reported defect is approved like any draft, numbered in the defect sequence at its first approval.
 
 ## What approval writes
 
@@ -165,7 +165,7 @@ Once approved, version 0 is in force like any version, and `onboard.md` is gone:
 
 ### Onboarded numbers
 
-An artifact first approved as version 0 is numbered in its type's onboarded sequence: its prefix, a letter, then the number, such as `US-E001`, `EP-E01` or `BUG-E001`. New work keeps the normal sequence, so the next story approved as version 1 is `US-002`. The letter is `E` unless the process sets another:
+An artifact first approved as version 0 is numbered in its type's onboarded sequence: its prefix, a letter, then the number, such as `US-E001`, `EP-E01` or `DEF-E001`. New work keeps the normal sequence, so the next story approved as version 1 is `US-002`. The letter is `E` unless the process sets another:
 
 ```yaml
 process:
@@ -194,6 +194,8 @@ When work changes code that nothing describes yet, its plan can hold version 0 o
 ```
 
 Each gets its own approval record and commit: `approve: US-E001 v0`, then `approve: US-E001 v1`.
+
+A reported defect in code nothing describes is approved the same way: version 0 of the story it touches, then the defect under it, in one review, version 0 first. See [Defects and ad-hoc units](defects-and-adhoc.md#recording-a-reported-defect).
 
 ### Sources kept with version 0
 

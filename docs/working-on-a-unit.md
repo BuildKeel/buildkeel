@@ -1,6 +1,6 @@
 # Working on a unit
 
-A unit is a piece of work that code changes belong to: a task, a story built without tasks, a bug or an ad-hoc unit. You start one before changing code, and Claude works on it with its requirements and tests in view.
+A unit is a piece of work that code changes belong to: a task, a story built without tasks, a defect or an ad-hoc unit. You start one before changing code, and Claude works on it with its requirements and tests in view.
 
 ## Start a unit
 
@@ -14,7 +14,7 @@ Run `/bk:build` on its own and Claude asks what you want to build: **The active 
 
 ```
 Ready to start (2):
-- BUG-001 bug "Reset link expires early"
+- DEF-001 defect "Reset link expires early"
 - TK-001 task "Reset endpoint"
 
 Not ready yet (1):
@@ -31,7 +31,7 @@ Starting a unit:
 
 ### Words in place of an ID
 
-Describe the work instead of naming it, such as `/bk:build fix the footer link`, and Claude compares your words with the titles of the units that can start and, in a Spec-driven tree, of the open changes. When one matches, Claude offers it by its ID and title, such as **Build CH-001 "Download historical market data"**. When nothing matches, it offers to record an ad-hoc unit with a title made from your words, then starts and builds it (see [Bugs and ad-hoc units](bugs-and-adhoc.md)). Nothing is started until you choose.
+Describe the work instead of naming it, such as `/bk:build fix the footer link`, and Claude compares your words with the titles of the units that can start and, in a Spec-driven tree, of the open changes. When one matches, Claude offers it by its ID and title, such as **Build CH-001 "Download historical market data"**. When nothing matches, it offers to record an ad-hoc unit with a title made from your words, then starts and builds it (see [Defects and ad-hoc units](defects-and-adhoc.md)). Nothing is started until you choose.
 
 ### How far to build
 
@@ -64,7 +64,7 @@ When the spec tree is a folder of your code repository, its approvals live on th
 - Every document your process requires of the unit and of everything above it is approved: by default the epic's design document and the story's test plan, which must cover every acceptance criterion. A task's own test plan needs no approval: it is recorded as it is saved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)), unless your process approves task plans. See [Process and templates](process-and-templates.md#documents-attached-to-a-stage).
 - No other working tree on this machine is working on it.
 
-A story that has tasks is worked on through its tasks. Epics and business ideas are not started at all. Bugs and ad-hoc units need no approval and no test plan, but are not started while anything above them is suspect.
+A story that has tasks is worked on through its tasks. Epics and business ideas are not started at all. Ad-hoc units and defects found while building need no approval and no test plan, but are not started while anything above them is suspect. A reported defect goes through the start gate like any unit: approved first.
 
 A [version 0](approval.md#version-0-code-from-before-buildkeel), which describes code as it was before BuildKeel, counts as approved for the work under it. A unit whose version in force is version 0 describes work already done, so it is not started itself: changing it starts with its version 1.
 
@@ -127,15 +127,15 @@ A signed token in an emailed link opens the reset form once.
 - EP-01 v1 "Password reset": Customers reset a forgotten password by email.
 - BI-01 v1 "Self-service account recovery": Customers recover their own accounts without calling support.
 
-## Open bugs
-- BUG-001 "Reset link expires early" in TK-001
+## Open defects
+- DEF-001 "Reset link expires early" in TK-001
 
 ## Linked code: none yet
 ```
 
 - The unit and its parent appear in full, in their tracked sections. Everything further up appears as one line: its ID, version, title and approved summary.
 - The nearest design document, on the unit or above it, usually its epic's, appears under **How it is built**: its summary and the sections work is built on, such as the design, the decisions, and the architecture, data and interfaces when it has them. Other documents attached to the unit or above it, such as a team's own threat model, appear as one line each under **Background**.
-- Bugs attached to the unit or its parent that are neither finished nor closed are listed under **Open bugs**, with the test case that found each one. A bug's own context asks for a regression test tagged with its ID (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
+- Defects attached to the unit or its parent that are neither finished nor closed are listed under **Open defects**, with the test case that found each one. A defect's own context asks for a regression test tagged with its ID; in a Spec-driven tree, it also shows the change that found it, or the requirement it affects as its version states it, with the tests tagged with its scenarios (see [Defects and ad-hoc units](defects-and-adhoc.md)).
 - Every artifact shows the version the context was built from. When a newer version of a parent is approved, the context shows it at once, with a note that the unit was approved against the older one.
 - An artifact at version 0 is marked as describing the code as it was before BuildKeel, with the paths its scope covers, such as `US-E001 v0 describes the code as it was before BuildKeel, in src/reset/.` under **Why**.
 - **Linked code** lists the unit's commits and the files they changed, in every code repository on this machine. For work finished before BuildKeel, these are the commits made before the baseline that name its tracker key, found when its version 0 was approved.
@@ -158,12 +158,13 @@ At the start of every session, when a session is resumed, and after Claude Code 
 
 - that BuildKeel is set up here, and that the conversation stays free: talk as you would without BuildKeel, and its artifacts, IDs and commands come in only when you run a BuildKeel command or Claude is about to change a file;
 - how to discuss: as a thinking partner, laying out options, trade-offs and pitfalls before asking, in prose, with sources for anything it looks up, recommending only what the evidence supports, and never pushing toward a plan. When you say the discussion has reached a point, Claude asks once whether there is more to explore or you are ready for `/bk:capture`, which only you start;
+- how to treat the spec tree: show anything in full before saving it to the tree, and never add a requirement on its own; check a problem you report against the spec and its code before recording it, and propose whether it is a defect or a change in behavior; and stop and ask when agreed behavior looks wrong while building;
 - the active unit and its branch, followed by its context again, or that no unit is active;
 - your team's names for its stages, when your process renames or adds stages.
 
 Nothing else is raised at session start, so a question about the code gets a plain answer. Whether the spec tree is behind its remote, what is suspect, and what is not pushed are shown when you start, approve or finish work, and in `/bk:status`.
 
-When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, build the unit the change belongs to with `/bk:build`, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Bugs and ad-hoc units](bugs-and-adhoc.md)).
+When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, build the unit the change belongs to with `/bk:build`, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Defects and ad-hoc units](defects-and-adhoc.md)).
 
 BuildKeel checks the edits Claude makes with its file editing tools, and Claude is told to change files only with them. A change made another way, such as through a shell command, escapes these checks; if it is committed without a unit, `/bk:status` lists it under commits with no unit.
 
@@ -223,11 +224,11 @@ Each working tree has its own active unit and branch, and commits made in each a
 
 Claude lists the units ready to start, at the lowest level (tasks, and stories without tasks), or only those under a story or epic you name, such as `/bk:build US-001`, and asks you once: **Build them all**, **Build the next one only**, or **Set it up and work together**. Then, for each unit in turn, it starts it, writes the code and the tests for its test cases, runs the tests, and finishes it with its own completion record, before going on to the next. Each unit's branch is stacked on the one before, so later units build on the earlier ones' code.
 
-The run stops and asks you when a start is refused, a test keeps failing after Claude has tried to fix it, or a requirement is unclear: Claude never guesses a requirement. At the end it shows each unit with its branch, commits and record, and the last branch, which holds the whole run.
+The run stops and asks you when a start is refused, a test keeps failing after Claude has tried to fix it, a requirement is unclear, or agreed behavior looks wrong: Claude never guesses a requirement, and never builds something other than what was agreed. When you change the behavior, its new versions are drafted and approved before the build goes on; see [How Full SDLC mode works](how-full-sdlc-works.md#behavior-questioned-while-building). At the end it shows each unit with its branch, commits and record, and the last branch, which holds the whole run.
 
 ## In a Spec-driven tree
 
-In a [Spec-driven](modes.md) tree, the units are [changes](changes.md), bugs and ad-hoc units. Starting one works as above, with two differences: no gate runs, so a unit starts unless another working tree on this machine holds it, and a change gets its branch from its ID and title, such as `bk/CH-002-reset-links-expire`.
+In a [Spec-driven](modes.md) tree, the units are [changes](changes.md), defects and ad-hoc units. Starting one works as above, with two differences: no gate runs, so a unit starts unless another working tree on this machine holds it, and a change gets its branch from its ID and title, such as `bk/CH-002-reset-links-expire`.
 
 ```
 /bk:build CH-002
@@ -235,7 +236,7 @@ In a [Spec-driven](modes.md) tree, the units are [changes](changes.md), bugs and
 
 ### A change's context
 
-A change's context holds its proposal, every spec change in full, its design and its tasks with their ticks, then each capability it touches at its version in force: the requirements the change touches in full, and the others in a line each. It ends with its open bugs and the code linked to it:
+A change's context holds its proposal, every spec change in full, its design and its tasks with their ticks, then each capability it touches at its version in force: the requirements the change touches in full, and the others in a line each. It ends with its open defects and the code linked to it:
 
 ```
 # Active unit: CH-002 "Reset links expire" (change)
@@ -316,7 +317,7 @@ The system SHALL email a password reset link to a registered address on request.
 - **WHEN** a user asks for a reset link for a registered email
 - **THEN** a reset link is emailed to that address
 
-## Open bugs: none
+## Open defects: none
 
 ## Linked code: none yet
 ```
@@ -332,7 +333,7 @@ BuildKeel-Unit: CH-002
 BuildKeel-Task: 1.2
 ```
 
-so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and Claude says so in a line, without asking. The run stops to ask when a test fails and cannot be fixed, a requirement is unclear, or the work needs a change to what you agreed, such as a requirement or a task's wording, which Claude shows you before saving. Finish the change with `/bk:done` when its tasks are done.
+so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and Claude says so in a line, without asking. The run stops to ask when a test fails and cannot be fixed, a requirement is unclear, agreed behavior looks wrong, or the work needs a change to what you agreed, such as a requirement or a task's wording, which Claude shows you before saving. A changed requirement goes through the change first, and the code follows it; see [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building). Finish the change with `/bk:done` when its tasks are done.
 
 If you ask in words, such as "let's build the rest now", Claude suggests `/bk:build` once. Say "just go ahead" and it builds the tasks anyway, by the same rules; say "not now" and it builds nothing.
 

@@ -48,7 +48,7 @@ One line for each of these, with the IDs, types, outcomes and time, and the codi
 - a unit started, and whether a build run started it; a unit finished, with how long it took;
 - something becoming suspect, and the decision on it;
 - a unit's context loaded;
-- an ad-hoc unit or a bug recorded.
+- an ad-hoc unit or a defect recorded.
 
 In a Spec-driven tree, also:
 
@@ -82,7 +82,7 @@ Time from start to finish: 1 h 15 min typically (the median), 3 h at the longest
 Reported at finish, over 4 changes: scenario-untested 3, task-names-removed-requirement 1; 3 scenarios with no tagged test; 1 failing scenario.
 Finished anyway, with something reported missing: 1 of 4.
 Suspects: 2 raised; 1 kept as still valid, 1 needing change.
-Bugs and ad-hoc units finished: bug 1, ad-hoc unit 1.
+Defects and ad-hoc units finished: defect 1, ad-hoc unit 1.
 Context loaded for a unit 12 times.
 Guidance for a first change: turned on 1, turned off 0, completed 1.
 ```

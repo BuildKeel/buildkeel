@@ -12,6 +12,10 @@ User documentation, kept beside the code it describes.
 
 - [The two modes](modes.md): what each mode holds, setting the mode when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
 - [Choosing a mode](comparing-modes.md): which mode to choose, the two side by side, the same piece of work in each, and moving to Full SDLC.
+- [Setting up a Spec-driven tree](setting-up-spec-driven.md): every question /bk:init asks, in order, with what each answer does: the folder check, where the tree lives, stamping commits, numbering with examples, templates and rules, and the guide for a first change.
+- [Setting up a Full SDLC tree](setting-up-full-sdlc.md): every question /bk:init asks, in order, with what each answer does: stages, kinds within a stage, ID prefixes, documents, task test plans, gates and templates, ending with three complete processes and their buildkeel.yaml.
+- [How Spec-driven mode works](how-spec-driven-works.md): one change followed from a conversation to the capability's next version: building task by task, a defect found while building, behavior questioned while building, finishing, and reported problems sorted into defects and changes in behavior.
+- [How Full SDLC mode works](how-full-sdlc-works.md): one piece of work from a business idea down to a finished task: approving the plan, the start gate, building, a defect found while building, behavior questioned while building and the pause for approval, the done gate, the work above it, a reported defect and its approval, and a defect in code nothing describes.
 
 ## Plan the work
 
@@ -25,7 +29,7 @@ User documentation, kept beside the code it describes.
 
 - [Working on a unit](working-on-a-unit.md): starting and building a unit with /bk:build, building everything ready, what must be true, its branch and claim, the context Claude receives, sessions, freshness and working on several units at once.
 - [Finishing a unit](finishing-a-unit.md): commit lines and test tags, recording test results, finishing with /bk:done, what must be true, commits without a unit line, the completion record, the next unit, and finishing a story or an epic.
-- [Bugs and ad-hoc units](bugs-and-adhoc.md): changes with nothing started, ad-hoc units through /bk:build, recording bugs with /bk:new bug, regression tests, open bugs, attaching a standalone bug, and IDs given offline.
+- [Defects and ad-hoc units](defects-and-adhoc.md): changes with nothing started, ad-hoc units through /bk:build, a defect or a change in behavior, defects found while building and reported defects, regression tests, closing without a fix, open defects, finding the work a reported defect affects, defects in a Spec-driven tree, and IDs given offline.
 
 ## Change and track
 
@@ -40,7 +44,7 @@ User documentation, kept beside the code it describes.
 ## Set up and maintain
 
 - [The spec tree](spec-tree.md): where BuildKeel keeps your plan, the pointer file in each code repository, and format versions.
-- [Process and templates](process-and-templates.md): the default process, documents attached to a stage and which each stage requires, the design document, setting up the process, renaming and adding stages, ID prefixes, gate modes, templates and what BuildKeel checks before approval.
+- [Process and templates](process-and-templates.md): seeing your settings at any time with /bk:settings and changing them, the default process, documents attached to a stage and which each stage requires, the design document, setting up the process, renaming and adding stages, kinds within a stage, ID prefixes, gate modes, templates and what BuildKeel checks before approval.
 - [Organization templates](organization-templates.md): templates and a process shared across teams from a repository of their own, pinned to a version.
 - [Migrating a spec tree](migration.md): moving a Spec-driven tree to Full SDLC with /bk:migrate, and upgrading a spec tree in an older format.
 

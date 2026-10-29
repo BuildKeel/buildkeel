@@ -13,7 +13,7 @@ Talk the idea through with Claude first, as you would without BuildKeel: what it
 Claude goes step by step, and asks at each one. Whatever it asks you to agree, it writes out in full in its reply, in the normal window, and asks in plain text at the end, never inside a question box:
 
 1. **What it heard.** A short summary in plain words: what you set out to do, the idea, the approach and decisions discussed, what was left open, and the pitfalls and constraints raised, each marked settled or open. Choose **Create the artifacts**, **Change something**, or **Keep talking**. Any other answer, such as a correction, simply goes on with the conversation; nothing is drafted.
-2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new and given its purpose, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. Choose **Looks right**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
+2. **The plan.** A table of the artifacts your process needs, level by level, each marked as existing or new and given its purpose, with the documents each stage requires (by default a design document for an epic and a test plan for each story), and where Claude recommends the work fits in your tree, and why. When a stage holds several kinds of work, such as user stories and features, the table proposes the kind of each new artifact from where the work came from, for you to confirm or change. Choose **Looks right**, **Place it somewhere else**, **Change the plan**, or **Keep talking**.
 3. **The pace.** Claude asks every time: **Step by step** (the default) or **All at once**.
 
 Step by step, Claude drafts the epic first, then its design document, then each story with its test plan, then the tasks as one batch. Each is drafted against the ones you already agreed to, shown with the pitfalls it covers, and saved once you agree, such as with **Looks good, next**. You can say **Draft the rest at once** at any step. If you stop partway, what you agreed to stays saved as drafts. All at once, Claude drafts everything, then shows the set, and saves it once you agree.
@@ -25,6 +25,8 @@ Each pitfall you settled becomes a requirement, criterion or test case. Claude i
 Agreeing to an artifact here does not approve it. Once the last one is agreed, Claude asks whether to approve the set now, after showing what approving it will write, or leave the drafts for another approver, who approves them in one review with `/bk:approve` (see [Approving artifacts](approval.md)). A task's own test plan is not among them: it is recorded when its task is approved (see [Test plans](test-plans.md#a-tasks-own-plan-is-recorded)).
 
 To capture only part of a long conversation, say which: `/bk:capture the text message reset`.
+
+When the conversation is about a problem someone reported, capture checks it against the spec and the code linked to it before planning anything, and proposes its reading: a defect, a change in behavior, a gap, or code nothing describes yet. A confirmed defect is recorded as a defect; a change in behavior or a gap is planned as above. See [A defect, or a change in behavior?](defects-and-adhoc.md#a-defect-or-a-change-in-behavior).
 
 If you place the work somewhere other than Claude recommended, such as a new epic instead of under `EP-01`, the new artifact is linked to the recommended one (`related: [EP-01]`), so a change to either makes the other worth a look. If the work changes how something already built behaves, and a document describes how it works today, such as `EP-01-DD`, the plan includes a new version of that document. See [Change impact](change-impact.md).
 
@@ -64,7 +66,7 @@ What describes code that existed before BuildKeel is [version 0](approval.md#ver
 
 - What the code and the sources say is reworded into the template's form, such as a ticket's description written as testable criteria. Nothing they do not support is added.
 - Each source is kept beside version 0 as it was read, with where it came from and its link, and listed in its Sources section. Code is never copied: the baseline commit names it.
-- When a source and the code disagree, such as a ticket that says a reset link lasts 30 minutes where the code makes it 60, Claude asks which is intended before drafting that part. When the code is wrong, version 0 states the intended behavior, and the defect is recorded as a bug against it. When the ticket is out of date, version 0 follows the code. When nobody here knows, answer **Not sure: leave it open**: the question is kept in the draft, that part is left out, and version 0 waits for someone who knows (see [Questions left open](onboarding.md#questions-left-open)).
+- When a source and the code disagree, such as a ticket that says a reset link lasts 30 minutes where the code makes it 60, Claude asks which is intended before drafting that part. When the code is wrong, version 0 states the intended behavior, and the defect is recorded against it. When the ticket is out of date, version 0 follows the code. When nobody here knows, answer **Not sure: leave it open**: the question is kept in the draft, that part is left out, and version 0 waits for someone who knows (see [Questions left open](onboarding.md#questions-left-open)).
 
 You read it, complete it or correct it, and approve it. You can also write any of it by hand. To document existing code area by area rather than as work touches it, see [Documenting existing code](onboarding.md).
 
@@ -88,7 +90,7 @@ Created draft EP-01-DD (design document) at epics/EP-01/design/design.md. It is 
 
 Ask Claude to fill the gaps, or edit the draft and save again. To see a draft, ask Claude to show it, or run `/bk:status` to see where it sits in the tree.
 
-Bugs are recorded with `/bk:new bug` too, but they are not drafts: a bug gets its permanent ID at once and needs no approval. See [Bugs and ad-hoc units](bugs-and-adhoc.md).
+Defects are recorded with `/bk:new defect` too. A defect found while building is not a draft: it gets its permanent ID at once and needs no approval. A defect that someone reports is drafted under the work it affects and approved like any artifact. See [Defects and ad-hoc units](defects-and-adhoc.md).
 
 ## In a Spec-driven tree
 

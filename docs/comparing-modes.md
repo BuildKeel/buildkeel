@@ -6,7 +6,7 @@ BuildKeel works in one of two modes, chosen when a spec tree is created. This pa
 
 **Spec-driven** suits a team that wants living specs of how its system behaves, and a change for each piece of work, with nothing waiting for an approval.
 
-Code links, tests, change impact and bugs are all traced, and everything reports rather than blocks. It is the default, and `/bk:init` offers it first.
+Code links, tests, change impact and defects are all traced, and everything reports rather than blocks. It is the default, and `/bk:init` offers it first.
 
 **Full SDLC** suits a team that needs the full chain from business idea down to code, with each artifact approved and locked.
 
@@ -23,20 +23,20 @@ Gates stop work until it is ready: no coding against an unapproved or outdated r
 | **Approvals** | None | Each artifact is approved, one at a time or a whole plan in one review |
 | **Editing** | Every file of an open change can be edited at any time, with no new version | An approved artifact is locked; a change to it becomes a draft of its next version |
 | **Gates** | Only the lock gate, which protects finished records | Approve, start, done and lock, each set to block, warn or off |
-| **The unit of work** | A change, whose tasks are checkboxes inside it; bugs; ad-hoc units | A task, or a story with no tasks; bugs; ad-hoc units |
+| **The unit of work** | A change, whose tasks are checkboxes inside it; defects; ad-hoc units | A task, or a story with no tasks; defects; ad-hoc units |
 | **Starting work** | `/bk:build CH-012` starts it at once; no gate runs | `/bk:build TK-047` starts it once the start gate passes: everything above it approved and current |
-| **Context for Claude** | The change's proposal, spec changes, design and tasks, each capability it touches at the version in force, its open bugs and linked code | The task, its story and acceptance criteria, the epic, the business idea, the test cases that apply, open bugs and linked code |
+| **Context for Claude** | The change's proposal, spec changes, design and tasks, each capability it touches at the version in force, its open defects and linked code | The task, its story and acceptance criteria, the epic, the business idea, the test cases that apply, open defects and linked code |
 | **Building** | `/bk:build` builds one change's tasks in order, on the change's branch | `/bk:build` builds every ready task in turn, each on its own branch, stacked on the one before |
 | **Tests** | Each test names the scenario it checks, such as `[ACCT-R2-S1]`; there are no test plans | Test plans at every level; each test case says what it covers, and each test names its test case, such as `[US-012-TC3]` |
 | **Gaps** | A scenario with no tagged test is reported, and never stops anything | A test plan that leaves a criterion uncovered cannot be approved, so work under it cannot start |
 | **Finishing** | `/bk:done` reviews the code against the change's requirements, scenarios and design, reports the checks, and you choose **Fix first** or **Finish anyway**; then it archives the change, and each capability it touches gets its next version | `/bk:done` runs the done gate: every test case that applies must pass; then it writes the completion record |
 | **Change impact** | By requirement ID: previewed on an open change, and decided before or after it is archived; it reports | A new version makes what was built on the old one suspect, and work cannot start on a suspect until someone decides |
-| **Bugs** | Attached to the change whose work found it, or standalone; a missing regression test is a reminder | Attached to a task or story, or standalone; a regression test is needed to finish |
+| **Defects** | Found while building: attached to the change whose work found it. Reported: linked to the requirement it affects, or standalone. None is approved, and a missing regression test is a reminder | Found while building: attached to the task or story, and started at once. Reported: under the work it affects, a story by default, and approved before work on it starts. A regression test is needed to finish |
 | **Existing code** | A capability's version 0, written once a person has confirmed it | Version 0 of each artifact, reviewed and approved, with its sources kept |
-| **What your team sets** | Templates, rules for each artifact, ID prefixes | Stages, documents, templates, rules, ID prefixes and gates |
-| **The spec tree's format** | 2: everyone working in it needs a version of BuildKeel that knows modes | 1 |
+| **What your team sets** | Templates, rules for each artifact, ID prefixes | Stages, kinds within a stage, documents, which kinds a reported defect can belong to, templates, rules, ID prefixes and gates |
+| **The spec tree's format** | 3: everyone working in it needs BuildKeel 0.5.0 or later | 3, as for Spec-driven |
 
-The same in both: commits are linked to their unit automatically, test results are read from JUnit XML reports, bugs can be closed without a fix, every finished unit leaves a permanent record, nothing leaves your repositories, and the commands are the same.
+The same in both: commits are linked to their unit automatically, test results are read from JUnit XML reports, defects can be closed without a fix, every finished unit leaves a permanent record, nothing leaves your repositories, and the commands are the same.
 
 ## The same piece of work in each mode
 
@@ -104,8 +104,10 @@ Before approving, `/bk:impact US-012` shows what the new version puts in questio
 
 ## Moving to Full SDLC
 
-A Spec-driven tree moves to Full SDLC with `/bk:migrate`, once no change is open. You choose your process, and your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve. Scenarios become test cases or acceptance criteria, tests tagged with scenario IDs count for what those scenarios became, and code linked to changes stays linked. The capability specs and archived changes stay in the tree, read-only, as its history.
+A Spec-driven tree moves to Full SDLC with `/bk:migrate`, once no change is open. You set up your process, as for a new Full SDLC tree, and your stages are drafted from the capability specs and archived changes, area by area, for you to review and approve. Scenarios become test cases or acceptance criteria, tests tagged with scenario IDs count for what those scenarios became, code linked to changes stays linked, and open defects keep their IDs under the artifacts they affect. The capability specs and archived changes stay in the tree, read-only, as its history.
 
 A Full SDLC tree cannot become Spec-driven. See [Moving to Full SDLC](modes.md#moving-to-full-sdlc) for the steps.
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-impact`, `/bk-migrate`.
+
+Once you have chosen, the setup guide for your mode walks you through every question `/bk:init` asks: [Setting up a Spec-driven tree](setting-up-spec-driven.md) or [Setting up a Full SDLC tree](setting-up-full-sdlc.md).

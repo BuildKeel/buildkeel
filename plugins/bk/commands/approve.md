@@ -8,6 +8,8 @@ Help the user approve a BuildKeel artifact. Approval is the user's decision: nev
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, it has no approvals, and /bk:approve agrees what is under review:
 
 - **A document is under review** in this conversation, shown in full and waiting for the user's answer, such as a spec change during /bk:capture or a requirement while building: take /bk:approve as the user's agreement, as a reply of "approved" would be. Save it as that review says, and go on to the next step. Nothing is frozen: the change stays editable until it is finished.
@@ -17,7 +19,7 @@ If BuildKeel's session report, or `query` with `view: "process"`, says this spec
 
 If the user named one artifact above, approve it as below. If they named several, approve them as a set (see "A set in one review").
 
-If the user typed nothing, ask straight away, before calling any tool: "What do you want to approve?" Offer the choices with your tool for asking a question with choices, if you have one, so the user can pick with the arrow keys and Enter:
+If the user typed nothing, ask straight away: "What do you want to approve?" Offer the choices with your tool for asking a question with choices, if you have one, so the user can pick with the arrow keys and Enter:
 
 1. **The drafts from this conversation, in one review** (the default, listed first): offer this only when drafts were saved in this conversation, such as by /bk:capture, and name them in the choice.
 2. **Show what is ready to approve** (the default when there are no drafts from this conversation).

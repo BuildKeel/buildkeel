@@ -1,6 +1,6 @@
 # The spec tree
 
-The spec tree is where BuildKeel keeps your plan: business ideas, epics, stories, tasks, test plans, bugs and ad-hoc work, with every approved version and every completion record. It is a directory of markdown and YAML files, versioned in git like your code.
+The spec tree is where BuildKeel keeps your plan: business ideas, epics, stories, tasks, test plans, defects and ad-hoc work, with every approved version and every completion record. It is a directory of markdown and YAML files, versioned in git like your code.
 
 A spec tree can be:
 
@@ -22,7 +22,7 @@ Both work the same way, with the same files and IDs. You can start with a folder
   stories/US-001/test-plan/plan.md   the story's test plan
   stories/US-E001/story.md       a story first approved as version 0, describing code from before BuildKeel
   tasks/TK-001/task.md           one directory per task
-  bugs/BUG-001/bug.md            one directory per bug
+  defects/DEF-001/defect.md      one directory per defect
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
 ```
 
@@ -34,7 +34,7 @@ That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes 
   templates/                     your own templates (optional)
   capabilities/AUTH/versions/    each version of a capability spec, with its record
   changes/CH-012-<short name>/   one directory per change, named by its ID and title
-  bugs/BUG-001/bug.md            one directory per bug
+  defects/DEF-001/defect.md      one directory per defect
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
 ```
 
@@ -48,7 +48,7 @@ Each artifact has its own directory, named by its ID, holding its working file. 
 | `approvals/` | One approval record per approved version, such as `v1.yaml`, and `v1-pending.yaml` for an approval made while its number could not be assigned (see [Approving artifacts](approval.md)) |
 | `sources/` | For version 0: each source it was drafted from, kept as it was read, and frozen with it (see [Version 0](approval.md#version-0-code-from-before-buildkeel)) |
 | `completions/` | One record each time the work is finished |
-| `closed.yaml` | For a bug closed without a fix: why, who closed it and when (see [Bugs and ad-hoc units](bugs-and-adhoc.md#closing-a-bug-without-a-fix)) |
+| `closed.yaml` | For a defect closed without a fix: why, who closed it and when (see [Defects and ad-hoc units](defects-and-adhoc.md#closing-a-defect-without-a-fix)) |
 | `repins/` | One record each time someone confirms the artifact, or in a test plan one of its test cases, is still valid after what it was built against changed |
 | `test-plan/` | The artifact's test plan, `plan.md`, with its own `versions/` and `approvals/` |
 | `design/` | The artifact's design document, `design.md`, with its own `versions/` and `approvals/` |
@@ -62,7 +62,7 @@ The hierarchy is not in the directory structure. Each artifact names its parent 
 
 ### IDs
 
-Every artifact type has a prefix and its own number sequence: `BI-01`, `EP-01`, `US-001`, `TK-001`, `BUG-001`, `AH-001`. While an artifact is a draft it has a temporary ID that starts with its type's prefix, such as `US-draft-k3x9` for a user story, and its directory carries that name. It receives its permanent number when it is first approved, and BuildKeel renames the directory and updates every reference to it.
+Every artifact type has a prefix and its own number sequence: `BI-01`, `EP-01`, `US-001`, `TK-001`, `DEF-001`, `AH-001`. While an artifact is a draft it has a temporary ID that starts with its type's prefix, such as `US-draft-k3x9` for a user story, and its directory carries that name. It receives its permanent number when it is first approved, and BuildKeel renames the directory and updates every reference to it.
 
 An artifact first approved as version 0 is numbered in a second sequence of its type, with a letter before the number: `US-E001`, `EP-E01`. Its ID never changes afterwards, and neither does the ID of an artifact that gets its version 0 later.
 
@@ -91,7 +91,7 @@ A customer asks for a reset link and receives it by email.
 
 - `id` must match the name of the artifact's directory.
 - `parent` names the parent by ID and the version it was written against, such as `EP-01@v1`. Links always use IDs, never file paths. A draft whose parent is also a draft names it by its draft ID alone.
-- Business ideas and ad-hoc units have no parent. A bug may have one (the work it was found in) or stand alone. Every other artifact must have one.
+- Business ideas and ad-hoc units have no parent. In Full SDLC a defect has one: the task or story it was found in, or the work a reported defect affects. In a Spec-driven tree a defect found while building names its change, and a reported one names the requirement it affects in `requirement`, or stands alone. Every other artifact must have a parent.
 - Which fields and sections each type needs is set by its template.
 
 ## buildkeel.yaml
@@ -99,7 +99,8 @@ A customer asks for a reset link and receives it by email.
 The file at the root of the spec tree. Its presence is what makes a directory a spec tree.
 
 ```yaml
-format: 1
+format: 3
+mode: full-sdlc
 name: Payments
 repos:
   - name: payments-api
@@ -113,10 +114,10 @@ settings:
 |---|---|
 | `format` | The version of the spec tree format. Required. |
 | `name` | A display name for the tree. |
-| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required in a format 2 tree. See [The two modes](modes.md). |
+| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required from format 2 on. See [The two modes](modes.md). |
 | `repos` | The code repositories that use this tree. Each has a `name`, and optionally its `remote` and a `baseline` commit: commits up to the baseline predate BuildKeel and are never reported as untracked work. |
 | `templates` | An organization template source, with a fixed `version`. |
-| `process` | Your process: stages, ID prefixes, the letter of onboarded numbers (`onboarded.letter`, `E` by default) and gate settings. Leave it out to use the default process. |
+| `process` | Your process: stages and the kinds within them, documents, ID prefixes, which kinds a reported defect can belong to (`defect.parents`), task plans, the letter of onboarded numbers (`onboarded.letter`, `E` by default) and gate settings. Leave it out to use the default process. See [Process and templates](process-and-templates.md). |
 | `settings.autoPush` | Push each approval as soon as it is committed. Off by default. |
 | `settings.idsBranch` | The branch that holds ID counters. Defaults to `buildkeel/ids`. |
 | `settings.contextBudget` | The size, in characters, a unit's context view should stay within. Defaults to `10000`. A larger view is noted, never cut. See [Working on a unit](working-on-a-unit.md). |
@@ -152,7 +153,7 @@ The key is the `remote` from the pointer file. This file stays on your machine a
 
 ## Format versions
 
-`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Full SDLC trees use format 1 and Spec-driven trees format 2; this version of BuildKeel reads and writes both, so neither needs migrating. A version of BuildKeel from before modes opens a format 2 tree read-only and asks for an update.
+`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Every new tree is written in format 3. A version of BuildKeel from before 0.5.0 opens a format 3 tree read-only and asks for an update.
 
 - **An older format:** BuildKeel reads the tree but does not change it, and asks you to run `/bk:migrate`. Migration upgrades the tree in one commit you can review, and never alters approved versions.
 - **A newer format** than your BuildKeel supports: BuildKeel reads the tree but does not change it, and asks you to update the plugin.

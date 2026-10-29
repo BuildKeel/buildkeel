@@ -95,7 +95,7 @@ In Claude Code a hook adds this before the command runs. Antigravity cannot add 
 /bk:done
 ```
 
-Run it on its own and Claude asks what to finish; press Enter for the active unit. Claude runs the tests again if the code changed since they last ran, then checks the unit without writing anything.
+Run it on its own and Claude asks what to finish; press Enter for the active unit. Claude runs the tests again if the code changed since they last ran, then checks the unit without writing anything. For a defect, Claude also offers to close it without a fix, such as a duplicate or a change in behavior; see [Closing a defect without a fix](defects-and-adhoc.md#closing-a-defect-without-a-fix).
 
 ### What must be true
 
@@ -103,6 +103,7 @@ Run it on its own and Claude asks what to finish; press Enter for the active uni
 - The unit is not suspect: built against a version of something above it that has changed since. Decide it first with `/bk:impact` (see [Change impact](change-impact.md)).
 - Every test case of the unit's **own** test plan has a tagged test and a current passing result. For a task, that is the task's plan, at the version recorded last; for a story built without tasks, the story's plan.
 - A test case the task takes from its **story's** plan must pass once a test is tagged with it. Until someone writes that test, it is **left for the story**: it does not stop the task, but the story cannot be finished until every one of its test cases passes. So the first task under a story can finish before the whole story works.
+- A story built without tasks has no open defect under it: each is finished, or closed without a fix. A task is not held up by its own defects; the story above it is.
 - A task needs **at least one** passing test case, its own or its story's. A task with no test plan of its own, none of whose tests is tagged with a story test case, is refused: nothing shows its work is tested. Give it a test plan whose test cases cover the task, or tag a test with the story test case it delivers.
 
 When something is missing, nothing is written, and every reason is listed with what to do:
@@ -205,7 +206,7 @@ host: claude-code
 
 | Field | What it holds |
 |---|---|
-| `unit`, `version` | The unit and the approved version that was finished. Bugs and ad-hoc units have no version. |
+| `unit`, `version` | The unit and the approved version that was finished. Ad-hoc units, defects found while building and every defect in a Spec-driven tree have no version. |
 | `ancestors` | The versions in force above the unit when it was finished: the ones its context showed. |
 | `documents` | The version of each document required of the unit or above it, other than test plans, that the work was built against, as it was when the unit was started, such as the epic's design document. A newer version that changes what the work is built on makes the unit suspect. |
 | `repo`, `branch` | The code repository and the unit's branch. |
@@ -227,11 +228,11 @@ The record stands on its own: after a squash merge replaces the commit IDs, it s
   ```
   TK-001 cannot be started.
   - TK-001 v1 was finished on 2026-10-01 by Jane Doe <jane@example.com> (tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml).
-    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a bug with /bk:new bug, or as an ad-hoc unit with /bk:build and a description of the change.
+    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a defect with /bk:new defect, or as an ad-hoc unit with /bk:build and a description of the change.
   ```
 
 - `/bk:build`, asked to show what can be started, lists finished units under **Done**.
-- Finishing a standalone bug also suggests where to attach it. See [Bugs and ad-hoc units](bugs-and-adhoc.md#attaching-a-standalone-bug).
+- In a Spec-driven tree, finishing a standalone defect offers to link it to a requirement its fix's files implement. See [Defects and ad-hoc units](defects-and-adhoc.md#in-a-spec-driven-tree).
 
 ## Finishing a story or an epic
 
@@ -241,7 +242,7 @@ A story built through tasks, or an epic, is never started: its work is done in t
 /bk:done US-001
 ```
 
-- Every unit under it must be finished at its approved version in force: its tasks, any bugs attached to it or to them, and for an epic, its stories. A bug closed without a fix counts as done (see [Bugs and ad-hoc units](bugs-and-adhoc.md#closing-a-bug-without-a-fix)). An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
+- Every unit under it must be finished at its approved version in force: its tasks, any defects attached to it or to them, and for an epic, its stories. A defect closed without a fix counts as done (see [Defects and ad-hoc units](defects-and-adhoc.md#closing-a-defect-without-a-fix)). An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
 - Every test case of its own test plan must pass. A test case with a tagged test in this repository needs a current passing result here, so run the tests after the work is merged. A test case delivered only in another code repository counts as passed when the completion record of the unit that delivered it says it passed.
 - An epic needs no test plan of its own; when it has one, its test cases must pass the same way.
 - Nothing under it may be suspect: no unit under it, and no test case in its plan or theirs. See [Change impact](change-impact.md).
@@ -261,7 +262,7 @@ children:
 
 ## Finishing a change
 
-In a Spec-driven tree (see [The two modes](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Bugs and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
+In a Spec-driven tree (see [The two modes](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Defects and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
 
 A change does not have to be the active unit to be finished. Run `/bk:done CH-002`, or run `/bk:done` on its own with no active unit and pick from the open changes; those with every task ticked come first, and you can pick several.
 

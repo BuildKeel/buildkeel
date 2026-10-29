@@ -55,7 +55,7 @@ for every project, or `node install.mjs --workspace /path/to/your/project` for o
 In a new conversation in the agent panel:
 
 - Run `/bk-status`. In a project that is not set up yet, it tells you how to set one up. In a project that is, it shows your spec tree.
-- Ask "Which BuildKeel tools do you have?". The agent lists ten, from `get_context` to `manage`. BuildKeel's server comes with the plugin, so it is not shown under **Additional options (…) > MCP Servers**, which lists the servers you added yourself.
+- Ask "Which BuildKeel tools do you have?". The agent lists twelve, from `get_context` to `resolve_suspect`. BuildKeel's server comes with the plugin, so it is not shown under **Additional options (…) > MCP Servers**, which lists the servers you added yourself.
 
 BuildKeel's commands are all named `/bk-<command>`, such as `/bk-init` and `/bk-build`. Type `/bk` in the agent panel to see them all. A command that takes input, such as `/bk-approve`, asks what you want when you run it on its own; you can also type the input after it, such as `/bk-approve US-001`.
 

@@ -7,12 +7,12 @@ When an approved artifact gets a new version, BuildKeel works out exactly what w
 Every link names the version it was made against, such as `parent: US-001@v1` in a task, and a test plan is approved against a version of the artifact it tests. Something is suspect when the version it is pinned to is older than the latest approved version and a tracked part it relies on differs between the two:
 
 - A **test case** relies on what its `covers:` line names. It is suspect when a criterion it covers changed or was removed. A test case covering only `US-001-AC1` is not affected by a change to `US-001-AC2`.
-- A **task, story, epic or bug** relies on all of its parent. It is suspect when any tracked part of the parent changed, an added criterion included.
+- A **task, story, epic or defect** relies on all of its parent. It is suspect when any tracked part of the parent changed, an added criterion included.
 - A **unit** also relies on the documents required of it and above it, such as its epic's design document, as they were when it was started. It is suspect when a tracked part of one of them changed: the design, the decisions, or the architecture, data or interfaces. The versions are kept with the unit's claim while it is in progress, and in its completion record once it is finished.
 - A **design document**, or another document attached to an artifact, relies on all of its artifact, like a child.
 - Two **related artifacts** rely on each other (see [Links between artifacts](#links-between-artifacts)).
 
-Only tracked parts count. In the built-in templates these are the problem, goals and success measures of a business idea, the scope of an epic, the story and acceptance criteria of a user story, the description of a task or bug, the test cases of a test plan, and the design, decisions, architecture, data and interfaces of a design document. Summaries and notes never make anything suspect, and neither does a change in spacing, line wrapping or the order of entries: entries are matched by their IDs. A template can mark other sections and fields as tracked; see [Process and templates](process-and-templates.md).
+Only tracked parts count. In the built-in templates these are the problem, goals and success measures of a business idea, the scope of an epic, the story and acceptance criteria of a user story, the description of a task or defect, the test cases of a test plan, and the design, decisions, architecture, data and interfaces of a design document. Summaries and notes never make anything suspect, and neither does a change in spacing, line wrapping or the order of entries: entries are matched by their IDs. A template can mark other sections and fields as tracked; see [Process and templates](process-and-templates.md).
 
 The plan of an epic or a business idea can cover stories or epics that no link pins. When such a plan is approved, its approval record notes the version of each one its test cases cover (`pins`), and those count the same way.
 
@@ -87,7 +87,7 @@ The preview changes nothing. A finished unit's commits and files are listed so y
 
 From the moment the new version is approved:
 
-- the session report names what is suspect, at the start of each session;
+- starting, approving or finishing work names what is suspect;
 - [`/bk:status`](status.md) marks each suspect in the tree and lists them all;
 - starting a unit is refused while it or anything above it is suspect;
 - finishing a story or an epic is refused while anything under it is suspect;
@@ -127,7 +127,7 @@ Claude then goes through them one at a time. For each, it shows the suspect with
 
 - **Still valid** keeps it as it is. BuildKeel writes a re-pin record saying who reviewed it against which version, commits it on its own in the spec repo as `repin: TK-001 to US-001 v2`, and it is no longer suspect.
 - **Needs change** opens its next version as a draft, with its parent link moved to the new version; for a test case, the next version of its plan. Claude can make the change with you. It stays suspect until that version is approved. A finished unit's new version can then be started again to change its code.
-- A **bug** has no versions. For an open bug, needs change means updating its file with you, such as what it expects: saving it moves it to the new version and records the decision, in one commit, and it stays suspect until then. For a finished bug, whose fix may no longer hold, BuildKeel records a new bug to check it, naming the old one and the new version, and the finished bug is no longer suspect.
+- A **defect found while building** has no versions (a reported defect is versioned like any artifact). For an open one, needs change means updating its file with you, such as what it expects: saving it moves it to the new version and records the decision, in one commit, and it stays suspect until then. For a finished defect, whose fix may no longer hold, BuildKeel records a new defect to check it, naming the old one and the new version, and the finished defect is no longer suspect.
 
 A unit in progress that becomes suspect is decided before it is finished: `/bk:done` refuses it and names `/bk:impact`. Still valid lets it finish at once; needs change opens its next version, which it is finished against once approved. See [Finishing a unit](finishing-a-unit.md).
 
@@ -153,8 +153,8 @@ decidedAt: 2026-10-02T09:30:00Z
 | `from`, `to` | The version it was built against, and the version it counts as built against from now on. |
 | `decidedBy` | The git identity set for the spec repo. |
 | `decidedAt` | When, in UTC. |
-| `decision` | `needs-change` for a bug that was changed to match, or followed up; not present for still valid. |
-| `followUp` | For a finished bug that needs change: the new bug recorded to check it. |
+| `decision` | `needs-change` for a defect that was changed to match, or followed up; not present for still valid. |
+| `followUp` | For a finished defect that needs change: the new defect recorded to check it. |
 
 Like approval and completion records, re-pin records are written once and never changed. Decisions made on different branches of the spec repo are separate files, so they merge without conflict; if two name different versions, the newer one counts.
 
@@ -164,6 +164,7 @@ In a Spec-driven tree (see [The two modes](modes.md)), what code and tests are b
 
 - **Tests** depend on the requirement of the scenario they are tagged with, at the version in force when the change they were written for was archived (its completion record lists them).
 - **An archived change** depends on each requirement it added or modified, at the version its archiving wrote.
+- **An open defect** linked to a requirement, such as `requirement: AUTH-R3@v1`, depends on it at the version it names. It is decided in its own file, not with a re-pin: Claude asks whether it still applies, and saves the file naming the new version, or the defect is closed. See [Defects and ad-hoc units](defects-and-adhoc.md#in-a-spec-driven-tree).
 
 When a later version modifies or removes one of those requirements, compared by ID, what depends on it becomes suspect, with its commits and files. A new name for a requirement, or wording outside requirements, is not a change. What relies only on other requirements is left alone.
 

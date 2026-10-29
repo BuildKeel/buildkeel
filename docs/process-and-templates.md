@@ -1,6 +1,6 @@
 # Process and templates
 
-BuildKeel works through a process: a chain of stages from a business idea down to the work you build, the documents each stage needs, and a template for every kind of artifact. The default process needs no setup. When your team needs something different, you can rename stages, add your own, choose the documents each stage requires and add your own kinds of document, change ID prefixes, choose how strictly each gate applies, and change templates.
+BuildKeel works through a process: a chain of stages from a business idea down to the work you build, the kinds of work at each stage, the documents each needs, and a template for every kind of artifact. The default process needs no setup. When your team needs something different, you can rename stages, add your own, hold several kinds of work at one stage, choose the documents each requires and add your own kinds of document, change ID prefixes, choose how strictly each gate applies, and change templates. Setup asks about each of these, one at a time: see [Setting up a Full SDLC tree](setting-up-full-sdlc.md).
 
 ## The default process
 
@@ -14,7 +14,7 @@ Business idea → Epic → User story → Task
 | Epic | A body of work that delivers part of an idea | `EP` | `EP-01` |
 | User story | One piece of user-facing behavior, with acceptance criteria | `US` | `US-001` |
 | Task | Part of a story, built in one code repository (optional) | `TK` | `TK-001` |
-| Bug | A defect, attached to the work it was found in or standalone | `BUG` | `BUG-001` |
+| Defect | Code that does not do what was agreed: attached to the task or story where it was found, or, when reported, to the work it affects (a story by default) | `DEF` | `DEF-001` |
 | Ad-hoc unit | A small change, recorded so every commit traces to something | `AH` | `AH-001` |
 
 Every artifact in the chain can have a **test plan** and a **design document**: see [Documents attached to a stage](#documents-attached-to-a-stage).
@@ -89,14 +89,20 @@ Commands and output then call it a tech spec, and it is checked and required exa
 
 ### Setting up the process
 
-When `/bk:init` creates a Full SDLC spec tree, it shows the default process as a table: the stages with their first IDs and the documents each requires, the bug and ad-hoc prefixes, each gate's mode, and how a task's own test plan is kept. Use it as it is, or describe your team's process in your own words, all at once: Claude works out the stages, required documents, your own documents, ID prefixes, gate modes and task plans from it, and shows the table again. Anything the process cannot express is named, with the closest setting, rather than dropped. What you confirm is written to `buildkeel.yaml`. You can change it later in the same file.
+When `/bk:init` creates a Full SDLC spec tree, it shows the default process as a table and asks whether your team uses it as it is. If not, you describe how your team works, and Claude asks about each topic your description leaves out, one at a time, then settles a template for each stage, kind or document you added. What you confirm is written to `buildkeel.yaml`, with the templates, together. [Setting up a Full SDLC tree](setting-up-full-sdlc.md) walks through every question, with three complete processes. You can change the process later in `buildkeel.yaml`.
+
+## Seeing and changing your settings
+
+Run `/bk:settings` at any time, or ask Claude "what's our process?", to see how the repository is set up: the mode, where the spec tree lives, the process table with the documents each stage requires and the gates, and each template with where it comes from, the tree's own, your organization's or BuildKeel's built-in one. Claude then offers to show any template in full. It changes nothing. See [/bk:settings](commands.md#bksettings).
+
+BuildKeel does not change the settings after setup. To change one, edit `buildkeel.yaml` or a file in `templates/` in the spec tree, and commit the change with the spec tree so your team gets it. Take care with a tree that already holds artifacts: a changed prefix applies to new IDs only, and a stage, kind or required document you remove or add applies to the artifacts already there. Run validation afterwards; it reports what no longer fits, such as an added stage with no template.
 
 ## Changing the process
 
-The process is set in the `process` section of `buildkeel.yaml`. Everything in it is optional: what you leave out keeps its default. This example uses every setting:
+The process is set in the `process` section of `buildkeel.yaml`. Everything in it is optional: what you leave out keeps its default. For example:
 
 ```yaml
-format: 1
+format: 3
 process:
   chain:
     - type: idea
@@ -131,25 +137,70 @@ Add a stage of your own between the business idea and the user story, such as a 
 - `dir`: the directory its artifacts live in (the type when left out).
 - `name`: what your team calls it (the type when left out).
 
-An added stage needs a template: add one as `templates/capability.md` in your spec tree (see [Using your own template](#using-your-own-template)). Validation reports a stage that has none.
+An added stage needs a template, `templates/capability.md` in your spec tree (see [Using your own template](#using-your-own-template)). Setup settles it with you when you add the stage there; when you add one later, add its template too. Validation reports a stage that has none.
 
 The stage is part of the chain like any other. A story's parent is now a capability, and a capability's an epic: approving a story whose parent is still a draft is refused, starting work under a capability that is not approved is refused, and a change to an approved capability makes the stories under it suspect. An added stage is not worked on directly: like an epic, it can have a test plan covering the stories under it and their criteria, and it is finished with `/bk:done CAP-01` once everything under it is done.
 
-Stages go between the business idea and the user story only. Work is done on stories, tasks, bugs and ad-hoc units, so nothing is added below a story.
+Stages go between the business idea and the user story only. Work is done on stories, tasks, defects and ad-hoc units, so nothing is added below a story.
 
-### ID prefixes
+### Kinds within a stage
 
-Each type has its own prefix and its own number sequence, so the first epic is `EP-01` and the first story is `US-001`. To change a prefix or the number of digits, set `prefix` and `width` on the stage, or under `bug` and `adhoc`:
+A stage can hold more than one kind of work. List them under the stage's `kinds`:
 
 ```yaml
 process:
-  bug:
+  chain:
+    - type: idea
+    - type: epic
+    - type: story
+      kinds:
+        - type: feature
+          prefix: FEAT
+          requires: [test-plan, design]
+        - type: enhancement
+          prefix: EN
+    - type: task
+```
+
+The stage's own fields describe its own kind, here the user story. Each kind in `kinds` takes the same settings as a stage you add: `type`, `prefix` (required), `width`, `dir` (the type when left out), `name` and `requires` (the stage's own when left out).
+
+Each kind is an artifact type of its own: numbered in its own sequence (`US-001`, `FEAT-001`, `EN-001`), drafted from its own template (`templates/feature.md`), with its own required documents. It behaves as its stage does: a feature is approved, tested, built and finished as a user story is, a task can sit under any kind at the story stage and takes its test cases, and a change to a feature makes the work under it suspect. Any kind at the stage above is a valid parent.
+
+When you capture new work, Claude proposes the kind of each new artifact from where the work came from, such as an enhancement for an improvement to an existing screen, and you confirm or change it before anything is drafted. A kind needs a template of its own, like an added stage, and every prefix must differ from every other kind's and unit's.
+
+### ID prefixes
+
+Each type has its own prefix and its own number sequence, so the first epic is `EP-01` and the first story is `US-001`. To change a prefix or the number of digits, set `prefix` and `width` on the stage, or under `defect` and `adhoc`:
+
+```yaml
+process:
+  defect:
     prefix: DEF
 ```
 
 - Every type needs its own prefix. Prefixes are 1 to 8 capital letters or digits, starting with a letter.
 - A changed prefix applies only to artifacts numbered afterwards. IDs already given never change.
 - The sequence carries on: after `US-007`, the next story numbered with the prefix `FEAT` is `FEAT-008`, so no number is used twice for one type.
+
+### Defects in the chain
+
+A defect found while building sits under the task or story where it was found, and needs no approval. A defect that users, customers or testers report is planned work: it sits under the work it affects and is approved before work on it starts. By default that is a user story. To allow other kinds, such as features beside user stories, list them under `defect`:
+
+```yaml
+process:
+  chain:
+    - type: idea
+    - type: epic
+    - type: story
+      kinds:
+        - type: feature
+          prefix: FEAT
+    - type: task
+  defect:
+    parents: [story, feature]
+```
+
+Each one names a stage or a kind of your process; validation reports one that is not. See [Defects and ad-hoc units](defects-and-adhoc.md).
 
 ### Gate modes
 
@@ -240,7 +291,7 @@ sections:
 | `type` | `text` (the default), `list` such as `[src/reset/, src/email/]`, or `link`: another artifact's ID and version, such as `EP-01@v1`. |
 | `tracked` | Whether a change to it makes work built on this artifact need review. |
 
-Every artifact also has an `id` field, which BuildKeel manages. Every built-in template offers a `scope` field: the paths in the code the artifact covers, such as `[src/reset/]`. A task names the paths it will touch; a story or epic that describes code from before BuildKeel names the code it covers. BuildKeel uses scopes to say which artifacts describe a file, to warn when work strays outside them, and to suggest where a standalone bug belongs.
+Every artifact also has an `id` field, which BuildKeel manages. Every built-in template offers a `scope` field: the paths in the code the artifact covers, such as `[src/reset/]`. A task names the paths it will touch; a story or epic that describes code from before BuildKeel names the code it covers. BuildKeel uses scopes to say which artifacts describe a file, to warn when work strays outside them, and to suggest where a standalone defect belongs.
 
 ### Sections
 
@@ -367,11 +418,11 @@ To change a template, copy the built-in one into a `templates/` folder at the ro
 
 BuildKeel uses your template in place of the built-in one for that type. Types you do not override keep the built-in template. When your organization keeps shared templates, BuildKeel looks in your spec tree first, then in the organization's templates, then in its built-in ones; see [Organization templates](organization-templates.md).
 
-The built-in templates are `idea.md`, `epic.md`, `story.md`, `task.md`, `test-plan.md`, `design.md`, `bug.md` and `adhoc.md`.
+The built-in templates are `idea.md`, `epic.md`, `story.md`, `task.md`, `test-plan.md`, `design.md`, `defect.md` and `adhoc.md`.
 
 A Spec-driven tree has four more of its own: `capability.md`, `proposal.md`, `spec-change.md` and `tasks.md`, overridden the same way. A change's design uses `design.md`. A Full SDLC tree never falls back to these four, so a stage you add with one of their names still needs its own template. See [Capability specs](capability-specs.md).
 
-A stage you add has no built-in template, so it needs one of its own, named after its type. For the capability stage in the example above, `templates/capability.md`:
+A stage or kind you add has no built-in template, so it needs one of its own, named after its type. Setup settles each with you: Claude drafts it from the closest built-in template, or you provide a file, which BuildKeel checks against the template format before using it. For the capability stage in the example above, `templates/capability.md`:
 
 ```markdown
 ---

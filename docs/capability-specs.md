@@ -50,10 +50,10 @@ Every capability has a short code, such as `AUTH`. Its requirements are numbered
 
 IDs are given when an item is first written, and they never change. A requirement keeps its ID when it is renamed or reworded, so links and test tags stay valid. Spec changes name existing requirements by ID.
 
-- **Numbers come from the tree's counter**, the same counter approvals, bugs and ad-hoc units use, so two people adding requirements to `AUTH` at once never get the same number. One save takes every number it needs in a single step. Claude writes a new item as `AUTH-R{{new}}` and BuildKeel puts in the number when it saves.
+- **Numbers come from the tree's counter**, the same counter approvals, defects and ad-hoc units use, so two people adding requirements to `AUTH` at once never get the same number. One save takes every number it needs in a single step. Claude writes a new item as `AUTH-R{{new}}` and BuildKeel puts in the number when it saves.
 - **Numbers are never reused**, even when a change is discarded: a requirement its change added is never numbered again.
 - **A capability's code** is proposed by Claude from the capability's name, and you can ask for another before it is saved. It never changes after. The code is reserved in the counter, so two changes cannot create the same capability. If another change already holds it, BuildKeel says which one.
-- **Offline**, when the counter cannot be reached, a new change, requirement or scenario gets an ID with a random suffix instead of a number, such as `AUTH-Rk3x9`, as bugs do. It is just as permanent. A new capability cannot be created offline, because its code must be reserved; the rest of the change can still be drafted, and the capability added once the counter can be reached.
+- **Offline**, when the counter cannot be reached, a new change, requirement or scenario gets an ID with a random suffix instead of a number, such as `AUTH-Rk3x9`, as defects do. It is just as permanent. A new capability cannot be created offline, because its code must be reserved; the rest of the change can still be drafted, and the capability added once the counter can be reached.
 
 ### Setting the prefixes
 
@@ -66,7 +66,7 @@ process:
     width: 4
 ```
 
-The next change is then `RFC-0012`, say, and existing changes keep their IDs. The letters in requirement and scenario IDs, `R` and `S`, are set in the capability template, and the spec change template must use the same ones; validation reports it when they differ. Bug and ad-hoc prefixes are set as in Full SDLC, under `process.bug` and `process.adhoc`. IDs are always a prefix and a number.
+The next change is then `RFC-0012`, say, and existing changes keep their IDs. The letters in requirement and scenario IDs, `R` and `S`, are set in the capability template, and the spec change template must use the same ones; validation reports it when they differ. `/bk:init` asks about all of this when it creates the tree, with examples, and writes what you choose: see [Setting up a Spec-driven tree](setting-up-spec-driven.md#4-numbering). Defect and ad-hoc prefixes are set as in Full SDLC, under `process.defect` and `process.adhoc`. IDs are always a prefix and a number.
 
 ## Versions
 

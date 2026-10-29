@@ -37,6 +37,7 @@ For installing in one project only, updating and removing, see [Install in Claud
 - **Shows what a change affects.** Change a requirement and see which tests, work and code are now in question.
 - **Keeps work in order, when you want it.** In Full SDLC, the agent does not start on a story that is not approved, or one whose requirements changed after it was planned.
 - **Leaves the conversation free.** BuildKeel steps in when you run one of its commands, or when the agent is about to change code. Until then the agent is a thinking partner: it lays out options, trade-offs and pitfalls before asking, and gives its sources.
+- **Fits how your team works.** Setup asks about your process one topic at a time: your stages, the kinds of work at each, such as features and enhancements beside user stories, your ID numbering, the documents each needs and how strict each check is. Nothing is assumed: every template your process needs is drafted or brought in, and agreed, before anything is written.
 - **Works on code you already have.** Existing code is described as work touches it, or all at once when you choose, from the code and your existing tickets and pages, confirmed by people.
 
 ## How it works
@@ -65,19 +66,20 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 |---|---|
 | `/bk:init` | Set up a spec tree, Spec-driven or Full SDLC, or point this repository at an existing one |
 | `/bk:capture` | Turn what you discussed into a change, or the artifacts your process needs, agreed step by step or all at once |
-| `/bk:new` | Draft a change or an artifact, break a parent down, or record a bug |
+| `/bk:new` | Draft a change or an artifact, break a parent down, or record a defect |
 | `/bk:onboard` | Document code from before BuildKeel, area by area |
 | `/bk:approve` | Full SDLC: validate and approve an artifact, or a whole plan in one review |
 | `/bk:build` | Start a change or a unit of work and build it: all of it, the next task only, or set up to work together; a small change described in words becomes an ad-hoc unit |
-| `/bk:done` | Review and archive a change, or check the tests and record what was built; close a bug that is not a defect |
+| `/bk:done` | Review and archive a change, or check the tests and record what was built; close a defect that turns out not to be one |
 | `/bk:status` | Show the tree, work in progress, coverage gaps, what is not pushed and what to do next |
+| `/bk:settings` | Show how the repository is set up: the mode, the process and its gates or the numbering, and the templates |
 | `/bk:impact` | Show what a change affects and resolve it |
 | `/bk:stats` | Show your own usage, kept on your machine |
 | `/bk:migrate` | Move a Spec-driven tree to Full SDLC, or upgrade a spec tree to a newer format |
 
 ## Documentation
 
-Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
+Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. The setup guide for each mode explains every question setup asks: [Setting up a Spec-driven tree](docs/setting-up-spec-driven.md) and [Setting up a Full SDLC tree](docs/setting-up-full-sdlc.md). On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
 
 ## License
 

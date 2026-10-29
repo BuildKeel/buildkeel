@@ -8,13 +8,15 @@ Finish a BuildKeel unit with the user. Finishing writes a permanent record of wh
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end for a change.
 
 ## Choose the unit
 
 If the user named a unit above, use it.
 
-If the user typed nothing, ask straight away, before calling any tool: "What do you want to finish?" Offer the choices with your tool for asking a question with choices, if you have one, so the user can pick with the arrow keys and Enter:
+If the user typed nothing, ask straight away: "What do you want to finish?" Offer the choices with your tool for asking a question with choices, if you have one, so the user can pick with the arrow keys and Enter:
 
 1. **The active unit in this working tree** (the default, listed first).
 2. **Another unit, or a story or epic whose work is all done: type its ID.** If they pick this, ask for the ID.
@@ -30,11 +32,11 @@ A story built through tasks, an epic, or a stage the team added above its storie
    - **Not the active unit, or no active unit:** show the message and its fix.
    - **A story or epic refused because work under it is open:** show every open unit with its fix, and where each test case stands. Offer to start the first open unit with /bk:build.
    - **Ready:** show what finishing will record: the commits, the files, each test case's result, and any test cases left for the story. For a story or epic: the units under it and where each test case passed.
-   - **A standalone bug:** the result also says which stories its changes belong to. Ask where to attach it, with your tool for asking a question with choices: **the story it suggests** (the default), then each task it names, then **leave it standalone**. Pass the chosen ID in `attach` when you finish.
+   - **A standalone defect:** the result also says which stories its changes belong to. Ask where to attach it, with your tool for asking a question with choices: **the story it suggests** (the default), then each task it names, then **leave it standalone**. Pass the chosen ID in `attach` when you finish.
 
-## A bug that is not a defect
+## A defect closed without a fix
 
-When the unit is a bug, offer closing it without a fix beside finishing it, with your tool for asking a question with choices, whether or not it is started: **Finish <ID>** (the default when its regression test passes, or when the user has not said it is not a defect) or **Close without a fix**, for a bug that turns out not to be a defect (a duplicate, one that cannot be reproduced, behavior that works as intended, or a test that was wrong; the default when the user says so). To close, ask for the reason with the same tool, then for a duplicate which bug it duplicates, and for an optional note in the user's words. Call `finish_work` with `close` (`reason`, `duplicateOf`, `note`) and without `apply`, show what it says with the bug's title, and ask the user to confirm. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Only when they confirm, call it again with `apply: true`. Never close a bug the user has not confirmed in this conversation. When the test was wrong, offer to correct the test case as a new version of its test plan.
+When the unit is a defect, offer closing it without a fix beside finishing it, with your tool for asking a question with choices, whether or not it is started: **Finish <ID>** (the default when its regression test passes, or when the user has not said it is not one) or **Close without a fix**, for a defect that turns out not to be one (a duplicate, one that cannot be reproduced, behavior that works as intended, a test that was wrong, or a change in behavior: the code does what the spec says, and the spec is what must change; the default when the user says so). To close, ask for the reason with the same tool, then for a duplicate which defect it duplicates, for a change in behavior the change, version or item that takes it over (draft it first if there is none yet, such as a change, or a story's next version, with /bk:new), and for an optional note in the user's words. Call `finish_work` with `close` (`reason`, `duplicateOf`, `takenOverBy`, `note`) and without `apply`, show what it says with the defect's title, and ask the user to confirm. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Only when they confirm, call it again with `apply: true`. Never close a defect the user has not confirmed in this conversation. When the test was wrong, offer to correct the test case as a new version of its test plan.
 
 ## Confirm
 
@@ -48,7 +50,7 @@ Ask the user, the default first, with what the result said in your reply. Show i
   1. **Finish <ID>** (the default).
   2. **Stop, and do not finish yet.**
 
-Only when the user confirms, call `finish_work` again with `apply: true` (and the same `id` if you passed one), with `exclude` listing the IDs of any commits they left out, and with `attach` when they chose where to attach a standalone bug.
+Only when the user confirms, call `finish_work` again with `apply: true` (and the same `id` if you passed one), with `exclude` listing the IDs of any commits they left out, and with `attach` when they chose where to attach a standalone defect.
 
 ## Afterwards
 
@@ -70,4 +72,4 @@ A change is finished by archiving it, and need not be the active unit. With none
    - After any commit or change, call `finish_work` without `apply` again, and ask on the new preview, never on the old one.
 4. **Finish.** Call `finish_work` with `apply: true` as the result says. When the change was finished anyway with tasks or gaps left open, the result lists them: offer a follow-up change holding them. If the user agrees, draft it as /bk:capture drafts a change, from its proposal, through the review; if not, they stay recorded with the archived change.
 
-Bugs and ad-hoc units finish as above.
+Defects and ad-hoc units finish as above.

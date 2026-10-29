@@ -1,5 +1,5 @@
 ---
-description: "BuildKeel: Start a unit and build it: a task, story, bug or change by its ID, the ready units under a parent, or a small change described in words."
+description: "BuildKeel: Start a unit and build it: a task, story, defect or change by its ID, the ready units under a parent, or a small change described in words."
 argument-hint: "[an ID, a parent's ID, or what to change in words], e.g. TK-001, US-001, or \"fix the footer link\""
 disable-model-invocation: true
 ---
@@ -8,16 +8,18 @@ Start a BuildKeel unit and build it with the user. Every code change belongs to 
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end in place of "Build a single unit" and "Build what is ready under a parent".
 
 ## What to build
 
 What the user typed decides it:
 
-- **A unit's ID**, such as a task, a story built without tasks, a bug, an ad-hoc unit or a change: start it and build it, as "Start it" and the sections after it say.
+- **A unit's ID**, such as a task, a story built without tasks, a defect, an ad-hoc unit or a change: start it and build it, as "Start it" and the sections after it say.
 - **A parent's ID**, such as a story built through tasks or an epic: build the units ready under it, as "Build what is ready under a parent" says.
 - **Words**, such as "fix the footer link": see "Words in place of an ID".
-- **Nothing:** ask straight away, before calling any tool: "What should I build?" Offer the choices with your tool for asking a question with choices, if you have one:
+- **Nothing:** ask straight away: "What should I build?" Offer the choices with your tool for asking a question with choices, if you have one:
   1. **The active unit** (the default, listed first), named with its ID and title: offer it only when this working tree has one.
   2. **Show what can be started** (the default when there is no active unit). Call `query` with `view: "startable"` and show its result as it is. Then ask which to build, the ready ones offered with the one you recommend first, and, in Full SDLC, **Everything that is ready** as a choice too. If nothing is ready, say what is in the way and suggest the next step, such as approving with /bk:approve, and stop.
   3. **Type an ID or describe the change.** If they pick this, ask for it.
@@ -29,7 +31,7 @@ Call `query` with `view: "startable"`, and in a Spec-driven tree also with `view
 - **When a title matches:** **Build <ID> "<title>"** for the best match (the default), then any other close match, then **Record a new ad-hoc unit "<title>"**, with the title you propose from the words. Record no ad-hoc unit unless the user picks it.
 - **When nothing matches:** **Record the ad-hoc unit "<title>" and build it** (the default), with the title you propose, or **Type another description**.
 
-The title says what changes in a few words, such as "Fix the footer link". If the change is a defect in work that was planned and tested, suggest recording it as a bug with /bk:new bug instead, and go on as the user prefers.
+The title says what changes in a few words, such as "Fix the footer link". If the change is a defect in work that was planned and tested, suggest recording it with /bk:new defect instead, and go on as the user prefers.
 
 ### Recording an ad-hoc unit
 
@@ -76,7 +78,7 @@ To build it: write the code and the tests for its test cases, each test named wi
 
 Each unit still goes through its own start gate, gets its own branch, commits and completion record, and is tested before it is finished.
 
-Call the BuildKeel `query` tool with `view: "startable"`. Take the units ready to start, at the lowest level: tasks, and stories that have no tasks (with a parent named, only those under it). Leave out bugs and ad-hoc units unless the user asks for them. Order them by parent, then by ID, so that a story's tasks are built in order.
+Call the BuildKeel `query` tool with `view: "startable"`. Take the units ready to start, at the lowest level: tasks, and stories that have no tasks (with a parent named, only those under it). Leave out defects and ad-hoc units unless the user asks for them. Order them by parent, then by ID, so that a story's tasks are built in order.
 
 If nothing is ready, show what is waiting and why, as `query` gave it, suggest the next step (such as approving with /bk:approve), and stop.
 
@@ -104,13 +106,22 @@ A run stops and asks the user:
 
 - when a gate refuses: show the result as it is;
 - when a test fails and still fails after a real attempt to fix it: name the failing test case and what you tried, and ask how to go on;
-- when a requirement is unclear (two readings, a missing case, a conflict with the code): ask one question, with your recommendation. Never guess a requirement.
+- when a requirement is unclear (two readings, a missing case, a conflict with the code): ask one question, with your recommendation. Never guess a requirement;
+- when agreed behavior looks wrong, as "Behavior that looks wrong" says.
 
 Do not create or edit spec tree files yourself: the BuildKeel tools write every record.
 
+## Behavior that looks wrong
+
+When what was agreed looks wrong while you build (a requirement, an acceptance criterion or a test case), stop and ask, whether or not the build started with this command: name it by ID, and say why it looks wrong. Offer **Keep it as agreed** and **Change it**, your recommendation first. Never build something else, and never edit the spec, without the answer.
+
+- **Kept:** build it as agreed, and do not raise it again in this build.
+- **Changed:** change the spec first. Save the whole changed story (or task) with `save_draft`, which opens its next version, and show it as any draft. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Then call the BuildKeel `impact` tool with its `id`: the preview names what the new version would make suspect, such as tasks and test plans. Draft the next version of each that must change too, and offer the set for approval with /bk:approve. Build nothing more on the unit until the set is approved; when the start gate is set to warn and the user says to carry on, go on, saying that you build against versions not yet approved. Once the set is approved, the unit is suspect: with the user's agreement, record that it now builds against the new versions with `resolve_suspect` (`decision: "still-valid"`), and go on against them.
+- **In code nothing describes yet** (`query` with `view: "describes"` finds no artifact): draft its version 0 first, describing the code as it is, as /bk:new does, then the change on top of it.
+
 ## In a Spec-driven tree
 
-The units are open changes, bugs and ad-hoc units, and no gate runs. Bugs and ad-hoc units are built as "Build a single unit" says. A change is built task by task, in order, on the change's branch:
+The units are open changes, defects and ad-hoc units, and no gate runs. Defects and ad-hoc units are built as "Build a single unit" says. A change is built task by task, in order, on the change's branch:
 
 1. **The change.** Start it as "Start it" says, unless it is already active: `start_work` starts it, or says which working tree on this machine already holds it. If nothing can be started, suggest drafting a change with /bk:capture.
 2. **Choose how to build.** Sum up the change in a few lines, with its title: what the proposal changes, and the requirements it adds, modifies or removes by ID. Show its unticked tasks in order, each with how it is verified, and say how the run goes: each task is built, tested and ticked in turn, and the run stops to ask when a test fails and cannot be fixed, a requirement is unclear, or what was agreed would change. Then ask, with the list in that same reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices:
@@ -120,5 +131,6 @@ The units are open changes, bugs and ad-hoc units, and no gate runs. Bugs and ad
 
    When every task is ticked already, say so instead, and that the user can run /bk:done to finish the change.
 3. **Each task in turn.** Write the code and its tests, each test named with the scenario ID it checks in square brackets, one ID per bracket, such as `[AUTH-R3-S1]`. Commit as you go, each message ending with `BuildKeel-Unit: <change ID>`, and add `BuildKeel-Task: <task number>` on the next line when a commit does exactly that one task. Run the tests with a JUnit XML report and record it with `test_results`. Once the task's stated verification passes, tick it with `save_draft`, `type: "tasks"`, the change's `id` and `tick` set to its number, such as `["2.3"]`, and say so in a line, with the progress the result gives. Never ask before ticking. A failing test you cannot fix, or an unclear requirement, stops the run, as "When a run stops" says.
+   - **Behavior that looks wrong** stops the run too: name the requirement or scenario and why, and ask **Keep it as agreed** or **Change it**, your recommendation first. Kept: build it as agreed. Changed: a requirement of this change's own spec change is edited in place, as the next point says, with the follow-on edits to the proposal, design and tasks. A requirement as an archived change left it is changed through this change, with a spec change modifying it (the default), or through a separate change drafted with /bk:capture, as the user prefers. In code nothing describes yet, document it first as version 0 of a capability spec, then change it.
    - **A change to what was agreed** stops the run too: a requirement or scenario to add, change or drop, a task's wording, or a task to add or remove. Say which file, what changes and why, show the change in full, and ask. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Before adding a requirement to a change with more than half its tasks ticked, ask once first whether it belongs in this change or a new one, and draft nothing until the user answers. Save it only once the user agrees, then go on: one requirement with `save_draft`, `type: "spec-change"`, the change's `id`, its `capability` and `requirement` (`id` and `content` to replace it, `section` and `content` to add one, `id` and `drop` to take one out); a task list's wording as the whole file. Never change the spec on your own initiative, not even to make your own check pass.
 4. **At the end**, show each task with its commits and whether it is ticked, or where the run stopped and why. When the last tick's result says every task is done, pass on that the user can run /bk:done to finish the change. Do not finish the change yourself: /bk:done reviews the code against the change's requirements before it is archived.
