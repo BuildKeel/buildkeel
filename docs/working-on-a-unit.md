@@ -21,13 +21,16 @@ Not ready yet (1):
 - TK-002 task "Reset email": The test plan US-001-TP is not approved.
 ```
 
+Units paused with `/bk:pause` are listed first, to resume. Building a paused unit resumes it with its brief; one paused by someone else, or on another machine, is resumed only once you confirm taking it over (see [Pausing and resuming](pausing-and-resuming.md)).
+
 Starting a unit:
 
 1. checks that it is ready (see below);
 2. switches to its branch, `bk/<ID>-<title>`, such as `bk/TK-001-reset-endpoint`;
 3. claims it on this machine, so another working tree cannot start it too;
 4. makes it the **active unit** of this working tree;
-5. loads its context for Claude.
+5. loads its context for Claude;
+6. refreshes the read-only copy of the glossary, practices and ADRs in the code repository, when it has changed, in a commit of its own (see [The read-only copy](glossary-practices-adrs.md#the-read-only-copy-in-your-code-repository)).
 
 ### Words in place of an ID
 
@@ -37,7 +40,8 @@ Describe the work instead of naming it, such as `/bk:build fix the footer link`,
 
 Once the unit is started, Claude shows what it would build: a unit's acceptance criteria and test cases, a change's unticked tasks with how each is verified, or the ready units under a parent. Then it asks, in plain text:
 
-- **Build them all** (the default): Claude builds, tests and commits everything in turn. A single unit is offered as **Build it**.
+- **Build them all, each in a fresh agent** (the default when the session can start agents): each task is built by a fresh agent given only its own context, then reviewed by fresh reviewers, with this conversation running the build (see [Building with agents](building-with-agents.md)).
+- **Build them all here** (the default when it cannot, with the reason): Claude builds, tests and commits everything in turn, in this conversation. A single unit is offered as **Build it**.
 - **Build the next one only**: Claude builds the first, then stops and names the next.
 - **Set it up and work together**: the unit is active on its branch with its context loaded, nothing is built, and Claude asks how you want to begin.
 
@@ -138,6 +142,9 @@ A signed token in an emailed link opens the reset form once.
 - Defects attached to the unit or its parent that are neither finished nor closed are listed under **Open defects**, with the test case that found each one. A defect's own context asks for a regression test tagged with its ID; in a Spec-driven tree, it also shows the change that found it, or the requirement it affects as its version states it, with the tests tagged with its scenarios (see [Defects and ad-hoc units](defects-and-adhoc.md)).
 - Every artifact shows the version the context was built from. When a newer version of a parent is approved, the context shows it at once, with a note that the unit was approved against the older one.
 - An artifact at version 0 is marked as describing the code as it was before BuildKeel, with the paths its scope covers, such as `US-E001 v0 describes the code as it was before BuildKeel, in src/reset/.` under **Why**.
+- **Glossary terms used here** lists the glossary entries for the terms the unit and the work above it use, and no others.
+- **Heads-up notes on these files** gives up to five notes earlier work left about the files the unit will change: working notes of units whose commits changed them, notes for the next person from their completion records, notes on the code, and closed threads that point at them, the most specific and most recent first, each with its source.
+- A paused unit's context starts with its brief: where things stood, the decisions and dead ends, and the next step (see [Pausing and resuming](pausing-and-resuming.md)).
 - **Linked code** lists the unit's commits and the files they changed, in every code repository on this machine. For work finished before BuildKeel, these are the commits made before the baseline that name its tracker key, found when its version 0 was approved.
 - The same approved versions always produce exactly the same context. Nothing is summarized on the fly.
 
@@ -160,7 +167,9 @@ At the start of every session, when a session is resumed, and after Claude Code 
 - how to discuss: as a thinking partner, laying out options, trade-offs and pitfalls before asking, in prose, with sources for anything it looks up, recommending only what the evidence supports, and never pushing toward a plan. When you say the discussion has reached a point, Claude asks once whether there is more to explore or you are ready for `/bk:capture`, which only you start;
 - how to treat the spec tree: show anything in full before saving it to the tree, and never add a requirement on its own; check a problem you report against the spec and its code before recording it, and propose whether it is a defect or a change in behavior; and stop and ask when agreed behavior looks wrong while building;
 - the active unit and its branch, followed by its context again, or that no unit is active;
-- your team's names for its stages, when your process renames or adds stages.
+- your team's names for its stages, when your process renames or adds stages;
+- to hold the conversation to precise words, against the team's glossary and the code (see [The glossary](glossary-practices-adrs.md#the-glossary));
+- what is paused, offered once, and a previous conversation left unsaved, offered once for recovery as a thread (see [Pausing and resuming](pausing-and-resuming.md)).
 
 Nothing else is raised at session start, so a question about the code gets a plain answer. Whether the spec tree is behind its remote, what is suspect, and what is not pushed are shown when you start, approve or finish work, and in `/bk:status`.
 
@@ -181,6 +190,86 @@ What BuildKeel remembers about each conversation is kept in `.buildkeel/conversa
 ### Freshness
 
 When a session starts, BuildKeel fetches the spec repo's remote in the background; the session never waits for it. If the local spec tree is behind, you are told how far when you start, approve or finish work, and starting a unit warns about it but goes ahead. If the fetch fails, for example with no connection, you are told the check could not run, and work continues with your local copy. `/bk:status` always shows where the spec repo stands.
+
+## What each task states
+
+Every task states four things, so that whoever builds it, Claude or a fresh agent, needs nothing else:
+
+- **Files**: the files it creates, changes and tests, found from the code.
+- **Uses**: what it takes from earlier tasks, the existing code or a library, each with where it comes from, in brackets at the end: `(from 1.2)` or `(from TK-011)` for an earlier task, `(from src/auth/tokens.ts)` for a file, `(from twilio 4.23.0)` for a library at the version the project depends on.
+- **Delivers**: what it gives later tasks, such as a function's signature, a field or a route.
+- **Verify**: the command that checks it, and what must pass, naming the acceptance criteria or scenarios it covers.
+
+A task that uses and delivers nothing writes `Interfaces: none` in place of Uses and Delivers. In Full SDLC these are sections of the task, required by the built-in task template; a team's own task template must keep them, or validation reports it. In a Spec-driven tree they are lines under each checkbox in `tasks.md`:
+
+```markdown
+- [ ] 1.1 Add the issue time to reset tokens.
+  Files: change src/auth/tokens.ts; test test/auth/tokens.test.ts
+  Uses: ResetToken (from src/auth/tokens.ts)
+  Delivers: issuedAt on ResetToken
+  Verify: npx vitest run test/auth/tokens.test.ts passes for a new and an old token
+```
+
+A new or changed task that leaves one out is not saved:
+
+```
+Nothing was saved.
+- Task 2.1 does not state Verify. Every task states Files, Uses, Delivers and Verify; Interfaces: none may stand for Uses and Delivers when it uses and delivers nothing.
+  To fix: Write each under its checkbox, indented, such as:
+- [ ] 2.1 Refuse reset links older than 30 minutes.
+  Files: change src/auth/reset.ts; test test/auth/reset.test.ts
+  Uses: issuedAt on ResetToken (from 1.1)
+  Delivers: isExpired(token: ResetToken, now: Date): boolean
+  Verify: npx vitest run test/auth/reset.test.ts, where [AUTH-R3-S1] passes
+```
+
+Tasks written before BuildKeel asked for these lines keep working: they are listed for filling in, and never refused for it.
+
+These lines are **Build-ready tasks**, on by default. With `planning.build-ready-tasks: off` in `buildkeel.yaml`, tasks are saved without them, no Built line is written, and parallel runs and the readiness check's "shared interface" sign have nothing to work from. See [Settings](settings.md#planning).
+
+### Backfilling Build-ready tasks
+
+When Build-ready tasks is turned on in a tree that already has tasks, the tasks from before get their lines:
+
+- **Open tasks**, not built yet or ticked in an open change, get their Files, Uses, Delivers and Verify lines as an ordinary edit, shown and agreed like any other.
+- **Finished tasks** are frozen, so they are never edited. Each gets an **as-built record** instead: a new file holding the files and tests its commits changed and what it delivered, labeled as written later.
+
+`/bk:status` says how many finished tasks have neither. Ask Claude to backfill them: it shows each record, says what each task delivered, read from its commits, and writes them in one commit once you agree. Onboarding does the same for the finished tasks it documents, from their linked commits, once their area is approved.
+
+### The Plan check
+
+When tasks are saved, and again in the approval preview in Full SDLC, BuildKeel checks them against each other and against the code: a use that no earlier task delivers, that the named file does not define, or from a library the project does not depend on, or at another version; a use with no source; a file that does not exist and that no task creates; an acceptance criterion or scenario no task's Verify names; a vague line; and tasks that depend on each other in a loop. Each is reported, and none stops a save or an approval:
+
+```
+Worth fixing (nothing is blocked):
+- Task 1.2: it uses expiresAt from 1.1, which does not deliver it.
+  To fix: Add expiresAt to what 1.1 delivers, or name where it really comes from.
+- Task 2.1: "Verify: as needed" is vague: say exactly what is done, or how.
+- The scenario AUTH-R2-S1 "Registered address" is named in no task's Verify.
+  To fix: Name it in the Verify of the task that delivers it, or add a task for it.
+```
+
+The Plan check is on by default; `planning.plan-check: off` turns it off. See [Settings](settings.md#planning).
+
+### The Built line
+
+What a task delivers is a plan: whoever builds it may change a signature when the code needs it. When the task is done, BuildKeel checks what it delivers against its last commit and the files its commits changed, and writes a **Built** line:
+
+- **as planned**, naming the commit: everything it delivers is defined there;
+- **changed**: what was built in place of the plan, with the reason Claude gives;
+- **missing**: something it was to deliver is not there, named;
+- **nothing delivered, as planned**, for a task with `Interfaces: none`.
+
+BuildKeel finds definitions by their patterns in 13 languages: TypeScript, JavaScript, Python, Go, Java, Kotlin, C#, Rust, Ruby, PHP, Swift, Scala and Dart. In C and C++ it says "name found" or "name not found" rather than "missing", and in any other language it looks for the name only, the same way. A route or a command, such as `POST /reset`, is looked for by its text. A test file never counts as where something is defined.
+
+In a Spec-driven tree, ticking a task writes its Built line under it in `tasks.md`:
+
+```
+Ticked 1.1 in CH-002 "Reset links expire": 1 of 3 tasks done. BuildKeel leaves the tick uncommitted, as it does the change's files while it is open: finishing the change commits them with its archive.
+- 1.1: Built: as planned, checked against 2be0bb9
+```
+
+In Full SDLC, `/bk:done` keeps the line in the completion record, and the task's view and context show it beneath what it planned to deliver. Later tasks and reviewers read what was built, not only what was planned.
 
 ## Staying in scope
 
@@ -222,7 +311,7 @@ Each working tree has its own active unit and branch, and commits made in each a
 /bk:build
 ```
 
-Claude lists the units ready to start, at the lowest level (tasks, and stories without tasks), or only those under a story or epic you name, such as `/bk:build US-001`, and asks you once: **Build them all**, **Build the next one only**, or **Set it up and work together**. Then, for each unit in turn, it starts it, writes the code and the tests for its test cases, runs the tests, and finishes it with its own completion record, before going on to the next. Each unit's branch is stacked on the one before, so later units build on the earlier ones' code.
+Claude lists the units ready to start, at the lowest level (tasks, and stories without tasks), or only those under a story or epic you name, such as `/bk:build US-001`, and asks you once: **Build them all, each in a fresh agent**, **Build them all here**, **Build the next one only**, or **Set it up and work together**. Then, for each unit in turn, it starts it, writes the tests for its test cases and records them failing, commits them, writes the code and runs the tests again (see [TDD](tdd.md)), and finishes it with its own completion record, before going on to the next. Each unit's branch is stacked on the one before, so later units build on the earlier ones' code.
 
 The run stops and asks you when a start is refused, a test keeps failing after Claude has tried to fix it, a requirement is unclear, or agreed behavior looks wrong: Claude never guesses a requirement, and never builds something other than what was agreed. When you change the behavior, its new versions are drafted and approved before the build goes on; see [How Full SDLC mode works](how-full-sdlc-works.md#behavior-questioned-while-building). At the end it shows each unit with its branch, commits and record, and the last branch, which holds the whole run.
 
@@ -333,7 +422,7 @@ BuildKeel-Unit: CH-002
 BuildKeel-Task: 1.2
 ```
 
-so a ticked task can be traced to its commits. Each task is ticked once its verification passes, and Claude says so in a line, without asking. The run stops to ask when a test fails and cannot be fixed, a requirement is unclear, agreed behavior looks wrong, or the work needs a change to what you agreed, such as a requirement or a task's wording, which Claude shows you before saving. A changed requirement goes through the change first, and the code follows it; see [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building). Finish the change with `/bk:done` when its tasks are done.
+so a ticked task can be traced to its commits. Each test is written and seen failing before its code, as in [TDD](tdd.md). Each task is ticked once its verification passes, and Claude says so in a line, without asking; ticking writes the task's [Built line](#the-built-line) and saves a summary of the test runs so far in the change's `runs/` folder. The run stops to ask when a test fails and cannot be fixed, a requirement is unclear, agreed behavior looks wrong, or the work needs a change to what you agreed, such as a requirement or a task's wording, which Claude shows you before saving. A changed requirement goes through the change first, and the code follows it; see [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building). Finish the change with `/bk:done` when its tasks are done.
 
 If you ask in words, such as "let's build the rest now", Claude suggests `/bk:build` once. Say "just go ahead" and it builds the tasks anyway, by the same rules; say "not now" and it builds nothing.
 

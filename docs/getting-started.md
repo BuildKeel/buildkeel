@@ -32,7 +32,7 @@ An existing spec tree keeps its own mode, and setup tells you which it is:
 The spec tree follows Spec-driven: capability specs say how the system behaves, and each piece of work is a change to them, with no approvals or gates.
 ```
 
-**3. Whether to stamp your own commits.** While you work on a unit, BuildKeel adds a line such as `BuildKeel-Unit: TK-047` to every commit Claude makes. If you agree, a git hook adds the same line to commits you make yourself. It does nothing when no unit is active. If your repository already manages git hooks with a tool such as husky, lefthook or pre-commit, BuildKeel installs nothing and shows you the lines to add to it.
+**3. Whether to stamp your own commits.** While you work on a unit, BuildKeel adds a line such as `BuildKeel-Unit: TK-047` to every commit Claude makes. A git hook adds the same line to commits you make yourself, unless you choose **Don't stamp them**; **Stamp my commits** is the default. It does nothing when no unit is active. Ask Claude to turn it off or on at any time. If your repository already manages git hooks with a tool such as husky, lefthook or pre-commit, BuildKeel installs nothing and shows you the lines to add to it.
 
 **4. Your process**, for a new Full SDLC spec tree. BuildKeel lists every file and setting it will add, then shows its default process as a table: each stage, and the documents it needs approved before work under it starts.
 
@@ -66,9 +66,9 @@ For a new spec tree in this repository:
 | `specs/buildkeel.yaml` | The spec tree's settings, with this repository registered |
 | `.buildkeel.yaml` | Says which spec tree this repository uses |
 | `.gitignore` | Gains `.buildkeel/`, where BuildKeel keeps local state that is never committed |
-| `.git/hooks/commit-msg` | Only if you chose to stamp your own commits |
+| `.git/hooks/commit-msg` | Unless you chose not to stamp your own commits |
 
-A new tree's `buildkeel.yaml` names its mode, `mode: spec-driven` or `mode: full-sdlc`, in format 3, which a version of BuildKeel from before 0.5.0 opens read-only.
+A new tree's `buildkeel.yaml` names its mode, `mode: spec-driven` or `mode: full-sdlc`, in format 4, which BuildKeel 0.5.0 and earlier open read-only.
 
 For an existing spec tree, your repository gets only `.buildkeel.yaml`, the `.gitignore` entry and, if you chose it, the hook. The spec tree's `buildkeel.yaml` gains an entry for your repository.
 

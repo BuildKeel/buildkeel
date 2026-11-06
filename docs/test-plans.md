@@ -233,6 +233,9 @@ Test results are read from a JUnit XML report, as above, and shown for the activ
 CH-002: 1 of 4 scenarios passes, 1 fails, 2 without a current passing or failing result.
 Read .buildkeel/results.xml: 2 tests, 2 tagged with a scenario. Results are recorded for this working tree only (local results).
 
+TDD:
+- AUTH-R3-S1: passed with no red run on record. If a reason applies (characterization, refactor, no behavior), state it with exceptions; otherwise finishing reports it.
+
 Scenarios of CH-002 (local results):
 - AUTH-R2-S1 Registered address: no tagged test
 - AUTH-R3-S1 Expired link: passed

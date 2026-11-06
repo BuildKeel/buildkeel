@@ -71,15 +71,18 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 | `/bk:approve` | Full SDLC: validate and approve an artifact, or a whole plan in one review |
 | `/bk:build` | Start a change or a unit of work and build it: all of it, the next task only, or set up to work together; a small change described in words becomes an ad-hoc unit |
 | `/bk:done` | Review and archive a change, or check the tests and record what was built; close a defect that turns out not to be one |
+| `/bk:review` | Review the work on a unit or change with fresh reviewers: its spec by ID, its code quality, and tests that try to break it |
+| `/bk:pause` | Pause where you are, to pick it up in a new session or on another machine: the work on a unit or change, or an exploration kept as a thread |
+| `/bk:resume` | Resume paused work, by its ID, or pick from what is paused, the most recent first |
 | `/bk:status` | Show the tree, work in progress, coverage gaps, what is not pushed and what to do next |
-| `/bk:settings` | Show how the repository is set up: the mode, the process and its gates or the numbering, and the templates |
+| `/bk:settings` | Show how the repository is set up: the mode, the process and its gates or the numbering, every feature switch, and the templates |
 | `/bk:impact` | Show what a change affects and resolve it |
 | `/bk:stats` | Show your own usage, kept on your machine |
 | `/bk:migrate` | Move a Spec-driven tree to Full SDLC, or upgrade a spec tree to a newer format |
 
 ## Documentation
 
-Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. The setup guide for each mode explains every question setup asks: [Setting up a Spec-driven tree](docs/setting-up-spec-driven.md) and [Setting up a Full SDLC tree](docs/setting-up-full-sdlc.md). On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
+Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. The setup guide for each mode explains every question setup asks: [Setting up a Spec-driven tree](docs/setting-up-spec-driven.md) and [Setting up a Full SDLC tree](docs/setting-up-full-sdlc.md). On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). For every feature, see [What BuildKeel does](docs/what-buildkeel-does.md), and for every setting you can switch, [Settings](docs/settings.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
 
 ## License
 

@@ -9,7 +9,7 @@
 ## An example
 
 ```
-BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 1)
+BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 4)
 In short: TK-001 is in progress here; 3 units are ready to start; 1 gap in coverage or required documents; 1 approval not pushed; 1 commit with no unit.
 
 Active unit here: TK-001 task "Reset endpoint" on branch bk/TK-001-reset-endpoint.
@@ -156,6 +156,24 @@ Changed outside BuildKeel:
 
 Validation reports the same.
 
+### Work that continues, and what the records show
+
+Seven sections, in both modes:
+
+- **Paused:** units and changes paused with `/bk:pause`, the most recent first, each with who paused it, when, and its next step. See [Pausing and resuming](pausing-and-resuming.md).
+- **Open threads:** explorations kept as threads, not yet captured or dropped.
+- **Missing red runs:** the active unit's test cases whose tests never failed before their code, with no exception stated. See [TDD](tdd.md).
+- **Open review findings:** High and Medium findings not yet fixed, parked or rejected, on any unit or change. See [Reviews](reviews.md).
+- **Learning loop:** the patterns in the records, as [The Learning loop](#the-learning-loop) says.
+- **Spike branches:** the `spike/` branches still around. BuildKeel never merges or deletes them: keep, delete or take from each as you decide, and build what you take through a unit. See [Spikes](exploring-and-capturing.md#spikes).
+- **Finished tasks with no Build-ready lines:** when Build-ready tasks was turned on after tasks were finished, how many have no as-built record yet. See [Backfilling Build-ready tasks](working-on-a-unit.md#backfilling-build-ready-tasks).
+
+### The Learning loop
+
+The Learning loop looks for what recurs in the records, at finish and in status: a kind of finding in three units, a file three defects changed, tests weakened, or a gate check failed, in three units, a decision that was replaced, or three Principal handoffs that failed. Each pattern is shown with the records behind it and what Claude proposes for it: a practice, or a note on the code. Nothing is saved without your agreement, and a pattern you decline is not proposed again until a new record is added to it.
+
+It is on by default. `continuity.learning-loop: off` in `buildkeel.yaml` stops it looking: status and finishing then show no patterns. See [Settings](settings.md#continuity).
+
 ### Ready to start
 
 The units that can be started now, the active unit first. `/bk:build` lists the ones that are not ready yet, each with the reason.
@@ -169,11 +187,11 @@ The last line names `/bk:settings`, which shows how the repository is set up: th
 In a Spec-driven tree (see [The two modes](modes.md)), the overview is about changes and capability specs:
 
 ```
-BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 2)
+BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 4)
 In short: CH-002 is in progress here; 2 open changes; 2 findings in open changes; 4 scenarios with no tagged test; 1 failing; commits with no unit.
 
 Active unit here: CH-002 "Reset links expire" (change) on branch bk/CH-002-reset-links-expire.
-Spec repo: not checked yet in this session.
+Spec repo: up to date at the last check (2026-10-01T09:00:00Z).
 
 Open changes (2):
 - CH-002 "Reset links expire": 1 of 3 tasks done; proposal, spec change AUTH, design, tasks · in progress here
@@ -208,7 +226,7 @@ Ready to start (4):
 - AH-001 ad-hoc unit "Fix typo in sign-in page"
 - DEF-001 defect "Reset email lands in spam"
 
-Offer to review CH-002 now: call finish_work without apply (it writes nothing), review the code against its requirements, scenarios and design, and report as your judgment what is implemented, missing or at odds with the design. Do not finish it unless the user asks.
+Offer to review CH-002 now, with fresh reviewers as /bk:review does: they judge its code against its requirements, scenarios and design, and their findings are recorded on the change. It finishes nothing: do not finish it unless the user asks.
 
 How this repository is set up (the mode, the numbering, the templates): /bk:settings.
 ```
@@ -222,6 +240,6 @@ How this repository is set up (the mode, the numbering, the templates): /bk:sett
 - **Changed outside BuildKeel**: a capability version, or a file of an archived change, edited after it was written.
 - **Ready to start**: open changes, defects and ad-hoc units. No gate applies.
 
-When a change is active, Claude offers to review it: the same review as finishing (see [Finishing a change](finishing-a-unit.md#finishing-a-change)), reported as Claude's judgment, with nothing written.
+When a change is active, Claude offers to review it with fresh reviewers, as `/bk:review` does: the same review as finishing (see [Reviews](reviews.md)), with the findings recorded on the change and nothing finished.
 
 Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`, `/bk-build`.

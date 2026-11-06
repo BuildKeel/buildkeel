@@ -5,6 +5,8 @@ disable-model-invocation: true
 
 Migrate the spec tree with the user: upgrade it to the format this version of BuildKeel uses when an update needs that, or move a Spec-driven tree to Full SDLC. Nothing is written without the user's confirmation.
 
+It starts without the setup check other commands run first: a tree in an older format is one that check would send to /bk:init, and bringing it to the current format is this command's work.
+
 ## Upgrade the format first
 
 Call the BuildKeel `manage` tool with `action: "migrate"`, without `apply`.

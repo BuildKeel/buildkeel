@@ -32,6 +32,8 @@ claude plugin marketplace update buildkeel
 claude plugin update bk@buildkeel
 ```
 
+After an update, if BuildKeel says your spec tree uses an older format, run `/bk:migrate`: it upgrades the tree in one commit, and work in progress carries on. See [Migrating a spec tree](migration.md).
+
 To remove BuildKeel, run `claude plugin uninstall bk@buildkeel`, adding `--scope project` or `--scope local` if you installed it for a repository. To remove its marketplace as well, run `claude plugin marketplace remove buildkeel`.
 
 ## Check that it works

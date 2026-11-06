@@ -1,6 +1,6 @@
 ---
 template: design
-version: 1
+version: 2
 description: How a stage's work is built, and the decisions behind it. Fill in what applies; add an offered section only when the work needs it.
 fields:
   parent: { required: true, type: link }
@@ -11,6 +11,7 @@ sections:
   Design: { required: true, tracked: true }
   Decisions: { tracked: true }
   Risks and trade-offs: {}
+  Approaches: { offered: "The approaches considered, the one chosen and why, and the non-goals and things to avoid, from the conversation only." }
   Architecture: { tracked: true, offered: "The components, how they connect, and where each one runs." }
   Data: { tracked: true, offered: "What is stored, its shape, and how it changes over time." }
   Interfaces: { tracked: true, offered: "The APIs, events and contracts other code relies on." }

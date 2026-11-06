@@ -1,6 +1,6 @@
 # Commands
 
-BuildKeel has 12 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
+BuildKeel has 15 commands. They are the same in both modes, and each adapts to the mode of your spec tree: see [The two modes](modes.md).
 
 | Command | What it does | In Antigravity |
 |---|---|---|
@@ -10,6 +10,9 @@ BuildKeel has 12 commands. They are the same in both modes, and each adapts to t
 | [/bk:approve](#bkapprove) | Approves a draft or a new version after checking it, or a set of drafts in one review. | `/bk-approve` |
 | [/bk:build](#bkbuild) | Starts a unit and builds it: all of it, the next piece only, or set up to work together. | `/bk-build` |
 | [/bk:done](#bkdone) | Finishes a unit: checks its tests, then writes its completion record, or archives a change. | `/bk-done` |
+| [/bk:review](#bkreview) | Reviews the work on a unit or change with fresh reviewers: its spec by ID, its code quality, and tests that try to break it. | `/bk-review` |
+| [/bk:pause](#bkpause) | Pauses where you are, to pick it up in a new session or on another machine: the work on a unit or change, or an exploration, kept as a thread. | `/bk-pause` |
+| [/bk:resume](#bkresume) | Resumes paused work, by its ID, or from a list of what is paused, the most recent first. | `/bk-resume` |
 | [/bk:status](#bkstatus) | Shows the overview: the tree, work in progress, claims, gaps and what can be started next. | `/bk-status` |
 | [/bk:settings](#bksettings) | Shows how the repository is set up: the mode, the process and its gates or the numbering, and the templates. | `/bk-settings` |
 | [/bk:impact](#bkimpact) | Reviews what a change to an approved artifact or a capability spec affects, one suspect at a time. | `/bk-impact` |
@@ -21,13 +24,13 @@ When a command asks a quick choice with nothing to read, such as the pace, it as
 
 A command that asks you something first checks that the repository is set up; when it is not, it says so and names `/bk:init`, and asks nothing.
 
-Only you start a command, by typing it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
+Only you start a command, by typing it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read, and `/bk:pause` when you say words such as "let's stop here", since it saves nothing until you agree; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
 
 ## /bk:init
 
 **What it does.** Sets up BuildKeel in this repository, with a new spec tree or an existing one. It asks one question at a time and lists every file and setting it will add before anything is written.
 
-**What you can type.** The path of an existing spec tree, such as `/bk:init ../payments-specs`. Before any question, it checks that the folder is a git repository, and offers **Run git init for me** (the default) or **Stop** when it is not. Typed on its own, it asks where the spec tree lives: **In this repository**, **An existing spec tree** or **A new spec repository**, with Claude's recommendation first. For a new spec tree, it then asks for the mode: **Spec-driven** (the default) or **Full SDLC**. Then it asks whether to stamp your own commits.
+**What you can type.** The path of an existing spec tree, such as `/bk:init ../payments-specs`. Before any question, it checks that the folder is a git repository, and offers **Run git init for me** (the default) or **Stop** when it is not. Typed on its own, it asks where the spec tree lives: **In this repository**, **An existing spec tree** or **A new spec repository**, with Claude's recommendation first. For a new spec tree, it then asks for the mode: **Spec-driven** (the default) or **Full SDLC**. Then it asks about stamping your own commits: **Stamp my commits** (the default) or **Don't stamp them**.
 
 **In Full SDLC.** It shows the default process as a table, gates included, and asks whether to use it as it is or how your team works, in your own words. It then asks about each topic your answer left out, one at a time, shows the whole process again, and asks whether to go ahead, change something, or stop. Each stage, kind or document you added then gets a template: **Claude drafts it** (the default) or **I'll provide a file**. See [Setting up a Full SDLC tree](setting-up-full-sdlc.md).
 
@@ -43,7 +46,7 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 
 ## /bk:capture
 
-**What it does.** Turns the conversation into a plan. Claude first sums up what it heard in plain words, with the pitfalls raised, then proposes what to draft, then asks the pace: **Step by step** (the default), each artifact shown and agreed before the next, or **All at once**. Nothing is saved until you agree, and Claude invents nothing: each gap is yours to decide.
+**What it does.** Turns the conversation into a plan. Claude first sums up what it heard in plain words, with the pitfalls raised, then proposes what to draft, then asks the pace: **Step by step** (the default), each artifact shown and agreed before the next, or **All at once**. Nothing is saved until you agree, and Claude invents nothing: each gap is yours to decide. Along the way it records the approaches weighed, and, as your settings say, runs edge-case suggestions on test plans and scenarios (without asking, by default), offers design options for an interface several tasks share, and, for larger work, offers the readiness check before it closes, where minor questions are settled as "my call" and yours come with a recommendation. A thread the capture started from is closed with a link to what was saved.
 
 **What you can type.** Which part of the conversation to capture, such as `/bk:capture the text message reset`. Typed on its own, it captures the whole conversation. After the summary, it asks: **Create the artifacts** (the default), **Change something**, or **Keep talking**.
 
@@ -51,7 +54,7 @@ The spec tree follows Spec-driven: capability specs say how the system behaves, 
 
 **In Full SDLC.** Claude proposes the artifacts your process needs as a table, level by level, and where the work fits in your tree. The choices are **Looks right** (the default), **Place it somewhere else**, **Change the plan** and **Keep talking**. Step by step goes epic, design document, each story with its test plan, then tasks as one batch. Every artifact stays a draft until it is approved.
 
-**More:** [Drafting with Claude](drafting.md#from-a-conversation), [Drafting in a Spec-driven tree](drafting.md#in-a-spec-driven-tree).
+**More:** [Drafting with Claude](drafting.md#from-a-conversation), [Drafting in a Spec-driven tree](drafting.md#in-a-spec-driven-tree), [Exploring and capturing](exploring-and-capturing.md).
 
 ## /bk:new
 
@@ -92,13 +95,13 @@ Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving 
 
 ## /bk:build
 
-**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how far to go: **Build them all** (the default), **Build the next one only**, or **Set it up and work together**. A run stops and asks you when a test keeps failing, a requirement is unclear, agreed behavior looks wrong, or the work would change what you agreed. When you change behavior, the spec changes first: see [How Full SDLC mode works](how-full-sdlc-works.md#behavior-questioned-while-building) and [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building).
+**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how to go on: **Build them all, each in a fresh agent** (the default, unless your settings put **Build them all here** first, or the session cannot start agents), **Build them all here**, **Build the next one only**, or **Set it up and work together**. Each task is reviewed once it is built, by the reviewers that are on; when fixes do not clear a finding, Principal handoff gives it one more round on a stronger tier. A run stops and asks you when a test keeps failing, a requirement is unclear, agreed behavior looks wrong, or the work would change what you agreed. When you change behavior, the spec changes first: see [How Full SDLC mode works](how-full-sdlc-works.md#behavior-questioned-while-building) and [How Spec-driven mode works](how-spec-driven-works.md#behavior-questioned-while-building). A paused unit or change is resumed, with its brief, and paused ones are listed first; one paused by someone else, or on another machine, is resumed only once you confirm.
 
 **What you can type.** A unit's ID, such as `/bk:build TK-001` or `/bk:build CH-012`; a parent's ID, such as `/bk:build US-001` to build its tasks; or the change in words, such as `/bk:build fix the footer link`, which Claude matches to the titles of the units that can start, or else offers to record as an ad-hoc unit. Typed on its own, it asks what to build: **The active unit** (the default, when there is one), **Show what can be started**, or **Type an ID or describe the change**.
 
 **In Spec-driven.** The units are changes, defects and ad-hoc units. No gate runs: a unit starts unless another working tree on this machine holds it. A change's branch comes from its ID and title, such as `bk/CH-002-reset-links-expire`. Claude builds the change's unticked tasks in order, ticking each once its verification passes and saying so in a line. It does not finish the change: it offers `/bk:done`.
 
-**In Full SDLC.** The units are tasks, stories built without tasks, defects and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect. Under a parent, each ready unit is started, built, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record.
+**In Full SDLC.** The units are tasks, stories built without tasks, defects and ad-hoc units. The start gate checks that the unit, everything above it and the documents your process requires are approved, and that none of them is suspect. Under a parent, each ready unit is started, built, reviewed, tested and finished in turn, with its own branch, stacked on the one before, and its own completion record. Independent tasks can be built at the same time, each in its own worktree.
 
 ```text title="Example output"
 Ready to start (2):
@@ -109,32 +112,64 @@ Not ready yet (1):
 - TK-002 task "Reset email": The test plan US-001-TP is not approved.
 ```
 
-**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks), [Defects and ad-hoc units](defects-and-adhoc.md#recording-one-directly).
+**More:** [Working on a unit](working-on-a-unit.md#start-a-unit), [Build everything that is ready](working-on-a-unit.md#build-everything-that-is-ready), [Building a change's tasks](working-on-a-unit.md#building-a-changes-tasks), [Building with agents](building-with-agents.md), [Defects and ad-hoc units](defects-and-adhoc.md#recording-one-directly).
 
 ## /bk:done
 
-**What it does.** Finishes a unit with you. It checks the unit without writing anything, shows what finishing will record, and writes the record only once you confirm.
+**What it does.** Finishes a unit with you. It checks the unit without writing anything, shows what finishing will record, and writes the record only once you confirm. The preview shows the context part of the completion record, built from the unit's working notes, and finishing names any pattern in the records the unit is part of.
 
 **What you can type.** An ID, such as `/bk:done TK-001`, `/bk:done US-001` for a story built through tasks, or `/bk:done CH-002`. Typed on its own, it asks what to finish: **The active unit in this working tree** (the default) or **Another unit, or a story or epic whose work is all done**. Then it asks: **Finish TK-001** (the default) or **Stop, and do not finish yet**.
 
-**In Spec-driven.** Finishing a change archives it: its spec changes are merged, and each capability it touches gets its next version. Claude reviews the code against the change first, and you choose **Fix first** or **Finish anyway**. Nothing blocks the finish but uncommitted work. A change need not be the active unit.
+The final review reviews nothing twice: only the commits since the last review, with one spec-compliance review of a whole change built in a run. See [What /bk:done reviews](reviews.md#what-bkdone-reviews).
 
-**In Full SDLC.** The done gate checks the unit's tests and its branch. A story or an epic is finished once every unit under it is done, its defects fixed or closed, and its own test cases pass.
+**In Spec-driven.** Finishing a change archives it: its spec changes are merged, and each capability it touches gets its next version. The final review by fresh reviewers runs first, and you choose **Fix first** or **Finish anyway**. Nothing blocks the finish but uncommitted work. A change need not be the active unit.
+
+**In Full SDLC.** The final review by fresh reviewers runs first. The done gate checks the unit's tests, its branch and its review findings. A story or an epic is finished once every unit under it is done, its defects fixed or closed, and its own test cases pass.
 
 **For a defect.** Beside finishing it, `/bk:done` offers **Close without a fix**, for a defect that turns out not to be one: a duplicate, one that cannot be reproduced, behavior that works as intended, a test that was wrong, or a change in behavior, naming the change, version or item that takes it over. Nothing is written until you confirm. See [Closing a defect without a fix](defects-and-adhoc.md#closing-a-defect-without-a-fix).
 
 ```text title="Example output"
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
-- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1
-- commit only that file in the spec repo as "done: TK-001 v1", without pushing
+- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, and a summary of its test runs
+- commit only those files in the spec repo as "done: TK-001 v1", without pushing
 - release its claim on this machine and clear the active unit here; the code branch is left as it is
 ```
 
 **More:** [Finish with /bk:done](finishing-a-unit.md#finish-with-bkdone), [Finishing a change](finishing-a-unit.md#finishing-a-change).
 
+## /bk:review
+
+**What it does.** Reviews work with fresh reviewers who did not write it and do not see your conversation: one checks each requirement, acceptance criterion or scenario by ID, one reviews the code's quality, and one writes tests that try to break it. Each can be turned off in your settings. Each finding has a severity, a file and a line, and is kept on the unit or change until it is fixed, parked as a defect, or rejected with evidence.
+
+**What you can type.** Nothing, for the active unit or change; an ID, such as `/bk:review TK-001` or `/bk:review CH-002`; or a range of commits, such as `/bk:review main..HEAD`, whose review is shown and not recorded.
+
+The same in both modes.
+
+**More:** [Reviews](reviews.md), [The final review and the done gate](reviews.md#the-final-review-and-the-done-gate).
+
+## /bk:pause
+
+**What it does.** Pauses where you are, so you can pick it up in this session, a new one, or on another machine. With a unit or change active, it offers to commit uncommitted changes as work in progress or to leave them (named in the record, never discarded), shows the working notes since the last checkpoint, records where things stand and who holds it, and offers to push both repositories. With nothing active, it keeps the conversation as a thread, such as `TH-004 "Reset by text message"`, with the idea, the approaches, your words kept apart from Claude's proposals, and the next thing to discuss. The Threads setting decides whether it asks first (the default), saves without asking, or saves nothing.
+
+**What you can type.** Nothing, for the active unit or change, or the conversation when none is active; or an ID, such as `/bk:pause TK-013`. Saying "let's stop here" or "I'm switching machines" does the same.
+
+The same in both modes.
+
+**More:** [Pausing and resuming](pausing-and-resuming.md).
+
+## /bk:resume
+
+**What it does.** Resumes paused work. A unit or change starts on its branch with a brief: where things stand, the decisions and dead ends, open questions, the next step, and any files left uncommitted on another machine. A thread shows its brief, and the conversation is then free. Someone else's work, or work paused on another machine, is resumed only once you confirm taking it over.
+
+**What you can type.** Nothing, to pick from what is paused, the most recent first; or an ID, such as `/bk:resume TK-013` or `/bk:resume TH-004`.
+
+The same in both modes.
+
+**More:** [Pausing and resuming](pausing-and-resuming.md).
+
 ## /bk:status
 
-**What it does.** Shows where everything stands: the tree with each artifact's state, the work in progress, claims, what is missing, what is not shared yet, and what can be started next. It changes nothing.
+**What it does.** Shows where everything stands: the tree with each artifact's state, the work in progress, claims, what is missing, what is not shared yet, and what can be started next. It changes nothing. In both modes it also lists paused work, open threads, the active unit's missing red runs, open review findings, spike branches and the Learning loop's patterns, each section only when it has something to say.
 
 **What you can type.** Nothing: `/bk:status` takes no arguments and asks nothing first.
 
@@ -143,7 +178,7 @@ TK-001 "Reset endpoint" v1 can be finished. Finishing will:
 **In Full SDLC.** The overview shows the tree of stages, coverage gaps, documents still needed, suspects and approvals not pushed.
 
 ```text title="Example output"
-BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 1)
+BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 4)
 In short: TK-001 is in progress here; 3 units are ready to start; 1 gap in coverage or required documents; 1 approval not pushed; 1 commit with no unit.
 
 Active unit here: TK-001 task "Reset endpoint" on branch bk/TK-001-reset-endpoint.
@@ -154,7 +189,7 @@ Spec repo: up to date at the last check (2026-10-01T09:00:00Z). Not pushed yet: 
 
 ## /bk:settings
 
-**What it does.** Shows how this repository is set up, at any time: the mode, where the spec tree lives, whether your own commits are stamped, organization templates, whether your usage record is kept, the process with its gates or the numbering, and each template with where it comes from. Then it offers to show any template in full. It changes nothing.
+**What it does.** Shows how this repository is set up, at any time: the mode, where the spec tree lives, whether your own commits are stamped, organization templates, whether your usage record is kept, the process with its gates or the numbering, and each template with where it comes from. Then it offers to show any template in full. It changes nothing. It also shows every feature switch with its value and default, the model and effort of each agent role on this host, and the read-only copy's paths. See [Settings](settings.md).
 
 **What you can type.** Nothing: `/bk:settings` takes no arguments and asks nothing first. You can also ask in words, such as "what's our process?".
 
@@ -162,9 +197,9 @@ Spec repo: up to date at the last check (2026-10-01T09:00:00Z). Not pushed yet: 
 
 **In Full SDLC.** It shows the process table setup showed, with the documents each stage requires, the gates and task test plans, and the template of each stage, kind and document.
 
-To change a setting, edit `buildkeel.yaml` or `templates/` in the spec tree and commit the change; BuildKeel does not change them after setup. See [Process and templates](process-and-templates.md#seeing-and-changing-your-settings).
+To change a setting, edit `buildkeel.yaml` or `templates/` in the spec tree and commit the change; BuildKeel does not change them after setup. Stamping your own commits is the exception: ask Claude to turn it off or on. See [Process and templates](process-and-templates.md#seeing-and-changing-your-settings).
 
-**More:** [Process and templates](process-and-templates.md), [The status overview](status.md).
+**More:** [Settings](settings.md), [Process and templates](process-and-templates.md), [The status overview](status.md).
 
 ## /bk:impact
 
@@ -196,7 +231,7 @@ Suspect (2):
 
 ## /bk:onboard
 
-**What it does.** Documents code that existed before BuildKeel, one area at a time. Claude maps the code into areas and drafts each one from the code and what you bring; you correct, complete and confirm it. You can stop after any area and carry on later.
+**What it does.** Documents code that existed before BuildKeel, one area at a time. Existing code is the code up to each repository's baseline, the commit it was at when `/bk:init` set it up. Claude maps the code into areas and drafts each one from the code and what you bring; you correct, complete and confirm it. Run it any time after setup, as often as you like: you can stop after any area and carry on later.
 
 **What you can type.** An area to onboard, such as `/bk:onboard Billing`. Typed on its own, it shows where onboarding stands and asks what to do. With no map yet: **Map the code** (the default), **Fill in what onboarding left empty** (only when something was), or **Stop**. With a map: **Continue with an area**, **Adjust the map**, **Fill in what onboarding left empty** or **Stop**.
 
@@ -216,7 +251,7 @@ Onboarding: 1 of 3 areas onboarded, from the map in onboarding/map.yaml.
 Next area: Billing.
 ```
 
-**More:** [Documenting existing code](onboarding.md#area-by-area), [Onboarding in a Spec-driven tree](onboarding.md#in-a-spec-driven-tree).
+**More:** [Where existing code ends](onboarding.md#where-existing-code-ends), [Documenting existing code](onboarding.md#area-by-area), [Onboarding in a Spec-driven tree](onboarding.md#in-a-spec-driven-tree).
 
 ## /bk:stats
 
@@ -250,9 +285,9 @@ Time from start to done: 1 h 3 min typically (the median), 2 h 30 min at the lon
 **In Full SDLC.** It upgrades the format when an update needs it; otherwise there is nothing to do.
 
 ```text title="Example output"
-The spec tree is already in format 1, the one this version of BuildKeel uses; there is nothing to migrate.
+The spec tree is already in format 4, the one this version of BuildKeel uses; there is nothing to migrate.
 ```
 
 **More:** [Migrating a spec tree](migration.md#migrate-it), [Moving a Spec-driven tree to Full SDLC](migration.md#moving-a-spec-driven-tree-to-full-sdlc).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-status`, `/bk-settings`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-review`, `/bk-pause`, `/bk-resume`, `/bk-status`, `/bk-settings`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.

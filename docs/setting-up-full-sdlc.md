@@ -44,7 +44,7 @@ Choose **Full SDLC**. **Spec-driven** is listed first, as the default. A tree ke
 
 ## 3. Stamping your own commits
 
-While a unit of work is active, BuildKeel adds a line such as `BuildKeel-Unit: TK-047` to every commit Claude makes, so each commit traces to the work it belongs to. If you agree, a git hook adds the same line to commits you make yourself, such as in a terminal. It does nothing when no unit is active. If your repository already manages its git hooks with a tool such as husky or lefthook, BuildKeel installs nothing and shows you the lines to add.
+While a unit of work is active, BuildKeel adds a line such as `BuildKeel-Unit: TK-047` to every commit Claude makes, so each commit traces to the work it belongs to. A git hook adds the same line to commits you make yourself, such as in a terminal. It does nothing when no unit is active. Setup asks: **Stamp my commits** (the default) or **Don't stamp them**. If your repository already manages its git hooks with a tool such as husky or lefthook, BuildKeel installs nothing and shows you the lines to add. To change it later, ask Claude to turn stamping off or on: turning it off uninstalls the hook. See [Settings](settings.md#personal-settings).
 
 ## 4. What setup will add
 
@@ -67,7 +67,7 @@ Read it as the path of every piece of work: a business idea is split into epics,
 
 Claude then asks whether your team uses this process as it is, or works differently.
 
-- **Use it as it is**: nothing more is asked about the process. Go on to [Confirm and set up](#7-confirm-and-set-up).
+- **Use it as it is**: nothing more is asked about the process. Go on to [Confirm and set up](#8-confirm-and-set-up).
 - **It works differently**: describe how your team works, in your own words. Say as much or as little as you like: Claude asks about everything your description leaves out, one topic at a time, in this order.
 
 ## 5. Your process, topic by topic
@@ -141,6 +141,8 @@ Each gate has a mode:
 
 Many teams start with every gate on warn and move them to block once the team is used to the flow.
 
+The done gate also has two checks with modes of their own, warn by default: the TDD check and the review-findings check. See [Settings setup leaves at their defaults](#settings-setup-leaves-at-their-defaults).
+
 ### One answer, several topics
 
 You do not have to answer topic by topic. Say your first answer was:
@@ -209,6 +211,98 @@ To change a template later, edit it in your spec tree's `templates/` folder. See
 
 Claude shows everything setup will write, in full, and asks whether to set up with it. Once you agree, BuildKeel writes the spec tree's settings, with your process, and every template you agreed, together, so the new tree passes validation from the start. It commits nothing: review the changes and commit them. See [Getting started](getting-started.md#what-it-adds) for each file it adds.
 
+## Settings setup leaves at their defaults
+
+Setup asks nothing about the checks on tests, the agents that build and review, or what a pause saves: each starts at a default that suits most teams. To change one later, add it to the `process` section of `buildkeel.yaml` and commit it with the spec tree. [Settings](settings.md) lists every one, with what turning it off or on does. With every default written out:
+
+```yaml
+process:
+  gates:
+    tdd: warn                   # block | warn | off: the done gate's TDD check
+    review-findings: warn       # block | warn | off
+  planning:
+    exploring: on               # on | off
+    design-options: { mode: ask, designers: 2 }   # off | ask | auto
+    readiness: { mode: ask, readers: 1 }          # off | ask | auto; 1 to 3 readers
+    edge-cases: auto            # off | ask | auto
+    build-ready-tasks: on       # on | off
+    plan-check: on              # on | off
+    spikes: on                  # on | off
+  runs:
+    build: fresh-agents         # fresh-agents | here: the first choice in /bk:build
+    parallel: 3                 # the most tasks built at the same time; 1 is off
+  checks:
+    coverage: on                # on | off
+    mutation: off               # or: { command: "npm run mutate" }
+  reviews:
+    spec-compliance: on         # on | off
+    code-quality: on            # on | off
+    break-it: on                # on | off
+    each-task: on               # on | off
+  agents:
+    roles:
+      implementer: inherit      # inherit, or a tier: standard, principal, or your own
+      spec-reviewer: inherit
+      quality-reviewer: inherit
+      final-spec-reviewer: inherit
+      final-quality-reviewer: inherit
+      break-it: inherit
+      readiness-readers: inherit
+      edge-cases: inherit
+      designers: inherit
+      note-checker: inherit
+    handoff: { tier: principal, after: 2 }         # tier: none turns it off
+  continuity:
+    threads: ask                # off | ask | auto
+    heads-up: on                # on | off
+    learning-loop: on           # on | off
+  tests:
+    paths: []                   # test file patterns besides the usual ones
+```
+
+- **The done gate's checks** have modes of their own, set beside the gates: the [TDD check](tdd.md#turning-it-on-or-off), and the review-findings check: a final review ran, and every High or Medium finding was fixed, parked or rejected. Both warn by default.
+- **Parallel runs**: when `/bk:build` builds independent tasks at the same time, it builds at most this many.
+- **Structured exploring**: when you ask to explore an idea with structure, Claude plays back what it understood, keeping your words apart from its proposals, and offers two or three approaches.
+- **Design options, the readiness check and edge-case suggestions** start fresh agents. Each is `off`, `ask` (a one-line offer saying why it would help) or `auto` (it runs and says why in a line). The readiness check is offered or run only for larger work, and you can ask for any of them at any time.
+- **Build-ready tasks**: every task names its Files, what it Uses and Delivers, and its Verify command. **Plan check** reports problems in them when tasks are saved, and never blocks.
+- **Spikes**: throwaway work on its own branch, to find something out.
+- **The first choice in `/bk:build`**: a fresh agent per task, or here. The other is always offered too.
+- **Principal handoff**: when fix rounds do not clear a review finding, the implementer gets one more round on a stronger tier. With `tier: none`, the run stops and asks you.
+- **Changed-line coverage** and **mutation testing**: see [Changed-line coverage](changed-line-coverage.md) and [Mutation testing](tdd.md#mutation-testing). Mutation testing is off until you give the command that runs your team's mutation tool.
+- **The reviewers and the review after each task**: each can be turned off.
+- **Threads**: what a pause with no unit active does: `ask` offers to save the conversation as a thread, `auto` saves it, `off` saves nothing.
+- **Heads-up notes** at the start of a unit, and the **Learning loop**, which looks for patterns in the records at finish and in status.
+- **Test file patterns**, for tests outside the usual places. See [How BuildKeel tells](tdd.md#how-buildkeel-tells).
+
+**Agents.** Each of the ten roles an agent plays, from the implementer to the note checker, runs with the session's model and effort (`inherit`) unless you give it a tier. Two tiers are ready to use, and you can change them or add your own under `agents.tiers`:
+
+| Tier | Claude Code | Antigravity |
+|---|---|---|
+| standard | Sonnet at medium effort | `flash` |
+| principal | Opus at high effort | the conversation's model |
+
+```yaml
+process:
+  agents:
+    tiers:
+      careful: { claude-code: { model: opus, effort: max }, antigravity: { model: pro } }
+    roles: { final-spec-reviewer: principal, final-quality-reviewer: principal, spec-reviewer: careful }
+    handoff: { tier: careful, after: 2 }
+```
+
+Antigravity has no effort setting for agents, so an effort there is ignored, and `/bk:settings` says so.
+
+**The read-only copy.** BuildKeel keeps a copy of the team's glossary, practices and accepted ADRs in each code repository, so they are read with the code. Its paths are set in that repository's `.buildkeel.yaml`, and default to:
+
+```yaml
+copy:
+  glossary: GLOSSARY.md
+  practices: docs/practices.md
+  adrs: docs/adr/
+```
+
+A setting you leave out takes its default, and one that cannot be read keeps its default too, so a mistake never stops work: validation reports it. `/bk:settings` shows every setting as it applies.
+
 ## Three complete processes
 
 Each process below is shown as setup's table and as the `buildkeel.yaml` it writes. Your process can be changed later in the same file; see [Changing the process](process-and-templates.md#changing-the-process).
@@ -218,7 +312,7 @@ Each process below is shown as setup's table and as the `buildkeel.yaml` it writ
 One kind at each stage, every gate blocking. A team that uses the process as it is gets a `buildkeel.yaml` with no process section:
 
 ```yaml
-format: 3
+format: 4
 mode: full-sdlc
 repos:
   - name: payments
@@ -242,7 +336,7 @@ A task's own test plan is recorded as it is saved, not approved.
 The story stage holds three kinds. Features also need a design document, and the templates `templates/feature.md` and `templates/enhancement.md` are settled at setup. A defect someone reports can sit under a user story or a feature, set by `defect.parents`.
 
 ```yaml
-format: 3
+format: 4
 mode: full-sdlc
 repos:
   - name: payments
@@ -288,7 +382,7 @@ A kind's `requires` defaults to its stage's: enhancements need a test plan, as u
 A feature level between epics and stories, a security review required of every epic, and every gate but the lock gate on warn while the team tries BuildKeel out. Setup settles two templates: `templates/feature.md` and `templates/security-review.md`.
 
 ```yaml
-format: 3
+format: 4
 mode: full-sdlc
 repos:
   - name: payments

@@ -36,7 +36,7 @@ Pass the choice as `mode` (`spec-driven` or `full-sdlc`) in every call to `manag
 
 ## 4. Stamping their own commits
 
-Explain: while a unit of work is active, BuildKeel adds a line `BuildKeel-Unit: <id>` to commits the agent makes. If they agree, a git hook adds the same line to commits they make themselves, for example in a terminal. It changes nothing when no unit is active. Recommend yes. If the repository already manages its git hooks with another tool, nothing is installed and BuildKeel shows the lines to add.
+Explain: while a unit of work is active, BuildKeel adds a line `BuildKeel-Unit: <id>` to commits the agent makes. Stamping is on by default: setup installs a git hook that adds the same line to commits they make themselves, for example in a terminal. It changes nothing when no unit is active, and can be turned off later, which uninstalls the hook. If the repository already manages its git hooks with another tool, nothing is installed and BuildKeel shows the lines to add. Ask, with your tool for asking a question with choices: **Stamp my commits** (the default, listed first) or **Don't stamp them**. Pass `stampCommits: false` only when they turn it off.
 
 Then call `manage` with `action: "init"`, the `location` (`this-repo`, `existing` or `new-repo`), the `path` if there is one, `stampCommits` and, for a new tree, `mode`, without `apply`. Show the list it returns, as it is, in your reply as normal text.
 

@@ -4,7 +4,7 @@ argument-hint: <type> [parent ID] [what to draft], e.g. story EP-01, stories fro
 disable-model-invocation: true
 ---
 
-Draft BuildKeel artifacts with the user. Everything you produce is a draft: drafting never approves anything, and every draft goes through the same checks and approval as one written by hand. A defect is the exception: it is recorded at once, with its permanent ID, and needs no approval (see "Defects" below).
+Draft BuildKeel artifacts with the user. Everything you produce is a draft: drafting never approves anything, and every draft goes through the same checks and approval as one written by hand. A defect found while building is the exception: it is recorded at once, with its permanent ID, and needs no approval; a defect reported by users, customers or testers is drafted and approved like the rest (see "Defects" below). In a Spec-driven tree every defect is recorded at once.
 
 The user typed: $ARGUMENTS
 
@@ -115,7 +115,7 @@ Do not create or edit spec tree files yourself; `save_draft` does all writing.
 
 ## In a Spec-driven tree
 
-What you draft is a change, or a file of an open change: its proposal, a spec change, its design or its tasks. Nothing is approved. A defect is recorded as in "Defects", with its `source`, and needs no approval: one found while building is attached to the change whose work found it (its `parent` is the change's ID, its `testCase` the scenario whose test found it), and a reported one stands alone; a fix that changes a requirement is made through a change.
+What you draft is a change, or a file of an open change: its proposal, a spec change, its design or its tasks. Nothing is approved. Every defect is recorded at once, as in "Defects", with its `source`, its permanent ID and no approval: one found while building is attached to the change whose work found it (its `parent` is the change's ID, its `testCase` the scenario whose test found it). For a reported one, ask which requirement it affects: ask which files or behavior the report points to, call `query` with `view: "describes"` and those `paths`, and offer, with your tool for asking a question with choices, the requirements the changes it lists became (the first as the default), then **another: type its ID**, then **leave it standalone**. Put the chosen one in its frontmatter as `requirement: AUTH-R3`; a standalone one has none. A fix that changes a requirement is made through a change.
 
 - **If the user typed nothing**, ask what to draft, offering **Suggest what to draft next** (the default) and **Type what to draft**. The question itself gives examples: `change for reset by text message`, `spec change for CH-012` and `defect CH-012`. For a suggestion, call `query` with `view: "changes"` and propose what an open change still lacks, such as tasks or a spec change its proposal names.
 - **Read before writing.** Call `query` with `view: "capabilities"`, and with the `id` of each capability the work touches. For a file of an open change, read the change with `view: "changes"` and its `id`. Call `get_template` for each file you draft.

@@ -8,7 +8,9 @@ Approval turns a draft into an agreed version. Once a version is approved it is 
 /bk:approve US-draft-k3x9
 ```
 
-Claude shows you the artifact, checks it, and tells you what approval will do before anything is written:
+Claude shows you the artifact, checks it, and tells you what approval will do before anything is written. Approving always takes these two steps: BuildKeel approves only what its preview showed you. When the draft changed after the preview, or there was no preview, nothing is written, and Claude previews again and asks you on the new preview.
+
+
 
 ```
 Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving will:
@@ -146,6 +148,12 @@ When the remote cannot be reached, the approval is still recorded, with the numb
 
 The number is assigned the next time the remote can be reached: at the next approval or the next session. The directory is renamed, references are rewritten, the frozen copy and `approvals/v1.yaml` are written with the original approver and time, and it is committed as `approve: US-002 v1`. The pending record stays as history.
 
+### Repairing the counter
+
+The counter only moves forward, so it is behind the spec tree only when something was done to its branch: the branch was deleted, or reset to an older commit, or the remote was replaced. Numbering then stops, rather than give out a number the tree already holds: BuildKeel says the counter is behind and asks to repair it. You can also ask Claude to repair it yourself, for example after moving the spec repo to a new remote.
+
+The repair reads every ID in the spec tree: approved artifacts, defects and ad-hoc units, the changes of a Spec-driven tree, open, archived and discarded, and the requirements and scenarios in its capability specs and changes. It shows each counter it would raise and each capability code it would claim, for the change that creates it, and writes nothing until you agree. Then it writes them in one commit to the counter's branch and pushes it. It never lowers a counter or removes a claim. A number given out but never saved, such as a draft lost before its commit, is not in the tree, so the repair cannot see it: the worst that can happen is a gap in the numbers, never the same number twice.
+
 ## Version 0: code from before BuildKeel
 
 Most teams set BuildKeel up on code that already exists. What describes that code is **version 0** of its artifact; anything made in BuildKeel starts at version 1. Version 0 reads like any artifact of its type, as if BuildKeel had been used from the start: Claude drafts it from the code and from the material you bring, such as a ticket or a wiki page read through your own tools, a file, or what you tell it. A person reads it, completes it and approves it, and you can write or correct any of it by hand.
@@ -258,6 +266,20 @@ Saved US-002 v2 as a draft at stories/US-002/story.md. v1 stays approved and in 
 ```
 
 The working file now holds v2; `versions/v1.md` is untouched. Approve v2 with `/bk:approve US-002`. Its number stays the same. This holds even when v1 was approved minutes ago and nothing is built on it: an approved version is never changed in place, so anyone who built on it is told through [suspects](change-impact.md).
+
+## Discarding a draft
+
+A draft you will not go on with can be discarded: ask Claude, such as "discard US-draft-k3x9, we are not doing text messages". A draft that was never approved goes with the drafts under it: its test plan or design document, and the stories or tasks drafted beneath it. Claude shows the list first, and names any other artifact whose text still mentions it, such as a task whose Uses line names it, so you can edit that afterwards. A draft ID is never given again.
+
+A new version in draft of an approved artifact can be discarded the same way, by its ID. Its file goes back to the version approved, which stays in force:
+
+```
+Discarding the draft of TK-001 "Reset endpoint" v2 will:
+- write tasks/TK-001/task.md back as v1, the version approved, which stays in force
+- commit it in the spec repo, if any of it was committed
+```
+
+Nothing is removed until you confirm. Approved versions and their records are never changed, and when any of the draft was committed, the discard is committed as `discard: <ID>`, with your reason.
 
 ## Locked files
 

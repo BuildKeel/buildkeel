@@ -54,7 +54,8 @@ git push origin main v1.0.0
 In the spec tree's `buildkeel.yaml`, name the repository and the tag:
 
 ```yaml
-format: 3
+format: 4
+mode: full-sdlc
 templates:
   org:
     source: git@github.com:acme/buildkeel-templates.git

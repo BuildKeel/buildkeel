@@ -93,16 +93,17 @@ When `/bk:init` creates a Full SDLC spec tree, it shows the default process as a
 
 ## Seeing and changing your settings
 
-Run `/bk:settings` at any time, or ask Claude "what's our process?", to see how the repository is set up: the mode, where the spec tree lives, the process table with the documents each stage requires and the gates, and each template with where it comes from, the tree's own, your organization's or BuildKeel's built-in one. Claude then offers to show any template in full. It changes nothing. See [/bk:settings](commands.md#bksettings).
+Run `/bk:settings` at any time, or ask Claude "what's our process?", to see how the repository is set up: the mode, where the spec tree lives, the process table with the documents each stage requires and the gates, every feature switch with its value and default, each agent role's model and effort as they apply on this host, the paths of the read-only copy in this repository, and each template with where it comes from, the tree's own, your organization's or BuildKeel's built-in one. Claude then offers to show any template in full. It changes nothing. See [/bk:settings](commands.md#bksettings).
 
-BuildKeel does not change the settings after setup. To change one, edit `buildkeel.yaml` or a file in `templates/` in the spec tree, and commit the change with the spec tree so your team gets it. Take care with a tree that already holds artifacts: a changed prefix applies to new IDs only, and a stage, kind or required document you remove or add applies to the artifacts already there. Run validation afterwards; it reports what no longer fits, such as an added stage with no template.
+BuildKeel does not change the settings after setup; [Settings](settings.md) lists every one you can switch. To change one, edit `buildkeel.yaml` or a file in `templates/` in the spec tree, and commit the change with the spec tree so your team gets it. Take care with a tree that already holds artifacts: a changed prefix applies to new IDs only, and a stage, kind or required document you remove or add applies to the artifacts already there. Run validation afterwards; it reports what no longer fits, such as an added stage with no template.
 
 ## Changing the process
 
 The process is set in the `process` section of `buildkeel.yaml`. Everything in it is optional: what you leave out keeps its default. For example:
 
 ```yaml
-format: 3
+format: 4
+mode: full-sdlc
 process:
   chain:
     - type: idea
@@ -245,7 +246,7 @@ Changing the process never changes what is already approved. When you add a stag
 
 ## Templates
 
-A template says what an artifact of one type must contain. BuildKeel drafts new artifacts from it, and checks every artifact against it before it can be approved.
+A template says what an artifact of one type must contain. BuildKeel drafts new artifacts from it, and checks every artifact against it before it can be approved. The task template requires each task to state its Files, Uses, Delivers and Verify (or `Interfaces: none` in place of Uses and Delivers); a task saved without one is refused, naming the field, and a team's own task template that leaves any of them out is reported (see [What each task states](working-on-a-unit.md#what-each-task-states)).
 
 A template looks like the artifact it describes. Its top block lists the fields and sections; its body is the starting point for a new artifact, with guidance in comments. This is the built-in story template:
 
@@ -359,12 +360,12 @@ covers: [US-001-AC2]
 
 ### The design document
 
-The built-in design document is quick to fill in and complete in scope. Its starting point holds what most designs need; only the summary, context and design are required, so a small epic's design can be short. Further sections are offered, and added only when the work needs them. The design, the decisions, and the architecture, data and interfaces are tracked: a change to them makes the work built on the design suspect. A change in a Spec-driven tree uses the same design document, with the change as its parent.
+The built-in design document is quick to fill in and complete in scope. Its starting point holds what most designs need; only the summary, context and design are required, so a small epic's design can be short. Further sections are offered, among them Approaches: the approaches considered, the one chosen and why, and the non-goals and things to avoid, filled from the conversation. Spec-driven mode's proposal offers the same section. Offered sections are added only when the work needs them. The design, the decisions, and the architecture, data and interfaces are tracked: a change to them makes the work built on the design suspect. A change in a Spec-driven tree uses the same design document, with the change as its parent.
 
 ```markdown
 ---
 template: design
-version: 1
+version: 2
 description: How a stage's work is built, and the decisions behind it. Fill in what applies; add an offered section only when the work needs it.
 fields:
   parent: { required: true, type: link }
@@ -375,6 +376,7 @@ sections:
   Design: { required: true, tracked: true }
   Decisions: { tracked: true }
   Risks and trade-offs: {}
+  Approaches: { offered: "The approaches considered, the one chosen and why, and the non-goals and things to avoid, from the conversation only." }
   Architecture: { tracked: true, offered: "The components, how they connect, and where each one runs." }
   Data: { tracked: true, offered: "What is stored, its shape, and how it changes over time." }
   Interfaces: { tracked: true, offered: "The APIs, events and contracts other code relies on." }
@@ -419,6 +421,8 @@ To change a template, copy the built-in one into a `templates/` folder at the ro
 BuildKeel uses your template in place of the built-in one for that type. Types you do not override keep the built-in template. When your organization keeps shared templates, BuildKeel looks in your spec tree first, then in the organization's templates, then in its built-in ones; see [Organization templates](organization-templates.md).
 
 The built-in templates are `idea.md`, `epic.md`, `story.md`, `task.md`, `test-plan.md`, `design.md`, `defect.md` and `adhoc.md`.
+
+Two records have built-in templates in both modes, overridden the same way: `adr.md` for architecture decision records (context, decision, alternatives and consequences) and `thread.md` for a paused exploration. A team can add a section to its ADRs, such as "Security impact", and every ADR is then drafted and checked against it. A glossary entry, a practice, a note on the code, a working note and a pause record have fixed fields: no template changes them, and validation reports a template the tree holds for one.
 
 A Spec-driven tree has four more of its own: `capability.md`, `proposal.md`, `spec-change.md` and `tasks.md`, overridden the same way. A change's design uses `design.md`. A Full SDLC tree never falls back to these four, so a stage you add with one of their names still needs its own template. See [Capability specs](capability-specs.md).
 

@@ -45,7 +45,7 @@ Users who cannot get to their email cannot reset their password.
 The reset endpoint, and a text message provider.
 ```
 
-The proposal says why, what changes (marking anything that breaks existing users or callers as **BREAKING**), which capabilities are new or modified, and the impact. Its `capabilities` field lists the same codes. A change that alters no behavior, such as a refactor, says so with `noSpecChanges: true` and has no spec changes.
+The proposal says why, what changes (marking anything that breaks existing users or callers as **BREAKING**), which capabilities are new or modified, and the impact. Its `capabilities` field lists the same codes. A change that alters no behavior, such as a refactor, says so with `noSpecChanges: true` and has no spec changes. A proposal captured from a conversation can also hold an **Approaches** section (the approaches weighed, the one chosen and why) and **Non-goals**, and a change captured from a thread names it in a `thread` field, such as `thread: TH-004`; the thread is closed with a link to the change (see [Exploring and capturing](exploring-and-capturing.md)).
 
 ### Spec changes
 
@@ -98,11 +98,18 @@ parent: CH-012
 
 ## 1. Sending a code by text
 
-- [ ] 1.1 Generate a six-digit code and store it with its send time. Verify: code store tests.
-- [ ] 1.2 Text the code to the user's verified phone. Verify: the "Verified phone" scenario test (AUTH-R3-S1).
+- [ ] 1.1 Generate a six-digit code and store it with its send time.
+  Files: create src/auth/codes.ts; test test/auth/codes.test.ts
+  Interfaces: none
+  Verify: npm test, where the code store tests pass
+- [ ] 1.2 Text the code to the user's verified phone.
+  Files: change src/auth/reset.ts; test test/auth/reset.test.ts
+  Uses: createCode (from 1.1)
+  Delivers: sendResetCode(phone: string): Promise<void>
+  Verify: npm test, where [AUTH-R3-S1] passes
 ```
 
-Tasks are numbered checkboxes in groups, ordered so that each builds on the ones before. Each says how its completion is verified, and each group includes the tests and documentation its own work needs. A task is ticked once its verification passes; a box holding an `x` is ticked. The change's progress is its ticked tasks, such as 1 of 2.
+Tasks are numbered checkboxes in groups, ordered so that each builds on the ones before. Under each, indented lines state its Files, what it Uses (from an earlier task, a file, or a library at its version), what it Delivers, and how it is verified, or `Interfaces: none` for a task that uses and delivers nothing; a ticked task gets a `Built:` line (see [What each task states](working-on-a-unit.md#what-each-task-states)). Each says how its completion is verified, and each group includes the tests and documentation its own work needs. A task is ticked once its verification passes; a box holding an `x` is ticked. The change's progress is its ticked tasks, such as 1 of 2. A tick, and the summary of the test runs saved with it, stay uncommitted like the change's other files while it is open: finishing the change commits them with its archive. Pausing the change is the exception: it commits the change's files as they stand, with the pause record, so the change can be resumed on another machine (see [Pausing and resuming](pausing-and-resuming.md)). Each tick also keeps the working notes since the last one, beside it.
 
 ## Editing an open change
 
@@ -127,7 +134,7 @@ CH-001: tests/scenarios.py:12 names [MDATA-R9-S1], a scenario of a requirement C
 
 ## Finishing a change
 
-`/bk:done` finishes a change by archiving it: its spec changes are merged into the capability specs, each capability it touches gets its next version, and its files are frozen as its record. Tasks left unticked are checked first, and you choose to fix first, finish anyway, or reword the spec where the code is right. Finished anyway with work left, it offers a follow-up change to hold it. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
+`/bk:done` finishes a change by archiving it: its spec changes are merged into the capability specs, each capability it touches gets its next version, and its files are frozen as its record. Tasks left unticked are checked first, the final review by fresh reviewers runs (see [Reviews](reviews.md)), and you choose to fix first, finish anyway, or reword the spec where the code is right. The review's findings, with how each was answered, stay with the archived change. Finished anyway with work left, it offers a follow-up change to hold it. See [Finishing a change](finishing-a-unit.md#finishing-a-change).
 
 ## Defects and a change
 

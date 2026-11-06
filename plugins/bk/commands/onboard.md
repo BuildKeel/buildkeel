@@ -10,6 +10,8 @@ What describes code from before BuildKeel is version 0 of its artifact: the arti
 
 The user typed: $ARGUMENTS
 
+**Before anything else**, call the BuildKeel `query` tool with `view: "process"`, and do not show its result. If it says this repository is not set up for BuildKeel, tell the user so, and that /bk:init sets it up, then stop: ask nothing else. Otherwise go on straight away.
+
 If BuildKeel's session report, or `query` with `view: "process"`, says this spec tree is Spec-driven, follow "In a Spec-driven tree" at the end in place of "Onboard an area" and the sections after it.
 
 ## Choose what to do
@@ -96,7 +98,7 @@ A test plan has a test case for each acceptance criterion of its story. A finish
 
 ### 4. Review and approve
 
-Show what was drafted as a table: ID, title, version, the sources kept, and the sections left empty. Then offer to approve the area's drafts in one review: call `approve` with `ids` set to all of them and `onboard: true`, first without `apply`, and ask whether to approve them, with the table and the result as it is in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Call it again with `apply: true` only when the user confirms. Each version 0 is approved first, and a finished task's version 0 is linked to the commits before the baseline that name its key.
+Show what was drafted as a table: ID, title, version, the sources kept, and the sections left empty. Then offer to approve the area's drafts in one review: call `approve` with `ids` set to all of them and `onboard: true`, first without `apply`, and ask whether to approve them, with the table and the result as it is in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. Call it again with `apply: true` only when the user confirms. Each version 0 is approved first, and a finished task's version 0 is linked to the commits before the baseline that name its key. Once it is approved, when the area has finished tasks and Build-ready tasks is on, call `manage` with `action: "backfill"` and `ids` set to those tasks: it drafts each one's as-built record from its linked commits. Say what each delivered, read from those commits, show the records, and write them with `apply: true` and `delivered` once the user agrees.
 
 ### 5. Existing tests
 

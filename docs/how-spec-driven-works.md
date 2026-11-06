@@ -38,7 +38,7 @@ Claude shows each file in full before saving it, and saves only what you agree t
 - Claimed on this machine: other working trees cannot start CH-002 until it is finished or released.
 ```
 
-Claude builds the tasks in order. Each commit ends with `BuildKeel-Unit: CH-002`, and a commit that does exactly one task adds `BuildKeel-Task: 1.2`. Each test carries the scenario it checks in its name, such as `it("refuses an expired link [AUTH-R3-S1]")`.
+Claude builds the tasks in order, each in a fresh agent when the session can start agents, with your conversation running the build, and fresh reviewers review each task once it is built. See [Building with agents](building-with-agents.md) and [Reviews](reviews.md). Each commit ends with `BuildKeel-Unit: CH-002`, and a commit that does exactly one task adds `BuildKeel-Task: 1.2`. Each test carries the scenario it checks in its name, such as `it("refuses an expired link [AUTH-R3-S1]")`.
 
 ### A defect found while building
 
@@ -64,16 +64,16 @@ Had the behavior been a requirement of the version in force, one an earlier chan
 
 ### Ticking tasks
 
-Once a task's verification passes, Claude ticks it and says so in a line, without asking:
+Once a task's verification passes, Claude ticks it and says so in a line, without asking. Each tick also saves a summary of the change's test runs so far in the spec tree, so the evidence that each test failed before its code travels with the tree:
 
 ```
-Ticked 1.2, 2.1 in CH-002 "Reset links expire": 3 of 3 tasks done.
+Ticked 1.2, 2.1 in CH-002 "Reset links expire": 3 of 3 tasks done. Saved a summary of its test runs so far, in the change's runs folder. BuildKeel leaves the tick and the summary uncommitted, as it does the change's files while it is open: finishing the change commits them with its archive.
 Every task of CH-002 "Reset links expire" is done: tell the user they can run /bk:done to finish it.
 ```
 
 ## 3. Finishing: the capability's next version
 
-`/bk:done` shows what finishing will write: the requirements and scenarios after the merge, the code linked to the change, which scenarios pass, and anything to look at. Claude reviews the code against the requirements and the design, and you choose to finish or to fix something first. See [Finishing a unit](finishing-a-unit.md).
+`/bk:done` shows what finishing will write: the requirements and scenarios after the merge, the code linked to the change, which scenarios pass, and anything to look at. The final review by fresh reviewers checks the code against the requirements and the design, and you choose to finish or to fix something first. See [Finishing a unit](finishing-a-unit.md) and [Reviews](reviews.md).
 
 Finishing writes AUTH v2 and freezes the change as the record of the work:
 
@@ -122,6 +122,18 @@ Created defect DEF-003 "Invoice totals round down" at defects/DEF-003/defect.md,
 ```
 
 When a standalone defect is finished, BuildKeel looks at the files its fix changed, finds the requirements that archived changes built in them, and offers to link the defect to one.
+
+## One piece of work, start to finish
+
+The same reset links work, followed through every part of BuildKeel it touches:
+
+1. **Exploring.** Ana talks the risk of links that never expire through with Claude, who checks AUTH's capability spec and the code, lays out two or three options, and keeps her words apart from its proposals. See [Exploring and capturing](exploring-and-capturing.md).
+2. **A thread.** She stops before deciding: "let's stop here" keeps the conversation as `TH-001 "Reset links expire"`, shown in full and saved once she agrees, then pushed. See [Pausing and resuming](pausing-and-resuming.md).
+3. **Capture.** Later, `/bk:resume TH-001` shows its brief. `/bk:capture` sums up, drafts the proposal with the approaches weighed, the spec change for AUTH (with edge-case suggestions: missing scenarios proposed by a fresh agent), the design and the tasks. Claude offers the readiness check, as the change has a design, and you take it. `CH-002` names the thread it came from, and the thread is closed with a link to it.
+4. **A run in fresh agents.** `/bk:build CH-002` builds each task in a fresh agent, with the glossary terms and practices in its view; each tick keeps the working notes since the last one, listed in the same reply. See [Building with agents](building-with-agents.md).
+5. **Review.** Fresh reviewers review each task before it is ticked. See [Reviews](reviews.md).
+6. **A pause on one machine.** After task 1.2, Ana pauses: the change's files, open until it is finished, are committed with the pause record, and both repositories are pushed.
+7. **Finishing on another.** On her desktop, after a pull, `/bk:resume CH-002` confirms resuming work paused on another machine, starts the change on its branch with the brief, and the last task is built. `/bk:done` reviews the change, shows its context part, and archives it with AUTH's next version.
 
 ## Where it all shows
 

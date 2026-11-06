@@ -24,6 +24,11 @@ Both work the same way, with the same files and IDs. You can start with a folder
   tasks/TK-001/task.md           one directory per task
   defects/DEF-001/defect.md      one directory per defect
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
+  glossary/<term>/               each version of a glossary entry, one file each
+  practices/<ID>/                each version of a practice your team agreed
+  adrs/ADR-0001-<title>/         one directory per architecture decision record
+  threads/TH-001/                one file per pause while exploring, before any work was planned
+  code-notes/CN-001/             each version of a note on the code
 ```
 
 That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes instead of stages:
@@ -36,9 +41,14 @@ That is a Full SDLC tree. A Spec-driven tree holds capability specs and changes 
   changes/CH-012-<short name>/   one directory per change, named by its ID and title
   defects/DEF-001/defect.md      one directory per defect
   adhoc/AH-001/adhoc.md          one directory per ad-hoc unit
+  glossary/<term>/               each version of a glossary entry, one file each
+  practices/<ID>/                each version of a practice your team agreed
+  adrs/ADR-0001-<title>/         one directory per architecture decision record
+  threads/TH-001/                one file per pause while exploring, before any work was planned
+  code-notes/CN-001/             each version of a note on the code
 ```
 
-See [Capability specs](capability-specs.md) and [The two modes](modes.md).
+Both modes keep the glossary, the practices, the ADRs, the threads and the notes on the code at the top of the tree. See [Capability specs](capability-specs.md) and [The two modes](modes.md).
 
 Each artifact has its own directory, named by its ID, holding its working file. As the artifact moves through its life, BuildKeel adds records next to it:
 
@@ -50,11 +60,21 @@ Each artifact has its own directory, named by its ID, holding its working file. 
 | `completions/` | One record each time the work is finished |
 | `closed.yaml` | For a defect closed without a fix: why, who closed it and when (see [Defects and ad-hoc units](defects-and-adhoc.md#closing-a-defect-without-a-fix)) |
 | `repins/` | One record each time someone confirms the artifact, or in a test plan one of its test cases, is still valid after what it was built against changed |
+| `notes/` | The working notes of the work on it, one file each time they are saved |
+| `pauses/` | Where the work stood at each pause, and who paused it |
+| `runs/` | The summary of its test runs, one file each time it is saved |
+| `reviews/` | The findings of each review, each finding with an ID such as `TK-013-Fk3q` |
+| `answers/` | How each finding was answered, one file per finding |
+| `switches/` | The switches in force when the unit started, which its checks apply |
+| `handoffs/` | Each Principal handoff that did not clear its finding |
+| `as-built/` | What a task finished before Build-ready tasks was on delivered, written later from its commits |
 | `test-plan/` | The artifact's test plan, `plan.md`, with its own `versions/` and `approvals/` |
 | `design/` | The artifact's design document, `design.md`, with its own `versions/` and `approvals/` |
 | `<document>/` | A document of your team's own, such as `threat-model/threat-model.md`; see [Process and templates](process-and-templates.md#your-own-documents) |
 
-Records are written once and never edited, so two branches that add records merge without conflicts. Edit only working files, and always through BuildKeel.
+A change in a Spec-driven tree keeps `notes/`, `pauses/`, `runs/`, `reviews/`, `answers/`, `switches/`, `handoffs/` and `as-built/` in its own directory the same way.
+
+Records are written once and never edited, so two branches that add records merge without conflicts. Each one's file name holds the time and a short random suffix, such as `20261101T183000Z-k3q8.md`, or for a version of a glossary entry, a practice or a note on the code, the version and a suffix, such as `v2-k3q8.md`. When two branches each add the same version of an entry, both are kept and validation asks you to settle which one stands. Edit only working files, and always through BuildKeel.
 
 Version 0, which describes code as it was before BuildKeel, is drafted in `onboard.md` beside the working file, so it can be drafted while the next version is drafted too. Approving it writes `versions/v0.md` and `approvals/v0.yaml`, and removes `onboard.md`.
 
@@ -99,7 +119,7 @@ A customer asks for a reset link and receives it by email.
 The file at the root of the spec tree. Its presence is what makes a directory a spec tree.
 
 ```yaml
-format: 3
+format: 4
 mode: full-sdlc
 name: Payments
 repos:
@@ -114,7 +134,7 @@ settings:
 |---|---|
 | `format` | The version of the spec tree format. Required. |
 | `name` | A display name for the tree. |
-| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). A tree that names no mode follows Full SDLC. Required from format 2 on. See [The two modes](modes.md). |
+| `mode` | How the tree works: `spec-driven` (capability specs and changes) or `full-sdlc` (your process's stages, approvals and gates). Required from format 2 on: BuildKeel does not read a tree in format 2 or later that names none, and says to add `mode: spec-driven` or `mode: full-sdlc`. A format 1 tree names none, and follows Full SDLC. See [The two modes](modes.md). |
 | `repos` | The code repositories that use this tree. Each has a `name`, and optionally its `remote` and a `baseline` commit: commits up to the baseline predate BuildKeel and are never reported as untracked work. |
 | `templates` | An organization template source, with a fixed `version`. |
 | `process` | Your process: stages and the kinds within them, documents, ID prefixes, which kinds a reported defect can belong to (`defect.parents`), task plans, the letter of onboarded numbers (`onboarded.letter`, `E` by default) and gate settings. Leave it out to use the default process. See [Process and templates](process-and-templates.md). |
@@ -151,11 +171,21 @@ specs:
 
 The key is the `remote` from the pointer file. This file stays on your machine and is never committed.
 
+## Teams on both hosts
+
+One spec tree serves everyone, whichever host each person uses: Claude Code or Antigravity. The tree, its records and the commands are the same in both; only the commands' form differs (`/bk:build` in Claude Code, `/bk-build` in Antigravity). Each person installs BuildKeel for their own host (see [Install in Claude Code](install-claude-code.md) and [Install in Antigravity](install-antigravity.md)), and work paused on one host can be resumed on the other.
+
+A few things differ by host:
+
+- **Commands only you start** are enforced in Claude Code. Antigravity cannot block them, so there Claude is told the rule and follows it.
+- **Models and effort:** a tier names a model and an effort for each host. Antigravity has no effort setting for agents, so an effort is ignored there. See [Models and effort for each role](building-with-agents.md#models-and-effort-for-each-role).
+- **Completion records** note the host the work was finished on.
+
 ## Format versions
 
-`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Every new tree is written in format 3. A version of BuildKeel from before 0.5.0 opens a format 3 tree read-only and asks for an update.
+`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Every new tree is written in format 4. BuildKeel 0.5.0 and earlier open a format 4 tree read-only and ask for an update.
 
-- **An older format:** BuildKeel reads the tree but does not change it, and asks you to run `/bk:migrate`. Migration upgrades the tree in one commit you can review, and never alters approved versions.
+- **An older format,** such as a tree made with BuildKeel 0.5.0 or earlier (formats 1 to 3): BuildKeel reads the tree but does not change it, and asks you to run `/bk:migrate`. Migration upgrades the tree in one commit you can review, never alters approved versions, and keeps work in progress going. See [Migrating a spec tree](migration.md).
 - **A newer format** than your BuildKeel supports: BuildKeel reads the tree but does not change it, and asks you to update the plugin.
 
 BuildKeel never rewrites files to a new format without being asked.

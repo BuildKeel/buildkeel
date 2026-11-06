@@ -34,7 +34,7 @@ Gates stop work until it is ready: no coding against an unapproved or outdated r
 | **Defects** | Found while building: attached to the change whose work found it. Reported: linked to the requirement it affects, or standalone. None is approved, and a missing regression test is a reminder | Found while building: attached to the task or story, and started at once. Reported: under the work it affects, a story by default, and approved before work on it starts. A regression test is needed to finish |
 | **Existing code** | A capability's version 0, written once a person has confirmed it | Version 0 of each artifact, reviewed and approved, with its sources kept |
 | **What your team sets** | Templates, rules for each artifact, ID prefixes | Stages, kinds within a stage, documents, which kinds a reported defect can belong to, templates, rules, ID prefixes and gates |
-| **The spec tree's format** | 3: everyone working in it needs BuildKeel 0.5.0 or later | 3, as for Spec-driven |
+| **The spec tree's format** | 4: everyone working in it needs BuildKeel 0.6.0 or later | 4, as for Spec-driven |
 
 The same in both: commits are linked to their unit automatically, test results are read from JUnit XML reports, defects can be closed without a fix, every finished unit leaves a permanent record, nothing leaves your repositories, and the commands are the same.
 

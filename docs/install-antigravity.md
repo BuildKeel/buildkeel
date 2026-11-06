@@ -36,6 +36,8 @@ To update BuildKeel to the newest version, run this, then quit and reopen Antigr
 npx buildkeel@latest update
 ```
 
+After an update, if BuildKeel says your spec tree uses an older format, run `/bk-migrate`: it upgrades the tree in one commit, and work in progress carries on. See [Migrating a spec tree](migration.md).
+
 `@latest` makes npx fetch the newest version rather than run one it has kept from before. For a project install, add `--workspace /path/to/your/project`.
 
 To remove BuildKeel, run `npx buildkeel remove`, with `--workspace /path/to/your/project` for a project install.

@@ -7,6 +7,16 @@ Most teams set BuildKeel up on code that already exists. None of that code needs
 
 Neither is a setting, and neither is offered unless you run a BuildKeel command or ask for a change. Either way, people lead: Claude proposes and drafts, and you correct, complete and approve. You can also write or correct any of it by hand.
 
+## Where existing code ends
+
+The line is `/bk:init`:
+
+- **The baseline.** Each code repository's baseline is the commit it was at when it was set up with BuildKeel. A repository added to the tree later gets its own. It never moves. A repository with no commits when it was set up has no baseline, and so no existing code.
+- **Before the baseline** is existing code: documented as version 0, from the code as it was at the baseline commit.
+- **After the baseline,** everything goes through BuildKeel. Code written outside it is reported as having no unit (see [Commits with no unit](status.md#commits-with-no-unit)), is never version 0, and is documented through the process when work touches it.
+- **`/bk:onboard` runs any time after setup,** as often as you like, one area at a time, with the map and where it stands kept in the spec tree. It mixes freely with documenting as work touches it, and an artifact made in BuildKeel can get its version 0 later (see [Adding version 0 to what BuildKeel already has](#adding-version-0-to-what-buildkeel-already-has)).
+- **Not during a move to Full SDLC.** While a Spec-driven tree is being moved, onboarding says that `/bk:migrate` carries the move on.
+
 ## Version 0
 
 What describes code from before BuildKeel is **version 0** of its artifact; anything made in BuildKeel starts at version 1. Version 0 reads like any artifact of its type, as if BuildKeel had been used from the start, and is drafted from the code and from what you bring: your issue tracker or wiki through tools you connected to Claude, files, and what people know. It is not held to the template or to the documents your process requires, so a section nobody knows can stay empty, but a person reads and approves it like any version. See [Version 0](approval.md#version-0-code-from-before-buildkeel) for how it is approved and recorded.
@@ -47,6 +57,8 @@ For each area, Claude reads its code as it was at the baseline and asks what you
 - A document your process requires that no source has, such as an epic's design document or a story's test plan, is drafted as **version 1**, under the normal rules, so new work under the area can start as usual.
 
 Once you agree, Claude drafts them all. For each required section nothing supports, it asks you, one question at a time, and **Leave it empty** is always an answer. Then the area's drafts are approved in one review, each version 0 before what builds on it.
+
+With Build-ready tasks on, each finished task the area documents then gets an as-built record from its linked commits: the files and tests they changed and what the task delivered, labeled as written later. Claude shows the records and writes them once you agree. See [Backfilling Build-ready tasks](working-on-a-unit.md#backfilling-build-ready-tasks).
 
 Once the area is approved, Claude records every ticket it read for the area on the map, with what became of each: carried over, with the artifact it became, or left out, as open, in progress, or by your choice, with who chose. Nothing read slips through, and you can tell when an old tracker project has nothing left in it:
 

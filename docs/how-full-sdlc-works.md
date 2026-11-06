@@ -2,7 +2,7 @@
 
 A Full SDLC spec tree follows the team's process: a chain of stages from a business idea down to the work you build, the documents each stage needs, and approvals and gates along the way. With the default process, a business idea is split into epics, an epic into user stories, and a story into tasks; an epic has a design document, and a story a test plan. See [Process and templates](process-and-templates.md) for the chain, and [Setting up a Full SDLC tree](setting-up-full-sdlc.md) for shaping it to your team.
 
-This page follows one piece of work from a business idea down to a finished task, with what BuildKeel shows at each step. Along the way: a defect found while building, behavior questioned while building and the pause for approval, a reported defect and its approval, and a defect in code nothing describes yet.
+This page follows one piece of work from a business idea down to a finished task, with what BuildKeel shows at each step, then the same work from the first conversation to finishing on another machine. Along the way: a defect found while building, behavior questioned while building and the pause for approval, a reported defect and its approval, and a defect in code nothing describes yet.
 
 The examples come from a payments service: business idea BI-01 "Self-service account recovery", epic EP-01 "Password reset" with its design document, user story US-001 "Request a reset link" with its test plan, and task TK-001 "Reset endpoint".
 
@@ -31,6 +31,8 @@ An approved version is locked: a change to it opens its next version, and the ap
 ```
 
 Claude receives the task's context: what to build, why (the story, with each acceptance criterion and the test case for it), the epic's design, and the open defects. Each commit ends with `BuildKeel-Unit: TK-001`, and each test carries its test case in its name, such as `it("expires links [US-001-TC2]")`. See [Working on a unit](working-on-a-unit.md).
+
+Under a story with several tasks, each task can be built by a fresh agent that gets only that task's context, with your conversation running the build, and independent tasks can be built at the same time. Fresh reviewers review each task once it is built: one checks it against the spec by ID, one reviews its code, and one writes tests that try to break it. See [Building with agents](building-with-agents.md) and [Reviews](reviews.md).
 
 ### A defect found while building
 
@@ -83,7 +85,7 @@ When the start gate is set to warn, you can tell Claude to carry on before the n
 
 ## 3. Finishing
 
-`/bk:done` runs the done gate: the work committed on the task's branch, and every test case that applies to it passing in a test report recorded with the test results. Finishing writes the completion record: what was built, against which approved versions, and with which results.
+`/bk:done` runs the final review by fresh reviewers, then the done gate: the work committed on the task's branch, every test case that applies to it passing in a test report recorded with the test results, and its review findings answered. Finishing writes the completion record: what was built, against which approved versions, and with which results.
 
 ```
 Finished TK-001 "Reset endpoint" v1: its completion record keeps what was built, against which approved versions, and with which test results.
@@ -152,6 +154,18 @@ Approved all 2 in one review: US-E001@v0 and DEF-004.
 ```
 
 See [Documenting existing code](onboarding.md) for version 0.
+
+## One piece of work, start to finish
+
+The same password reset work, followed through every part of BuildKeel it touches:
+
+1. **Exploring.** Ana talks reset links through with Claude: a link or a code, how long it lasts, what the email says. Claude checks the code, lays out the options and keeps her words apart from its own proposals. When she calls it a "client", the glossary says "customer", and Claude asks which she means. See [Exploring and capturing](exploring-and-capturing.md).
+2. **A thread.** It is late; Ana says "let's stop here". With no unit active, `/bk:pause` keeps the conversation as `TH-001 "Password reset links"`, shown in full and saved once she agrees, then pushed. See [Pausing and resuming](pausing-and-resuming.md).
+3. **Capture.** The next day, `/bk:resume TH-001` shows its brief, and the talk goes on. `/bk:capture` sums it up, drawing on the thread, with the approaches weighed. It drafts the epic, its design document with those approaches, the story with its test plan (with edge-case suggestions: up to five missing test cases proposed by a fresh agent), and the tasks. As the set is larger work, Claude offers the readiness check; you take it, and its questions are settled. Closing the capture closes the thread, linked to the epic, and the set is approved in one review.
+4. **A run in fresh agents.** `/bk:build US-001` builds each task in a fresh agent, with the glossary terms and practices in its view. Each answer to an agent's question is kept as a working note, so later agents have it. See [Building with agents](building-with-agents.md).
+5. **Review.** Fresh reviewers review each task: its spec by ID, its code, and tests that try to break it. A High finding is fixed before the run goes on. See [Reviews](reviews.md).
+6. **A pause on one machine.** Halfway through TK-002, Ana switches to her desktop: `/bk:pause` commits her work in progress, records where things stand with the working notes, and pushes both repositories.
+7. **Finishing on another.** On the desktop, after a pull, `/bk:resume TK-002` asks to confirm resuming work paused on another machine, starts the task on its branch with the brief, and Ana carries on. `/bk:done` runs the final review and the done gate, and shows the context part of the completion record: the decisions, the dead ends, and notes for the next person, which the next unit to change these files is given when it starts.
 
 ## Where it all shows
 

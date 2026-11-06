@@ -17,8 +17,11 @@ if (!(major >= REQUIRED_MAJOR)) {
 }
 
 var entry = process.argv[2];
+// bk-launch.cmd passes its arguments as given, with server or hook first, and sets BK_START_SHIFT to have it dropped.
+var shift = process.env.BK_START_SHIFT === "1" ? 1 : 0;
+delete process.env.BK_START_SHIFT;
 // The component reads its own arguments from process.argv.slice(2), as if Node had started it directly.
-process.argv.splice(1, 2, entry);
+process.argv.splice(1, 2 + shift, entry);
 import(require("node:url").pathToFileURL(entry).href).catch(function (error) {
   process.stderr.write("BuildKeel could not start " + entry + ": " + (error && error.message ? error.message : String(error)) + "\n");
   process.exit(1);

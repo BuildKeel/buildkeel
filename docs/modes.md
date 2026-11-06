@@ -43,16 +43,16 @@ Full SDLC follows your team's chain of stages, from business idea down, with app
 The mode is written to `buildkeel.yaml`:
 
 ```yaml title="buildkeel.yaml"
-format: 3
+format: 4
 mode: spec-driven
 name: Accounts
 repos:
   - name: accounts-api
 ```
 
-> **Teammates on older versions.** A new tree of either mode uses format 3. A version of BuildKeel from before 0.5.0 opens it read-only and asks for an update, so everyone who works in the tree needs 0.5.0 or later.
+> **Teammates on older versions.** A new tree of either mode uses format 4. BuildKeel 0.5.0 and earlier open it read-only and ask for an update, so everyone who works in the tree needs the current version.
 
-A spec tree created before modes existed names no mode. It follows Full SDLC, exactly as before, with nothing to migrate.
+A spec tree created before modes existed names no mode, and follows Full SDLC. It was made with BuildKeel 0.4.0 or earlier: `/bk:migrate` names its mode, Full SDLC, as it moves the tree to the current format (see [Migrating a spec tree](migration.md)).
 
 ## One mode per spec tree
 
@@ -74,6 +74,8 @@ Run `/bk:migrate` once no change is open, and choose **Move this tree to Full SD
 - the tree is still Spec-driven: defects, ad-hoc units and looking up capability specs work as usual, but no new change can be opened;
 - you can stop after any area, and the next `/bk:migrate` carries on;
 - you can cancel the move until the first area is approved.
+
+The glossary, practices, ADRs, threads and notes on the code carry over as they are, and so do each archived change's working notes, test-run summaries and review findings; an accepted ADR counts as approved.
 
 Once every area is converted, `/bk:migrate` switches the tree, in a commit of its own. Tests tagged with scenario IDs count for the test cases those scenarios became, code linked to changes stays linked, and each open defect keeps its ID under the artifact it affects. The capability specs and archived changes stay in the tree, read-only, as the history of how the system came to be. See [Moving a Spec-driven tree to Full SDLC](onboarding.md#moving-a-spec-driven-tree-to-full-sdlc).
 
