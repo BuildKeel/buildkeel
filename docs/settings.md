@@ -1,8 +1,19 @@
-# Settings
+# Feature switches
 
-Every BuildKeel feature you can switch, with its values and its default. The defaults suit most teams, and setup asks only about stamping your own commits. Everything else starts at its default until you change it.
+Every BuildKeel feature you can switch, with its values and its default. The defaults suit most teams, and setup asks only about stamping your own commits; everything else starts at its default until you change it.
 
-`/bk:settings` shows every setting as it applies in this repository, and says when one does not apply in the tree's mode. It changes nothing. For what each feature does, see [What BuildKeel does](what-buildkeel-does.md).
+## 1. Change a switch
+
+Switches live in the spec tree's `buildkeel.yaml`, so a change reaches the whole team when you commit it. The full walk-through is in [Change your configuration](configuration.md#4-turn-a-feature-switch-on-or-off).
+
+1. Run `/bk:settings` to see every switch with its value and its default, and whether it applies in the tree's mode.
+2. Open `buildkeel.yaml` at the root of the spec tree, and set the switch in its `process` section, using the keys in [Every setting](#every-setting).
+3. Run `/bk:settings` again to confirm the new value.
+4. Commit the change with the spec tree, and push it.
+
+`/bk:settings` changes nothing. For what each feature does, see [Features](what-buildkeel-does.md).
+
+> **What happens to work already done.** Changing a setting changes only what happens from then on, and each record notes the switches in force. See [Turning a feature off or on](#turning-a-feature-off-or-on).
 
 ## How switches work
 
@@ -94,44 +105,46 @@ process:
     parallel: 3
 ```
 
-The setup guides write out every setting with its values beside it: see [Setting up a Spec-driven tree](setting-up-spec-driven.md#settings-setup-leaves-at-their-defaults) and [Setting up a Full SDLC tree](setting-up-full-sdlc.md#settings-setup-leaves-at-their-defaults).
+How setup treats each mode's settings is in [Spec-driven mode in depth](how-spec-driven-works.md) and [Full SDLC mode in depth](how-full-sdlc-works.md).
 
-## Planning
+## What each switch does
 
-- **Structured exploring** (`planning.exploring`). When you ask to explore an idea, Claude plays back what it understood, with your words kept apart from its proposals, and offers two or three approaches. Off, Claude still checks facts in the code before asking, without the structure. See [Exploring and capturing](exploring-and-capturing.md).
+### Planning
+
+- **Structured exploring** (`planning.exploring`). When you ask to explore an idea, Claude plays back what it understood, with your words kept apart from its proposals, and offers two or three approaches. Off, Claude still checks facts in the code before asking, without the structure. See [Talk it through and explore](exploring.md).
 - **Design options** (`planning.design-options`). Fresh agents each propose a design for an interface several tasks share. Set the number of designers beside the mode, such as `{ mode: auto, designers: 3 }`.
 - **Readiness check** (`planning.readiness`). For larger work, fresh agents read the agreed plan as the people who build, test and run it, and list their questions. 1 reader is the builder, 2 adds a tester, and 3 adds an operator.
 - **Edge-case suggestions** (`planning.edge-cases`). When a test plan or a change's scenarios are drafted, a fresh agent proposes up to five missing cases. With `auto`, the default, it runs and says so in a line. You still answer its proposals once.
-- **Build-ready tasks** (`planning.build-ready-tasks`). Every task names its Files, what it Uses and Delivers, and its Verify command, and records its Built line when it is finished. See [Working on a unit](working-on-a-unit.md#what-each-task-states).
+- **Build-ready tasks** (`planning.build-ready-tasks`). Every task names its Files, what it Uses and Delivers, and its Verify command, and records its Built line when it is finished. See [Build](working-on-a-unit.md).
 - **Plan check** (`planning.plan-check`). When tasks are saved, BuildKeel checks what they use, the files they name and their coverage, and reports problems. It never blocks.
-- **Spikes** (`planning.spikes`). Throwaway code on its own `spike/<name>` branch. Off, starting a spike is refused. Spike branches from before are left as they are. See [Spikes](exploring-and-capturing.md#spikes).
+- **Spikes** (`planning.spikes`). Throwaway code on its own `spike/<name>` branch. Off, starting a spike is refused. Spike branches from before are left as they are. See [Small fixes, defects and spikes](defects-and-adhoc.md).
 
-## Building
+### Building
 
-- **Fresh agent per task** (`runs.build`). The first choice `/bk:build` offers: each task in a fresh agent, or here, in this conversation. The other is always offered too. See [Building with agents](building-with-agents.md#fresh-agents-or-here).
-- **Parallel runs** (`runs.parallel`, Full SDLC). The most independent tasks built at the same time, each in its own worktree. `1` builds one after another. A change applies from the next run. See [Parallel runs](building-with-agents.md#parallel-runs).
-- **Principal handoff** (`agents.handoff`). When fix rounds leave a review finding open, the implementer gets one more round on the handoff tier. `after` is the number of failed fix rounds before it, 2 by default. `tier: none` turns it off: the run then stops and asks you after the fix rounds. See [The fix loop](reviews.md#the-fix-loop).
+- **Fresh agent per task** (`runs.build`). The first choice `/bk:build` offers: each task in a fresh agent, or here, in this conversation. The other is always offered too. See [Build](working-on-a-unit.md).
+- **Parallel runs** (`runs.parallel`, Full SDLC). The most independent tasks built at the same time, each in its own worktree. `1` builds one after another. A change applies from the next run. See [Build](working-on-a-unit.md).
+- **Principal handoff** (`agents.handoff`). When fix rounds leave a review finding open, the implementer gets one more round on the handoff tier. `after` is the number of failed fix rounds before it, 2 by default. `tier: none` turns it off: the run then stops and asks you after the fix rounds. See [Reviews and the fix loop](reviews.md).
 
-## Testing
+### Testing
 
-- **TDD**. Red then green, the revert check and the test-file diff. In Full SDLC it is the done gate's check, `gates.tdd`: `warn` shows a finding with the finish, `block` refuses it, `off` says nothing. In a Spec-driven tree, `checks.tdd` is `reported` at finish, or `off`. See [TDD](tdd.md).
-- **Changed-line coverage** (`checks.coverage`). The lines the unit changed that no test ran, from an lcov or Cobertura report. Reported, never gated. See [Changed-line coverage](changed-line-coverage.md).
+- **TDD**. Red then green, the revert check and the test-file diff. In Full SDLC it is the done gate's check, `gates.tdd`: `warn` shows a finding with the finish, `block` refuses it, `off` says nothing. In a Spec-driven tree, `checks.tdd` is `reported` at finish, or `off`. See [TDD evidence](tdd.md).
+- **Changed-line coverage** (`checks.coverage`). The lines the unit changed that no test ran, from an lcov or Cobertura report. Reported, never gated. See [Tests and traceability](test-plans.md).
 - **Mutation testing** (`checks.mutation`). Off until you give the command that runs your team's mutation tool, such as `{ command: "npm run mutate" }`.
-- **Test file patterns** (`tests.paths`). Where your tests live, when it is not one of the usual places. See [How BuildKeel tells](tdd.md#how-buildkeel-tells).
+- **Test file patterns** (`tests.paths`). Where your tests live, when it is not one of the usual places. See [TDD evidence](tdd.md).
 
-## Review
+### Review
 
-- **Each reviewer** can be turned off on its own: `reviews.spec-compliance`, `reviews.code-quality` and `reviews.break-it`. Spec compliance still runs at finish when no review has run, or every reviewer is off. See [What /bk:done reviews](reviews.md#what-bkdone-reviews).
+- **Each reviewer** can be turned off on its own: `reviews.spec-compliance`, `reviews.code-quality` and `reviews.break-it`. Spec compliance still runs at finish when no review has run, or every reviewer is off. See [Reviews and the fix loop](reviews.md).
 - **Review after each task** (`reviews.each-task`). Off, a run builds each task without reviewing it, and the work is reviewed when it is finished.
-- **The done gate's review-findings check** (`gates.review-findings`, Full SDLC). A final review ran, and every High or Medium finding was fixed, parked or rejected. It warns by default. See [The final review and the done gate](reviews.md#the-final-review-and-the-done-gate).
+- **The done gate's review-findings check** (`gates.review-findings`, Full SDLC). A final review ran, and every High or Medium finding was fixed, parked or rejected. It warns by default. See [Reviews and the fix loop](reviews.md).
 
-## Continuity
+### Continuity
 
-- **Threads** (`continuity.threads`). What a pause does with nothing active. `ask` offers to save the conversation as a thread, `auto` saves it without asking, and `off` saves nothing and suggests `/bk:capture` when the idea is ready. Open threads stay, and can still be resumed or closed. See [Keeping an exploration as a thread](pausing-and-resuming.md#keeping-an-exploration-as-a-thread).
-- **Heads-up notes** (`continuity.heads-up`). Starting a unit shows up to five notes earlier work left on the files it will change. See [Heads-up notes](pausing-and-resuming.md#heads-up-notes-and-notes-on-the-code).
-- **Learning loop** (`continuity.learning-loop`). Patterns in the records, shown at finish and in status, and proposed as a practice or a note on the code. See [The Learning loop](status.md#the-learning-loop).
+- **Threads** (`continuity.threads`). What a pause does with nothing active. `ask` offers to save the conversation as a thread, `auto` saves it without asking, and `off` saves nothing and suggests `/bk:capture` when the idea is ready. Open threads stay, and can still be resumed or closed. See [Working notes and threads](working-notes.md).
+- **Heads-up notes** (`continuity.heads-up`). Starting a unit shows up to five notes earlier work left on the files it will change. See [Notes on the code](heads-up-notes.md).
+- **Learning loop** (`continuity.learning-loop`). Patterns in the records, shown at finish and in status, and proposed as a practice or a note on the code. See [The Learning loop](learning-loop.md).
 
-## Agents and models
+### Agents and models
 
 Each of the ten roles an agent plays runs with your session's model and effort (`inherit`) unless you give it a tier. The roles are `implementer`, `spec-reviewer`, `quality-reviewer`, `final-spec-reviewer`, `final-quality-reviewer`, `break-it`, `readiness-readers`, `edge-cases`, `designers` and `note-checker`. Two tiers are built in, *standard* and *principal*, and you can change them or add your own:
 
@@ -144,9 +157,9 @@ process:
     handoff: { tier: careful, after: 2 }
 ```
 
-See [Models and effort for each role](building-with-agents.md#models-and-effort-for-each-role), and [When agents can't be started](building-with-agents.md#when-agents-cant-be-started) for what happens without them.
+See [Models and effort per role](models.md).
 
-## Gates
+### Gates
 
 In Full SDLC, the approve, start, done and lock gates each have a mode: `block` (the default), `warn` or `off`. See [Gate modes](process-and-templates.md#gate-modes). A Spec-driven tree's only gate is the lock gate, with the same modes.
 
@@ -155,7 +168,7 @@ In Full SDLC, the approve, start, done and lock gates each have a mode: `block` 
 These are each person's own, kept on their machine, and never in `buildkeel.yaml`:
 
 - **Stamping your own commits.** A git hook adds the active unit's line to commits you make by hand. It is on by default: setup asks, with **Stamp my commits** first. To change it later, ask Claude to turn stamping off or on. Turning it off uninstalls BuildKeel's hook. In a repository whose hooks another tool manages, such as husky or lefthook, Claude shows the lines to add or take out instead.
-- **Usage stats.** A record on your machine of what BuildKeel did for you. `/bk:stats off` stops it, `/bk:stats on` starts it again, and `/bk:stats delete` and `/bk:stats export` delete or export it. See [Your usage](usage-stats.md).
+- **Usage stats.** A record on your machine of what BuildKeel did for you. `/bk:stats off` stops it, `/bk:stats on` starts it again, and `/bk:stats delete` and `/bk:stats export` delete or export it. See [Status and usage](status.md).
 - **The guided first change.** In a Spec-driven tree, setup asks whether to be guided through your first change. Tell Claude to stop or start explaining at any time.
 
 ## Turning a feature off or on
@@ -163,7 +176,7 @@ These are each person's own, kept on their machine, and never in `buildkeel.yaml
 Changing a setting changes only what happens from then on. For some features, work done meanwhile is affected too:
 
 - **Nothing more:** Structured exploring, Design options, the Readiness check, Edge-case suggestions, Plan check, Parallel runs, Principal handoff, Changed-line coverage, Mutation testing, Heads-up notes and the Learning loop.
-- **A gap:** work done while it was off has no records from it. These are TDD, each reviewer, the review after each task and Build-ready tasks. Turning Build-ready tasks on backfills it: open tasks get their Files, Uses, Delivers and Verify lines as an ordinary edit, and each finished task gets an as-built record, labeled as written later. `/bk:status` says how many finished tasks that covers; Claude shows their records, and writes them in one commit once you agree. See [Backfilling Build-ready tasks](working-on-a-unit.md#backfilling-build-ready-tasks).
+- **A gap:** work done while it was off has no records from it. These are TDD, each reviewer, the review after each task and Build-ready tasks. Turning Build-ready tasks on backfills it: open tasks get their Files, Uses, Delivers and Verify lines as an ordinary edit, and each finished task gets an as-built record, labeled as written later. `/bk:status` says how many finished tasks that covers; Claude shows their records, and writes them in one commit once you agree. See [Build](working-on-a-unit.md).
 - **Something to tidy:** turning Spikes off leaves earlier spike branches, which `/bk:status` lists for you to keep or delete. Turning Threads off leaves open threads, which can still be resumed, captured or dropped. Turning stamping off uninstalls the hook. Turning usage stats off keeps the record until you delete it.
 
 ## Records note the switches in force
@@ -171,3 +184,7 @@ Changing a setting changes only what happens from then on. For some features, wo
 When a unit or change starts, and again when it is finished, its record notes the switches that change what a check expects or what the record shows: TDD, changed-line coverage, mutation testing, each reviewer and the review after each task, Build-ready tasks, Principal handoff, and the way it was built, in fresh agents or here.
 
 Each check reads the switches noted when the work started. A unit started with TDD off is never failed for missing red runs, and a reader can tell "reviewed, nothing found" from "built with reviews off". The switches that only shape the conversation, such as Structured exploring, Threads, usage stats and the guided first change, are not noted.
+
+**More:** [Change your configuration](configuration.md), [Models and effort per role](models.md), [Features](what-buildkeel-does.md).
+
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-settings`.

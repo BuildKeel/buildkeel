@@ -24,7 +24,7 @@ You need Node.js 20 or later, and git.
 npx buildkeel install
 ```
 
-For installing in one project only, updating and removing, see [Install in Claude Code](docs/install-claude-code.md) and [Install in Antigravity](docs/install-antigravity.md).
+For installing in one project only, updating and removing, see [Install](docs/install.md).
 
 ## What it does
 
@@ -82,7 +82,7 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 
 ## Documentation
 
-Start with [Getting started](docs/getting-started.md), and see [The two modes](docs/modes.md) for the two modes. The setup guide for each mode explains every question setup asks: [Setting up a Spec-driven tree](docs/setting-up-spec-driven.md) and [Setting up a Full SDLC tree](docs/setting-up-full-sdlc.md). On a codebase that already exists, see [Documenting existing code](docs/onboarding.md). For every feature, see [What BuildKeel does](docs/what-buildkeel-does.md), and for every setting you can switch, [Settings](docs/settings.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
+Start with [Your first change](docs/getting-started.md), and see [Choose a mode](docs/modes.md) for the two modes. Every question setup asks is explained in [Spec-driven mode in depth](docs/how-spec-driven-works.md) and [Full SDLC mode in depth](docs/how-full-sdlc-works.md). On a codebase that already exists, see [Start on existing code](docs/onboarding.md). For every feature, see [Features](docs/what-buildkeel-does.md), and for every setting you can switch, [Feature switches](docs/settings.md). Every guide is listed in the [documentation index](docs/README.md). The website is [buildkeel.ai](https://buildkeel.ai).
 
 ## License
 

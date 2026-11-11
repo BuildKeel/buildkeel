@@ -1,61 +1,67 @@
-# Finishing a unit
+# Finish
 
 When the work on a unit is committed and its tests pass, you finish it with `/bk:done`. Finishing checks the tests and writes a **completion record**: a permanent note in the spec tree of what was built, against which approved versions, and with which test results.
 
-## While you work
+## 1. Commit and tag your tests
 
-### Commits
+While you work, every commit and every test is tied to the unit, so finishing can find them.
 
-Every commit Claude makes while a unit is active ends with the unit's line:
+1. Let Claude commit while the unit is active. Every commit it makes ends with the unit's line:
 
-```
-Add the reset endpoint
+   ```
+   Add the reset endpoint
 
-BuildKeel-Unit: TK-001
-```
+   BuildKeel-Unit: TK-001
+   ```
 
-With stamping your own commits on, the default, commits you make in a terminal get the same line. A commit without it still counts for the unit when it is on the unit's branch; `/bk:done` asks you about those (see below).
+2. Commit in a terminal if you want to. With stamping your own commits on, the default, your commits get the same line.
+3. Put the test case's ID in square brackets in the name of each test that checks it:
 
-### Tests
+   ```js
+   it("emails a reset link [US-001-TC1]", async () => {
+     // ...
+   });
+   ```
 
-A test that checks a test case carries the test case's ID in square brackets in its name:
+   A test may carry several IDs.
 
-```js
-it("emails a reset link [US-001-TC1]", async () => {
-  // ...
-});
-```
+A commit without the unit's line still counts for the unit when it is on the unit's branch; `/bk:done` asks you about those (see [Commits without a unit line](#commits-without-a-unit-line)).
 
-The test cases that apply to a task are its own plan's and its story's (see [Which test cases apply to a task](test-plans.md#which-test-cases-apply-to-a-task)). A test may carry several IDs.
+The test cases that apply to a task are its own plan's and its story's (see [Tests and traceability](test-plans.md)). In a Spec-driven tree, tests carry the scenario's ID, such as `[AUTH-R3-S1]`.
 
-### Test results
+## 2. Record the test results
 
-Claude runs the tests with a JUnit XML report and gives the report to BuildKeel, which matches each test to its test case by the ID in its name, or by a recorded match for a test written before BuildKeel (see [Existing tests](test-plans.md#existing-tests)). Most test runners can write one:
+Claude runs the tests with a JUnit XML report and gives the report to BuildKeel, which shows where each test case stands.
 
-| Test runner | Command |
-|---|---|
-| Vitest | `npx vitest run --reporter=default --reporter=junit --outputFile.junit=.buildkeel/junit.xml` |
-| Jest | `npx jest --reporters=default --reporters=jest-junit`, with `JEST_JUNIT_OUTPUT_FILE=.buildkeel/junit.xml` |
-| pytest | `pytest --junitxml=.buildkeel/junit.xml` |
-| Node's test runner | `node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=.buildkeel/junit.xml` |
-| Go | `gotestsum --junitfile .buildkeel/junit.xml` |
-| Maven, Gradle | already written under `target/surefire-reports/` or `build/test-results/` |
+1. Run the tests with a JUnit XML report written under `.buildkeel/`, which keeps it out of git. Most test runners can write one:
 
-Writing the report under `.buildkeel/` keeps it out of git. BuildKeel then shows where each test case stands:
+   | Test runner | Command |
+   |---|---|
+   | Vitest | `npx vitest run --reporter=default --reporter=junit --outputFile.junit=.buildkeel/junit.xml` |
+   | Jest | `npx jest --reporters=default --reporters=jest-junit`, with `JEST_JUNIT_OUTPUT_FILE=.buildkeel/junit.xml` |
+   | pytest | `pytest --junitxml=.buildkeel/junit.xml` |
+   | Node's test runner | `node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=.buildkeel/junit.xml` |
+   | Go | `gotestsum --junitfile .buildkeel/junit.xml` |
+   | Maven, Gradle | already written under `target/surefire-reports/` or `build/test-results/` |
 
-```
-TK-001: 1 of 3 test cases passes, 1 fails, 1 without a current passing or failing result.
-Read .buildkeel/junit.xml: 2 tests, 2 tagged with a test case. Results are recorded for this working tree only (local results).
+2. Let Claude record the report with BuildKeel.
 
-TDD:
-- TK-001-TC1: passed with no red run on record. If a reason applies (characterization, refactor, no behavior), state it with exceptions; otherwise finishing reports it.
-- US-001-TC1: red run recorded, with only test files changed since the last commit. Commit the test on its own now, before the code that makes it pass.
+   BuildKeel matches each test to its test case by the ID in its name, or by a recorded match for a test written before BuildKeel (see [Tests and traceability](test-plans.md)).
+3. Read where each test case stands:
 
-Test cases of TK-001 (local results):
-- TK-001-TC1 Endpoint validates its input: passed
-- US-001-TC1 Link arrives (from US-001-TP): failed: test/reset.test.ts > emails a reset link [US-001-TC1]
-- US-001-TC2 Link expires (from US-001-TP): no tagged test, left for the story
-```
+   ```text title="Recorded test results"
+   TK-001: 1 of 3 test cases passes, 1 fails, 1 without a current passing or failing result.
+   Read .buildkeel/junit.xml: 2 tests, 2 tagged with a test case. Results are recorded for this working tree only (local results).
+
+   TDD:
+   - TK-001-TC1: passed with no red run on record. If a reason applies (characterization, refactor, no behavior), state it with exceptions; otherwise finishing reports it.
+   - US-001-TC1: red run recorded, with only test files changed since the last commit. Commit the test on its own now, before the code that makes it pass.
+
+   Test cases of TK-001 (local results):
+   - TK-001-TC1 Endpoint validates its input: passed
+   - US-001-TC1 Link arrives (from US-001-TP): failed: test/reset.test.ts > emails a reset link [US-001-TC1]
+   - US-001-TC2 Link expires (from US-001-TP): no tagged test, left for the story
+   ```
 
 Each test case is:
 
@@ -67,7 +73,7 @@ Each test case is:
 
 A result that comes from a matched test alone says so, such as `- US-E001-TC1 Link sent (from US-E001-TP): passed, through its recorded match`. When the unit is finished, the match of a test that now carries its test case's ID is dropped, in the same commit as the completion record:
 
-```
+```text title="Finishing a unit with a matched test"
 - Dropped the recorded match of US-E001-TC1 to test/reset.test.ts > emails a reset link: the test now carries [US-E001-TC1] in its name.
 ```
 
@@ -79,7 +85,7 @@ BuildKeel reminds you to run `/bk:done` when the work looks done. Neither remind
 
 **When the work is done.** In a Spec-driven tree, ticking a change's last task tells Claude to say so:
 
-```
+```text title="The last task ticked"
 Every task of CH-002 "Reset links expire" is done: tell the user they can run /bk:done to finish it.
 ```
 
@@ -87,55 +93,42 @@ In Full SDLC, recording the test results says the same once every test case that
 
 **Before you share unfinished work.** When Claude is about to run `git push`, `gh pr create` or `gh pr merge` while a unit is active, BuildKeel tells it, and the command goes ahead:
 
-```
+```text title="Before a push"
 BuildKeel: CH-002 "Reset links expire" is not finished: tell the user to run /bk:done before merging. The command goes ahead.
 ```
 
 In Claude Code a hook adds this before the command runs. Antigravity cannot add a note before a command, so there the agent is told right after the command ran, at its next step, and its instructions also ask it to remind you before it pushes. A push you make in a terminal gets no reminder.
 
-## Finish with `/bk:done`
+## 3. Run /bk:done
 
-```
-/bk:done
-```
+Finishing checks the unit, shows you what it will record, and writes nothing until you confirm.
 
-Run it on its own and Claude asks what to finish; press Enter for the active unit. Claude runs the tests again if the code changed since they last ran, then checks the unit without writing anything. If the unit has had no final review, Claude runs it first, by fresh reviewers, and each finding is answered before the finish: see [Reviews](reviews.md). A task built in a run already has one when its review after the task covers its latest commit. For a defect, Claude also offers to close it without a fix, such as a duplicate or a change in behavior; see [Closing a defect without a fix](defects-and-adhoc.md#closing-a-defect-without-a-fix).
+1. Run `/bk:done`.
 
-### What must be true
+   ```
+   /bk:done
+   ```
 
-- The working tree has no uncommitted changes, and is on the unit's branch.
-- The unit is not suspect: built against a version of something above it that has changed since. Decide it first with `/bk:impact` (see [Change impact](change-impact.md)).
-- Every test case of the unit's **own** test plan has a tagged test and a current passing result. For a task, that is the task's plan, at the version recorded last; for a story built without tasks, the story's plan.
-- A test case the task takes from its **story's** plan must pass once a test is tagged with it. Until someone writes that test, it is **left for the story**: it does not stop the task, but the story cannot be finished until every one of its test cases passes. So the first task under a story can finish before the whole story works.
-- A story built without tasks has no open defect under it: each is finished, or closed without a fix. A task is not held up by its own defects; the story above it is.
-- Its review findings: a High or Medium finding neither fixed, parked nor rejected, or no final review by fresh reviewers, is reported by the review-findings check. That check has its own mode, warn by default, so it is shown and does not stop the finish unless your team sets it to block (see [The final review and the done gate](reviews.md#the-final-review-and-the-done-gate)).
-- A task needs **at least one** passing test case, its own or its story's. A task with no test plan of its own, none of whose tests is tagged with a story test case, is refused: nothing shows its work is tested. Give it a test plan whose test cases cover the task, or tag a test with the story test case it delivers.
+   Run on its own, Claude asks what to finish; press Enter for the active unit. In a Spec-driven tree, see [Finishing a change](#finishing-a-change).
+2. Let Claude run the tests again if the code changed since they last ran. It then checks the unit without writing anything.
+3. If the unit has had no final review, let Claude run it, by fresh reviewers, and answer each finding before the finish (see [Reviews and the fix loop](reviews.md)). A task built in a run already has one when its review after the task covers its latest commit.
+4. If the unit's branch has commits without a `BuildKeel-Unit` line, press Enter to count them all for the unit, or choose the ones to leave out.
+5. Read the preview of what finishing will record.
+6. Confirm in plain text, or fix what it reports first.
 
-When something is missing, nothing is written, and every reason is listed with what to do:
+For a defect, Claude also offers to close it without a fix, such as a duplicate or a change in behavior; see [Small fixes, defects and spikes](defects-and-adhoc.md).
 
-```
-Finish of TK-001 refused by the done gate: 1 check failed.
-1. US-001-TC1 "Link arrives" fails: test/reset.test.ts > emails a reset link [US-001-TC1].
-   To fix: Fix the code or the test, then run the tests with a JUnit XML report and record it with the BuildKeel test_results tool.
-```
-
-A team can set the done gate to `warn` (finish anyway and show what failed) or `off`:
-
-```yaml
-process:
-  gates:
-    done: warn
-```
+When something the done gate checks is missing, nothing is written, and every reason is listed with what to do (see [What must be true](#what-must-be-true)).
 
 ### Commits without a unit line
 
-When the unit's branch has commits without a `BuildKeel-Unit` line, Claude lists them and asks what to do with them. Press Enter to count them all for the unit, or choose the ones to leave out. Commits left out are named in the completion record, and BuildKeel stops counting them for the unit. Commits stamped with another unit stay with that unit. Nothing in git history is changed.
+When the unit's branch has commits without a `BuildKeel-Unit` line, Claude lists them and asks what to do with them. Commits left out are named in the completion record, and BuildKeel stops counting them for the unit. Commits stamped with another unit stay with that unit. Nothing in git history is changed.
 
-### What finishing will record
+### What the preview shows
 
 Before writing anything, Claude shows what finishing will do, in its reply, and asks you in plain text to confirm:
 
-```
+```text title="/bk:done"
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
 - write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, and a summary of its test runs
 - commit only those files in the spec repo as "done: TK-001 v1", without pushing
@@ -177,18 +170,105 @@ No findings.
 Left for the story: US-001-TC2 has no test yet; US-001 cannot be finished until every test case in US-001-TP passes.
 ```
 
-In Full SDLC, finishing writes only what its preview showed you. When a commit was made or a test result recorded after the preview, or there was no preview, nothing is written, and Claude previews again and asks you on the new preview. Commits you leave out are chosen after the preview, so leaving one out needs no new preview. A story or an epic is finished the same way. In a Spec-driven tree, a change is held to its preview as well, as [Finishing a change](#finishing-a-change) says.
-
 Besides the commits, files and test results, the preview shows:
 
 - **What it built**: the task's [Built line](working-on-a-unit.md#the-built-line), checked against its last commit. When the code delivers something other than the plan, Claude says what was built and why, and the line says "changed", with the reason. Something the task was to deliver and did not is named as missing.
-- **TDD and the checks on tests**: each test case's red and green runs, or its stated exception; the revert check; the test-file diff; the changed lines no test ran; and mutation testing when the team has turned it on. See [TDD](tdd.md).
+- **TDD and the checks on tests**: each test case's red and green runs, or its stated exception; the revert check; the test-file diff; the changed lines no test ran; and mutation testing when the team has turned it on. See [TDD evidence](tdd.md).
 
-In Full SDLC, a test case with no red run, or a test that passes without the unit's code, is a finding of the done gate's TDD check: a warning by default, or a refusal when the team sets the check to `block`. See [Turning it on or off](tdd.md#turning-it-on-or-off). Coverage is never gated.
+In Full SDLC, a test case with no red run, or a test that passes without the unit's code, is a finding of the done gate's TDD check: a warning by default, or a refusal when the team sets the check to `block`. See [TDD evidence](tdd.md). Coverage is never gated.
+
+> **Finishing writes only what you saw.** In Full SDLC, when a commit was made or a test result recorded after the preview, or there was no preview, nothing is written, and Claude previews again and asks you on the new preview. Commits you leave out are chosen after the preview, so leaving one out needs no new preview. A story or an epic is finished the same way. In a Spec-driven tree, a change is held to its preview as well, as [Finishing a change](#finishing-a-change) says.
+
+## 4. Go on to the next unit
+
+Once the unit is finished, carry on from where finishing leaves you.
+
+1. Push the unit's branch and open a pull request as usual. You stay on the unit's branch.
+2. Accept the next unit Claude offers, if you want to build it now.
+
+   When another unit under the same parent is ready to start, such as the story's next task, Claude names it and offers to start it. If you agree, its branch is stacked on this unit's branch, so it has this work before it is merged (see [Its branch](working-on-a-unit.md#its-branch)).
+3. Or run `/bk:build` to build every ready unit in turn.
+
+After finishing:
+
+- The unit's claim is released, and there is no active unit in this working tree.
+- The unit's context keeps listing its code, from git and from its completion record.
+- `/bk:build`, asked to show what can be started, lists finished units under **Done**.
+- In a Spec-driven tree, finishing a standalone defect offers to link it to a requirement its fix's files implement. See [Small fixes, defects and spikes](defects-and-adhoc.md).
+- A unit is finished once per approved version. Starting or finishing it again is refused, naming its completion record:
+
+  ```text title="/bk:build TK-001"
+  TK-001 cannot be started.
+  - TK-001 v1 was finished on 2026-10-01 by Jane Doe <jane@example.com> (tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml).
+    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a defect with /bk:new defect, or as an ad-hoc unit with /bk:build and a description of the change.
+  ```
+
+## 5. Finish a story or an epic
+
+A story built through tasks, or an epic, is never started: its work is done in the units under it. Once they are all done, finish it by name.
+
+1. Finish every unit under it.
+2. Merge the work, and run the tests again in this repository.
+3. Run `/bk:done` with its ID:
+
+   ```
+   /bk:done US-001
+   ```
+
+4. Read the preview and confirm, as for any unit.
+
+What must be true:
+
+- Every unit under it must be finished at its approved version in force: its tasks, any defects attached to it or to them, and for an epic, its stories. A defect closed without a fix counts as done (see [Small fixes, defects and spikes](defects-and-adhoc.md)). An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
+- Every test case of its own test plan must pass. A test case with a tagged test in this repository needs a current passing result here, so run the tests after the work is merged. A test case delivered only in another code repository counts as passed when the completion record of the unit that delivered it says it passed.
+- An epic needs no test plan of its own; when it has one, its test cases must pass the same way.
+- Nothing under it may be suspect: no unit under it, and no test case in its plan or theirs. See [When a requirement changes](change-impact.md).
+
+Its completion record lists the units under it with their records, and each test case with where it passed:
+
+```yaml
+children:
+  - unit: TK-001
+    version: 1
+    record: tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml
+  - unit: TK-002
+    version: 1
+    record: tasks/TK-002/completions/20261001T160500Z-sam-lee.yaml
+```
+
+## What must be true
+
+The done gate checks the unit before anything is written:
+
+- The working tree has no uncommitted changes, and is on the unit's branch.
+- The unit is not suspect: built against a version of something above it that has changed since. Decide it first with `/bk:impact` (see [When a requirement changes](change-impact.md)).
+- Every test case of the unit's **own** test plan has a tagged test and a current passing result. For a task, that is the task's plan, at the version recorded last; for a story built without tasks, the story's plan.
+- A test case the task takes from its **story's** plan must pass once a test is tagged with it. Until someone writes that test, it is **left for the story**: it does not stop the task, but the story cannot be finished until every one of its test cases passes. So the first task under a story can finish before the whole story works.
+- A story built without tasks has no open defect under it: each is finished, or closed without a fix. A task is not held up by its own defects; the story above it is.
+- Its review findings: a High or Medium finding neither fixed, parked nor rejected, or no final review by fresh reviewers, is reported by the review-findings check. That check has its own mode, warn by default, so it is shown and does not stop the finish unless your team sets it to block (see [Reviews and the fix loop](reviews.md)).
+- A task needs **at least one** passing test case, its own or its story's. A task with no test plan of its own, none of whose tests is tagged with a story test case, is refused: nothing shows its work is tested. Give it a test plan whose test cases cover the task, or tag a test with the story test case it delivers.
+
+When something is missing, nothing is written, and every reason is listed with what to do:
+
+```text title="/bk:done"
+Finish of TK-001 refused by the done gate: 1 check failed.
+1. US-001-TC1 "Link arrives" fails: test/reset.test.ts > emails a reset link [US-001-TC1].
+   To fix: Fix the code or the test, then run the tests with a JUnit XML report and record it with the BuildKeel test_results tool.
+```
+
+A team can set the done gate to `warn` (finish anyway and show what failed) or `off`:
+
+```yaml
+process:
+  gates:
+    done: warn
+```
+
+In a Spec-driven tree, defects and ad-hoc units finish the same way, except that a missing regression test is a reminder, not a refusal.
 
 ## The completion record
 
-Finishing writes one file in the unit's directory, `completions/<time>-<who>.yaml`, with a summary of the unit's test runs in its `runs/` folder, and commits them on their own in the spec repo as `done: <ID> v<N>`. It is pushed only when `autoPush` is set in `buildkeel.yaml`, like approvals; otherwise push the spec repo when you are ready to share it.
+Finishing writes one file in the unit's directory, `completions/<time>-<who>.yaml`, with a summary of the unit's test runs in its `runs/` folder, and commits them on their own in the spec repo as `done: <ID> v<N>`. It is pushed only when `autoPush` is set in `buildkeel.yaml`, like approvals; otherwise push the spec repo when you are ready to share it. For how records fit together, see [Records and the audit trail](records.md).
 
 ```yaml
 unit: TK-001
@@ -264,7 +344,7 @@ host: claude-code
 | `merged` | The commit that brought the work into the default branch, when it was already merged; otherwise empty. |
 | `files` | The files those commits changed. |
 | `tests` | The commit the results matched, the test plan versions, and each test case's result with the tests that carry its tag. |
-| `testFirst` | Each test case's red and green commits, or its stated exception; the test cases whose tests passed without the unit's code; the weakened tests; and the changed lines no test ran. See [TDD](tdd.md). |
+| `testFirst` | Each test case's red and green commits, or its stated exception; the test cases whose tests passed without the unit's code; the weakened tests; and the changed lines no test ran. See [TDD evidence](tdd.md). |
 | `built` | For a task, its Built line: whether it was built as planned, changed or missing, and each thing it delivers as planned and as built, with the reason for a change. |
 | `finishedBy`, `finishedAt`, `host` | Who finished it (their git identity), when, and in which coding agent. |
 
@@ -273,57 +353,21 @@ The record stands on its own: after a squash merge replaces the commit IDs, it s
 ### What else finishing adds
 
 - **The context part.** Before you confirm, the preview shows what the unit learned, built from its working notes and what Claude adds from the conversation: decisions and why (with those replaced marked), departures from the plan, dead ends, known limitations, follow-ups with their IDs, and notes for the next person who touches the code. It is kept under `context` in the completion record, and an archived change carries the same. The next unit that changes the same files is given the notes for the next person when it starts.
-- **Working notes.** Finishing is a checkpoint: the working notes since the last one are checked and kept in the finishing commit, and Claude lists them in the same reply.
-- **Reviews.** The completion record keeps the final review and every finding with its reviewer and how it was answered (see [Reviews](reviews.md)).
-- **The Learning loop.** When the unit is part of a pattern in the records, such as a file three defects changed, finishing shows it with the records behind it and what Claude proposes, a practice or a note on the code; nothing is saved unless you agree (see [The Learning loop](status.md#the-learning-loop)).
-- **The read-only copy** of the glossary, practices and ADRs is refreshed first, when it has changed, in a commit of its own with the unit's line.
-
-## Afterwards
-
-- The unit's claim is released, and there is no active unit in this working tree. You stay on the unit's branch: push it and open a pull request as usual.
-- When another unit under the same parent is ready to start, such as the story's next task, Claude names it and offers to start it. If you agree, its branch is stacked on this unit's branch, so it has this work before it is merged (see [Working on a unit](working-on-a-unit.md#its-branch)). To build every ready unit in turn, use `/bk:build`.
-- A unit is finished once per approved version. Starting or finishing it again is refused, naming its completion record:
-
-  ```
-  TK-001 cannot be started.
-  - TK-001 v1 was finished on 2026-10-01 by Jane Doe <jane@example.com> (tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml).
-    To fix: Save a change to TK-001 with save_draft and approve the new version with /bk:approve TK-001; then it can be started and finished again. Or record the follow-up as a defect with /bk:new defect, or as an ad-hoc unit with /bk:build and a description of the change.
-  ```
-
-- `/bk:build`, asked to show what can be started, lists finished units under **Done**.
-- In a Spec-driven tree, finishing a standalone defect offers to link it to a requirement its fix's files implement. See [Defects and ad-hoc units](defects-and-adhoc.md#in-a-spec-driven-tree).
-
-## Finishing a story or an epic
-
-A story built through tasks, or an epic, is never started: its work is done in the units under it. Once they are all done, finish it by name:
-
-```
-/bk:done US-001
-```
-
-- Every unit under it must be finished at its approved version in force: its tasks, any defects attached to it or to them, and for an epic, its stories. A defect closed without a fix counts as done (see [Defects and ad-hoc units](defects-and-adhoc.md#closing-a-defect-without-a-fix)). An open one is named, with what to do: start it and finish it, or finish it in the working tree where it is in progress.
-- Every test case of its own test plan must pass. A test case with a tagged test in this repository needs a current passing result here, so run the tests after the work is merged. A test case delivered only in another code repository counts as passed when the completion record of the unit that delivered it says it passed.
-- An epic needs no test plan of its own; when it has one, its test cases must pass the same way.
-- Nothing under it may be suspect: no unit under it, and no test case in its plan or theirs. See [Change impact](change-impact.md).
-
-Its completion record lists the units under it with their records, and each test case with where it passed:
-
-```yaml
-children:
-  - unit: TK-001
-    version: 1
-    record: tasks/TK-001/completions/20261001T141200Z-jane-doe.yaml
-  - unit: TK-002
-    version: 1
-    record: tasks/TK-002/completions/20261001T160500Z-sam-lee.yaml
-```
-- The unit's context keeps listing its code, from git and from its completion record.
+- **Working notes.** Finishing is a checkpoint: the working notes since the last one are checked and kept in the finishing commit, and Claude lists them in the same reply (see [Working notes and threads](working-notes.md)).
+- **Reviews.** The completion record keeps the final review and every finding with its reviewer and how it was answered (see [Reviews and the fix loop](reviews.md)).
+- **The Learning loop.** When the unit is part of a pattern in the records, such as a file three defects changed, finishing shows it with the records behind it and what Claude proposes, a practice or a note on the code; nothing is saved unless you agree (see [The Learning loop](learning-loop.md)).
+- **The read-only copy** of the glossary, practices and ADRs is refreshed first, when it has changed, in a commit of its own with the unit's line (see [The playbook](glossary-practices-adrs.md)).
 
 ## Finishing a change
 
-In a Spec-driven tree (see [The two modes](modes.md)), `/bk:done` finishes a [change](changes.md) by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. Defects and ad-hoc units finish as described above, except that a missing regression test is a reminder, not a refusal.
+In a Spec-driven tree (see [Choose a mode](modes.md)), `/bk:done` finishes a change by **archiving** it: its spec changes are merged into the capability specs, each capability it touches gets its next version naming the change, and the change's files are frozen as its record. See [Spec-driven mode in depth](how-spec-driven-works.md).
 
-A change does not have to be the active unit to be finished. Run `/bk:done CH-002`, or run `/bk:done` on its own with no active unit and pick from the open changes; those with every task ticked come first, and you can pick several.
+1. Run `/bk:done CH-002`, or run `/bk:done` on its own with no active unit and pick from the open changes. Those with every task ticked come first, and you can pick several. A change does not have to be the active unit to be finished.
+2. Tick the tasks Claude finds already pass their verification, if you agree.
+3. Read the final review and the preview of what finishing will write.
+4. Choose **Fix first** or **Finish anyway**, or **Reword the spec, then finish** when Claude offers it.
+5. Choose which text to keep for any overlap Claude shows.
+6. Accept or decline the follow-up change for work left open.
 
 ### What finishing reports
 
@@ -333,10 +377,10 @@ Before anything is written, BuildKeel gathers, for Claude and for you:
 - each capability spec as it will be after the merge: what the change adds or modifies in full, the rest one line each;
 - the design's Design and Decisions sections;
 - the code linked to the change: its commits (stamped `BuildKeel-Unit: CH-002`, or on its branch) and the files they changed;
-- where each scenario's tests stand, and the **gaps**: scenarios with no tagged test (see [Test plans](test-plans.md));
+- where each scenario's tests stand, and the **gaps**: scenarios with no tagged test (see [Tests and traceability](test-plans.md));
 - the consistency check: the proposal and spec changes disagreeing, tasks or the design naming a requirement the change removes, test tags naming no scenario, each with its file and line, ticked tasks whose requirement changed after the tick;
 - the template check, including the capability specs after the merge;
-- the suspects archiving would raise (see [Change impact](change-impact.md));
+- the suspects archiving would raise (see [When a requirement changes](change-impact.md));
 - **overlaps**: requirements this change modifies or removes that another change archived since its spec change was written.
 
 Nothing here stops the finish. The only things that do are uncommitted changes in the working tree, which the record would leave out, and for the active change, being off its branch.
@@ -347,7 +391,7 @@ A task can be done without being ticked. Before showing you anything else, Claud
 
 ### The review, and your choice
 
-Claude then runs the final review by fresh reviewers, as [Reviews](reviews.md) describes: each requirement and scenario shown as met, partly met or not met with its evidence, the code-quality findings with their severity, and the break-it agent's failing tests. The findings and how each was answered are kept with the archived change. Claude also keeps a line summing up the review in the completion record.
+Claude then runs the final review by fresh reviewers, as [Reviews and the fix loop](reviews.md) describes: each requirement and scenario shown as met, partly met or not met with its evidence, the code-quality findings with their severity, and the break-it agent's failing tests. The findings and how each was answered are kept with the archived change. Claude also keeps a line summing up the review in the completion record.
 
 In the same reply, Claude shows what finishing will write: the capability specs after the merge, with the requirements the change adds or modifies in full and the others by name. Then it asks, in plain text at the end of the reply, whether to **Fix first** or **Finish anyway**. Fix first is the default when a High or Medium finding is open, or the checks report something missing, such as a gap or a failing test; otherwise finishing is the default. Finishing anyway is recorded, with what was reported.
 
@@ -363,7 +407,7 @@ When you finish anyway with tasks unticked or gaps reported, the result lists th
 
 A spec change records the capability version it was written against (`base`). When another change has given the capability a newer version since, changes to different requirements merge on their own. When both changed the same requirement, Claude shows you both texts:
 
-```
+```text title="An overlap"
 - AUTH-R2: written against AUTH v1; CH-002 changed it in v2.
 ```
 
@@ -375,7 +419,7 @@ Several changes finish oldest first, each with its own review, versions and comm
 
 ### What archiving writes
 
-```
+```text title="/bk:done CH-002"
 Archived CH-002 "Reset links expire".
 - Wrote AUTH v2 (capabilities/AUTH/versions/v2.md), naming CH-002.
 - Froze the change: changes/CH-002-reset-links-expire/archive.yaml, and its completion record changes/CH-002-reset-links-expire/completions/20261014T101500Z-jane-doe.yaml (1 commit, 2 files).
@@ -410,7 +454,7 @@ archivedBy: Jane Doe <jane@example.com>
 archivedAt: 2026-10-14T10:15:00Z
 ```
 
-A change's completion record has the fields above, for the change's commits, files and the scenarios' results, and these besides:
+A change's completion record has the fields of [The completion record](#the-completion-record), for the change's commits, files and the scenarios' results, and these besides:
 
 | Field | What it holds |
 |---|---|
@@ -421,4 +465,6 @@ A change's completion record has the fields above, for the change's commits, fil
 | `finishedAnyway` | `true` when you finished it although something was reported missing. |
 | `openTasks` | The tasks left unticked when it was archived, each with its number and text. |
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`, `/bk-build`.
+**More:** [Build](working-on-a-unit.md), [Records and the audit trail](records.md), [Reviews and the fix loop](reviews.md), [TDD evidence](tdd.md), [Tests and traceability](test-plans.md).
+
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`.

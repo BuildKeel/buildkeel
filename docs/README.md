@@ -4,64 +4,56 @@ User documentation, kept beside the code it describes.
 
 ## Get started
 
-- [Install in Claude Code](install-claude-code.md): what you need, installing for you or for a repository, updating and removing, and checking that it works.
-- [Install in Antigravity](install-antigravity.md): what you need, installing for every project or for one, updating and removing, installing without npm, and checking that it works.
-- [Getting started](getting-started.md): setting up a repository with /bk:init, what it adds, and a first piece of work from a conversation to finished code.
-- [What BuildKeel does](what-buildkeel-does.md): every feature, the core ones first, then those you can switch, each by mode, with the key features marked.
+- [Install](install.md): installing in Claude Code or Antigravity, for one project only or without npm, checking it works, updating and removing, and what to do when something goes wrong.
+- [Your first change](getting-started.md): setting up a repository with /bk:init, what each question means, the files it adds, checking the result, and a first piece of work in each mode.
+- [Choose a mode](modes.md): which mode to choose, what each holds, the two side by side, the same work in each, setting the mode, one mode per tree, and moving to Full SDLC.
+- [Start on existing code](onboarding.md): documenting existing code as work touches it or area by area with /bk:onboard, the baseline, version 0, kept sources, onboarded numbers, finished work and old commits, existing tests, and filling in later.
 
-## Spec-driven vs Full SDLC
+## Do the work
 
-- [The two modes](modes.md): what each mode holds, setting the mode when a spec tree is created, one mode per tree, and moving a tree to Full SDLC.
-- [Choosing a mode](comparing-modes.md): which mode to choose, the two side by side, the same piece of work in each, and moving to Full SDLC.
-- [Setting up a Spec-driven tree](setting-up-spec-driven.md): every question /bk:init asks, in order, with what each answer does: the folder check, where the tree lives, stamping commits, numbering with examples, templates and rules, the guide for a first change, and the settings setup leaves at their defaults.
-- [Setting up a Full SDLC tree](setting-up-full-sdlc.md): every question /bk:init asks, in order, with what each answer does: stages, kinds within a stage, ID prefixes, documents, task test plans, gates and templates, the settings setup leaves at their defaults (checks on tests, reviews, agents, Threads and the read-only copy), ending with three complete processes and their buildkeel.yaml.
-- [How Spec-driven mode works](how-spec-driven-works.md): one change followed from a conversation to the capability's next version: building task by task, a defect found while building, behavior questioned while building, finishing, and reported problems sorted into defects and changes in behavior.
-- [How Full SDLC mode works](how-full-sdlc-works.md): one piece of work from a business idea down to a finished task: approving the plan, the start gate, building, a defect found while building, behavior questioned while building and the pause for approval, the done gate, the work above it, a reported defect and its approval, and a defect in code nothing describes.
+- [Talk it through and explore](exploring.md): talking an idea through with Claude first, asking for structured exploring, what Claude plays back, and when to capture, pause or spike.
+- [Capture a plan](capture.md): turning a conversation into a plan with /bk:capture, drafting artifacts, breakdowns and your own material with /bk:new, approving a plan in Full SDLC, changing what you captured, and what capture adds: approaches, edge cases, design options and the readiness check.
+- [Build](working-on-a-unit.md): starting a unit with /bk:build, building in fresh agents or here, following a run with its questions and rulings, parallel runs, picking a run up again, what must be true to start, Build-ready tasks with the Plan check and the Built line, and the context Claude and each agent receive.
+- [Finish](finishing-a-unit.md): committing with the unit line and tagging tests, recording test results, running /bk:done and its preview, the next unit, finishing a story or an epic, the done gate, the completion record field by field, and finishing a change.
+- [Small fixes, defects and spikes](defects-and-adhoc.md): small fixes as ad-hoc units, recording defects found while building or reported, fixing them with a regression test, closing one without a fix, and spikes for throwaway work.
+- [Pause, resume and hand over](pausing-and-resuming.md): pausing a unit or change with /bk:pause, resuming it on any machine with /bk:resume, handing work to a teammate, and what stays on your machine.
 
-## Plan the work
+## Checks and reviews
 
-- [Capability specs](capability-specs.md): in a Spec-driven tree, how the system behaves now: the format, requirement and scenario IDs, versions written by finishing a change, and what BuildKeel checks.
-- [Changes](changes.md): in a Spec-driven tree, a change's proposal, spec changes, design and tasks, editing an open change, and what BuildKeel checks.
-- [Exploring and capturing](exploring-and-capturing.md): structured exploring, keeping an exploration as a thread, recovering one left unsaved, spikes, and what /bk:capture adds: the summary with your words kept apart, approaches recorded, edge-case suggestions, design options and the readiness check.
-- [Drafting with Claude](drafting.md): turning a conversation into a plan with /bk:capture, drafting artifacts and breakdowns with /bk:new, bringing your own material, draft IDs, and what is still missing.
-- [Approving artifacts](approval.md): approving with /bk:approve, a whole plan in one review, permanent numbers, approval records and commits, changing an approved artifact, locked files and validation.
-- [Test plans and coverage](test-plans.md): test plans at every level, test case IDs, what is checked, gaps, the coverage view, and which test cases apply to a task.
+- [Tests and traceability](test-plans.md): tagging tests with test case IDs, recording results, coverage and gaps, matching existing tests, test plans at every level, and changed-line coverage from an lcov or Cobertura report.
+- [TDD evidence](tdd.md): turning TDD on, working red then green, stating an exception, reading the evidence at finishing, the red and revert checks, the test-file diff, mutation testing, and the switches for each.
+- [Reviews and the fix loop](reviews.md): the three fresh reviewers, reviews at /bk:done and with /bk:review, answering findings, the fix loop and Principal handoff, turning reviewers off, and the done gate's review-findings check.
+- [When a requirement changes](change-impact.md): previewing what a new version makes suspect, reviewing suspects with /bk:impact and deciding each, what makes something suspect, where suspects show, and re-pin records.
 
-## Build the work
+## Team memory
 
-- [Working on a unit](working-on-a-unit.md): starting and building a unit with /bk:build, Build-ready tasks and backfilling them, the Plan check, the Built line, building everything ready, what must be true, its branch and claim, the context Claude receives, sessions, freshness and working on several units at once.
-- [Finishing a unit](finishing-a-unit.md): commit lines and test tags, recording test results, finishing with /bk:done, what must be true, what it built and the checks on its tests, commits without a unit line, the completion record, the next unit, and finishing a story or an epic.
-- [Building with agents](building-with-agents.md): building each task in a fresh agent or here, and which comes first, what an agent is given, its statuses, questions and rulings, what a task uses checked as the run reaches it, parallel runs in worktrees and merging them, setting models and effort for each role and what Antigravity ignores, when agents can't be started, and picking up a run again.
-- [Reviews](reviews.md): the three fresh reviewers and turning each off, what a review is given, severities and verdicts, recording and answering findings, the fix loop and Principal handoff, /bk:review, what /bk:done reviews, the done gate's review-findings check, and reviews when agents can't be started.
-- [Decision records](decision-records.md): rulings, answers to review findings and the decisions in the working notes, each with its source or evidence: where they are kept, what the completion record holds, and finding them again.
-- [Pausing and resuming](pausing-and-resuming.md): pausing a unit or change with /bk:pause, keeping an exploration as a thread, working notes and how they are checked, resuming with /bk:resume on any machine, a teammate taking over, Heads-up notes, and what stays on your machine.
-- [TDD](tdd.md): red then green, how BuildKeel tells from git, stated exceptions, the red check and the revert check, the test-file diff, mutation testing, and turning TDD and the checks on tests on or off.
-- [Changed-line coverage](changed-line-coverage.md): the lines a unit changed that no test ran: giving BuildKeel an lcov or Cobertura report, producing one, which lines count and how paths are matched, what finishing shows, and turning it off.
-- [Defects and ad-hoc units](defects-and-adhoc.md): changes with nothing started, ad-hoc units through /bk:build, a defect or a change in behavior, defects found while building and reported defects, regression tests, closing without a fix, open defects, finding the work a reported defect affects, defects in a Spec-driven tree, and IDs given offline.
+- [The playbook](glossary-practices-adrs.md): agreeing a term, adding or switching off a practice, recording an ADR, how terms are checked, BuildKeel's default practices, ADRs in each mode, and the read-only copy in each code repository.
+- [Notes on the code](heads-up-notes.md): leaving a note on the code, the Heads-up notes a unit gets when it starts, turning them on or off, what a note holds, which are shown and when one stops showing.
+- [Working notes and threads](working-notes.md): the working notes kept at each checkpoint and pause, keeping an exploration as a thread, recovering one left unsaved, capturing or dropping a thread, and how sources are checked.
+- [Ask why the code is the way it is](looking-back.md): asking Claude why, by ID, file or text, reading the answer and its sources, and what it searches.
+- [The Learning loop](learning-loop.md): seeing what it proposes in /bk:status and at finish, accepting or declining a proposal, turning it on or off, the patterns it looks for, and where it speaks.
 
-## Change and track
+## Configure
 
-- [Change impact](change-impact.md): what a new version makes suspect, previewing it before approval, where suspects show, reviewing them with /bk:impact, and re-pin records.
-- [The status overview](status.md): /bk:status, what each section shows, the Learning loop, claims and releasing them, commits with no unit after the baseline, and files changed outside BuildKeel.
-- [Your usage](usage-stats.md): /bk:stats, what is recorded on your machine, and turning it off, deleting or exporting it. Nothing is sent anywhere.
+- [Change your configuration](configuration.md): seeing the setup with /bk:settings, changing the process, templates and feature switches in buildkeel.yaml, every switch with its default, and sharing changes with the team.
+- [Process: stages, kinds and documents](process-and-templates.md): setting up the process, changing it later, the default chain, the documents a stage requires, the design document, stages, kinds and ID prefixes, gate modes and task plans, and what is checked before approval.
+- [Templates](templates.md): replacing a template, adding one for a new stage, kind or document, rules per type, organization templates pinned to a version with local overrides and upgrades, and how a template is built.
+- [Feature switches](settings.md): every switch with its values, default and mode, what each does, personal settings, turning a feature off or on, and the switches each record notes.
+- [Models and effort per role](models.md): the ten roles, tiers, giving a role a tier, Principal handoff, and what Antigravity ignores.
+- [Move to Full SDLC, or upgrade a tree](migration.md): upgrading a tree in an older format, the area-by-area move to Full SDLC with /bk:migrate, and what holds after the switch.
 
-## Existing code
+## How it is organised
 
-- [Documenting existing code](onboarding.md): where existing code ends (the line is /bk:init), code from before BuildKeel, documented as work touches it or area by area with /bk:onboard; version 0, kept sources, onboarded numbers, finished work and old commits, existing tests, and filling in later.
-
-## Team knowledge
-
-- [The glossary, practices and ADRs](glossary-practices-adrs.md): the team's terms and how they are checked, BuildKeel's default practices and the team's own, architecture decision records in each mode, and the read-only copy in your code repository.
-
-## Set up and maintain
-
-- [Settings](settings.md): every feature switch with its values and default, personal settings, what turning a feature off or on does, and the switches each record notes.
-- [The spec tree](spec-tree.md): where BuildKeel keeps your plan, the pointer file in each code repository, teams on both hosts, and format versions.
-- [Process and templates](process-and-templates.md): seeing your settings at any time with /bk:settings and changing them, the default process, documents attached to a stage and which each stage requires, the design document, setting up the process, renaming and adding stages, kinds within a stage, ID prefixes, gate modes, templates and what BuildKeel checks before approval.
-- [Organization templates](organization-templates.md): templates and a process shared across teams from a repository of their own, pinned to a version.
-- [Migrating a spec tree](migration.md): moving a Spec-driven tree to Full SDLC with /bk:migrate, and upgrading a spec tree in an older format.
+- [The spec tree and its artifacts](spec-tree.md): where the plan lives, the record folders beside each artifact, IDs and the number counter, buildkeel.yaml and the pointer file, teams on both hosts, format versions, and the format of capability specs and changes.
+- [Spec-driven mode in depth](how-spec-driven-works.md): one change followed from a conversation to the capability's next version, defects and changes in behavior, every /bk:init question for a Spec-driven tree, and the settings left at their defaults.
+- [Full SDLC mode in depth](how-full-sdlc-works.md): one piece of work followed from a business idea to a finished task, every /bk:init question for a Full SDLC tree, three complete processes, and what approval checks, writes and locks.
+- [Records and the audit trail](records.md): rulings, answers to findings and decisions with their evidence, where records are kept, completion, approval and re-pin records, commits linked to their unit, and how records are kept.
+- [Status and usage](status.md): the overview with /bk:status, releasing a claim, your usage with /bk:stats, turning it off, deleting or exporting it, what each section of the overview shows, and what usage stats record.
 
 ## Reference
 
 - [Commands](commands.md): every command, what you can type, what it asks, and how it behaves in each mode.
-- [Known limits](known-limits.md): commit IDs after a rebase or an amend, a finished unit whose code is not pushed, claims kept on one machine, and what tags in test names can and cannot tell.
+- [Features](what-buildkeel-does.md): every feature, the core ones first, then those you can switch, each by mode, with the key features marked.
+- [Glossary](glossary.md): the product's terms in alphabetical order, each with a short definition and the page that explains it.
+- [What BuildKeel does not do](does-not-do.md): the limits BuildKeel keeps on purpose: across machines, other tools, enforcement, tests, your data and history, and what it does not record.
+- [Troubleshooting](troubleshooting.md): symptoms and what to do about them, for installing, setup and settings, starting and building, finishing and sharing, and the known limits.

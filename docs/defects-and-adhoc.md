@@ -1,47 +1,44 @@
-# Defects and ad-hoc units
+# Small fixes, defects and spikes
 
-Every code change belongs to a unit of work. Planned work arrives through the process: tasks and stories in Full SDLC, changes in a Spec-driven tree. Two more kinds of unit cover the rest:
+Every code change belongs to a unit of work, and planned work arrives through the process. This page covers the rest: an ad-hoc unit for a small fix, a defect for code that does not do what was agreed, and a spike for throwaway work that answers a question.
 
-- an **ad-hoc unit** records a small change that belongs to no planned work, such as fixing a typo. It is the only unit outside the process, in either mode, and it is never approved;
-- a **defect** records code that does not do what was agreed. It comes from one of two places: **found while building** or testing the work under way, or **reported** later by users, customers or testers.
+## 1. Make a small fix
 
-Each is started and built with `/bk:build`, has a branch, and is finished with `/bk:done`, which writes a completion record like any unit's. An ad-hoc unit and a defect found while building get a permanent ID the moment they are created, because their commits are stamped with it straight away. In Full SDLC, a reported defect is planned work: it is drafted and approved before work on it starts, like any artifact in the chain.
+An **ad-hoc unit** records a small change that belongs to no planned work, such as fixing a typo. It is the only unit outside the process, in either mode, and it is never approved.
 
-For each mode followed from start to finish, with defects along the way, see [How Spec-driven mode works](how-spec-driven-works.md) and [How Full SDLC mode works](how-full-sdlc-works.md).
+1. Ask Claude for the change.
+   With no unit active in the working tree, Claude asks you how to go on before it changes code. If it tries the edit first, BuildKeel holds it and tells Claude:
 
-## Ad-hoc units
+   ```text title="An edit held with no unit active"
+   BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture (you cannot start it), turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:build <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose (then call the BuildKeel manage tool with action untracked). Make the change once one of these is done.
+   ```
 
-### A change with nothing started
+   Claude asks before changing code, so you usually see the question rather than the hold.
+2. Choose how to go on: run `/bk:capture` to capture what you discussed, name the unit the change belongs to, accept the ad-hoc unit Claude proposes, or say to go ahead without a unit.
+   To record an ad-hoc unit directly instead, describe the change in place of an ID:
 
-When you ask Claude to change code and no unit is active in the working tree, BuildKeel holds the edit and Claude asks you first:
+   ```text
+   /bk:build fix the footer link
+   ```
 
-```
-BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture (you cannot start it), turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:build <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose (then call the BuildKeel manage tool with action untracked). Make the change once one of these is done.
-```
+   Claude compares your words with the titles of the units that can start. When nothing matches, it offers **Record the ad-hoc unit "Fix the footer link" and build it**. When a title matches, it offers that unit first, and records an ad-hoc unit only if you pick it.
+3. Read what Claude created. It creates the unit and starts it:
 
-Run `/bk:capture` to capture what you discussed, name the unit the change belongs to, accept the ad-hoc unit, or say to go ahead without a unit. Claude asks before changing code, so you usually see the question rather than the hold. Claude makes the change once a unit is active, or once you have chosen to go ahead without one.
+   ```text title="/bk:build fix the footer link"
+   Created ad-hoc unit AH-002 "Fix the footer link" at adhoc/AH-002/adhoc.md.
+   - Committed alone as "new: AH-002" (5e2b7c1) in the spec repo.
+   - Not pushed: push the spec repo to share it.
 
-Going ahead without a unit lasts in that working tree until a unit is started: edits are no longer held, and each session tells Claude the changes belong to no unit. Commits made meanwhile carry no `BuildKeel-Unit` line, and `/bk:status` lists them under **commits with no unit**. Changes to the spec tree, to BuildKeel's own `.buildkeel/` folder and to files outside the repository are not held.
+   Build it with /bk:build AH-002.
+   ```
 
-### Recording one directly
+4. Let Claude make the change, and commit it with `BuildKeel-Unit: AH-002`.
+5. Run `/bk:done` to finish it.
+   An ad-hoc unit has no test cases of its own: finishing needs only a clean working tree on its branch. Like any unit, it has a branch, and `/bk:done` writes a completion record.
 
-```
-/bk:build fix the footer link
-```
+The unit's file holds a title and a short description:
 
-Describe the change in place of an ID, and Claude compares your words with the titles of the units that can start. When nothing matches, it offers **Record the ad-hoc unit "Fix the footer link" and build it**; when a title matches, it offers that unit first, and records an ad-hoc unit only if you pick it. Claude creates the unit and starts it:
-
-```
-Created ad-hoc unit AH-002 "Fix the footer link" at adhoc/AH-002/adhoc.md.
-- Committed alone as "new: AH-002" (5e2b7c1) in the spec repo.
-- Not pushed: push the spec repo to share it.
-
-Build it with /bk:build AH-002.
-```
-
-Its file holds a title and a short description:
-
-```markdown
+```markdown title="adhoc/AH-002/adhoc.md"
 ---
 id: AH-002
 title: Fix the footer link
@@ -52,93 +49,115 @@ title: Fix the footer link
 The footer links to the old help page.
 ```
 
-Commit the change with `BuildKeel-Unit: AH-002`, then finish it with `/bk:done`. An ad-hoc unit has no test cases of its own: finishing needs only a clean working tree on its branch. `/bk:status` lists open ad-hoc units under **Ad-hoc work**.
+`/bk:status` lists open ad-hoc units under **Ad-hoc work**.
 
-## Defects
+> **Going ahead without a unit lasts.** In that working tree, it lasts until a unit is started. Edits are no longer held, and each session tells Claude the changes belong to no unit. Commits made meanwhile carry no `BuildKeel-Unit` line, and `/bk:status` lists them under **commits with no unit**.
 
-### A defect, or a change in behavior?
+Changes to the spec tree, to BuildKeel's own `.buildkeel/` folder and to files outside the repository are never held.
 
-- **A defect**: the code does not do what the spec says. The code is fixed, and the spec keeps its version.
-- **A change in behavior**: the code does what the spec says, and the spec is wrong, no longer wanted, or silent. The spec changes and gets a new version: through a change in a Spec-driven tree; in Full SDLC, through a new version of the story, or a new item of the team's kind for it, such as an enhancement.
+## 2. Record a defect
 
-When someone reports a problem, `/bk:new defect` and `/bk:capture` check it against the spec in force and the code linked to it before recording anything. Claude proposes one reading, labelled as its own, with what it rests on: a defect, a change in behavior, a gap (the spec says nothing about it), or code nothing describes yet. Nothing is recorded until you confirm it or pick another.
+A **defect** records code that does not do what was agreed: either **found while building** or testing the work under way, or **reported** later by users, customers or testers.
 
-### Recording a defect found while building
+1. Decide whether it is a defect or a change in behavior.
+   - **A defect:** the code does not do what the spec says. The code is fixed, and the spec keeps its version.
+   - **A change in behavior:** the code does what the spec says, and the spec is wrong, no longer wanted, or silent. The spec changes and gets a new version: through a change in a Spec-driven tree; in Full SDLC, through a new version of the story, or a new item of the team's kind for it, such as an enhancement.
 
-```
-/bk:new defect TK-001
-```
+   When someone reports a problem, `/bk:new defect` and `/bk:capture` check it against the spec in force and the code linked to it before recording anything. Claude proposes one reading, labelled as its own, with what it rests on: a defect, a change in behavior, a gap (the spec says nothing about it), or code nothing describes yet. Nothing is recorded until you confirm it or pick another.
+2. Run `/bk:new defect`, with the unit where it was found:
 
-Claude asks whether the defect was found while building or reported, proposing found while building when a unit is active. A defect found while building is attached to the **task or story** where it was found, with the test case that found it when a test did, offering the test cases that apply there. The work is approved already, so the defect needs no approval of its own and gets its number at once.
+   ```text
+   /bk:new defect TK-001
+   ```
 
-```
-Created defect DEF-002 "Reset link lasts 3 minutes" at defects/DEF-002/defect.md, attached to TK-001@v1, where US-001-TC2 found it.
-- Committed alone as "new: DEF-002" (8d41a07) in the spec repo.
-- Not pushed: push the spec repo to share it.
-- Finishing it needs a regression test with [DEF-002] in its name, passing.
+3. Say whether the defect was found while building or reported.
+   Claude proposes found while building when a unit is active.
+4. For a defect found while building, pick the test case that found it, when a test did.
+   It is attached to the **task or story** where it was found, and Claude offers the test cases that apply there. The work is approved already, so the defect needs no approval of its own and gets its number at once:
 
-Build it with /bk:build DEF-002.
-```
+   ```text title="/bk:new defect TK-001"
+   Created defect DEF-002 "Reset link lasts 3 minutes" at defects/DEF-002/defect.md, attached to TK-001@v1, where US-001-TC2 found it.
+   - Committed alone as "new: DEF-002" (8d41a07) in the spec repo.
+   - Not pushed: push the spec repo to share it.
+   - Finishing it needs a regression test with [DEF-002] in its name, passing.
 
-```markdown
----
-id: DEF-002
-title: Reset link lasts 3 minutes
-source: found
-parent: TK-001@v1
-testCase: US-001-TC2
----
+   Build it with /bk:build DEF-002.
+   ```
 
-## Description
+   ```markdown title="defects/DEF-002/defect.md"
+   ---
+   id: DEF-002
+   title: Reset link lasts 3 minutes
+   source: found
+   parent: TK-001@v1
+   testCase: US-001-TC2
+   ---
 
-Links expire after 3 minutes instead of 30.
-```
+   ## Description
+
+   Links expire after 3 minutes instead of 30.
+   ```
 
 To change a defect's file later, such as to add steps to reproduce, ask Claude; it saves the whole file again. A defect keeps its source.
 
-### Recording a reported defect
+### A reported defect in Full SDLC
 
-In Full SDLC, a reported defect has the work it affects as its parent: a user story, unless your team allows other kinds in `defect.parents` in `buildkeel.yaml`, such as `[story, feature]`. It is drafted with a draft ID, such as `DEF-draft-p2m7`, reviewed like any draft, and approved with `/bk:approve`, which gives it its number in the defect sequence. `/bk:build` refuses it until it is approved. When the work it affects is not known, Claude finds it first: see [Finding the work a reported defect affects](#finding-the-work-a-reported-defect-affects).
+A reported defect is planned work. It has the work it affects as its parent: a user story, unless your team allows other kinds in `defect.parents` in `buildkeel.yaml`, such as `[story, feature]`. It is drafted with a draft ID, such as `DEF-draft-p2m7`, reviewed like any draft, and approved with `/bk:approve`, which gives it its number in the defect sequence. `/bk:build` refuses it until it is approved. When the work it affects is not known, Claude finds it first, as [Open defects and affected work](#open-defects-and-affected-work) shows.
 
-There is no standalone defect in Full SDLC: when nothing describes the code yet, Claude drafts version 0 of the story the defect touches first, stating the intended behavior, and the two are approved in one set, version 0 first. A defect fixed before BuildKeel, recorded as version 0 while documenting existing code, may stand alone.
+There is no standalone defect in Full SDLC. When nothing describes the code yet, Claude drafts version 0 of the story the defect touches first, stating the intended behavior, and the two are approved in one set, version 0 first. A defect fixed before BuildKeel, recorded as version 0 while documenting existing code, may stand alone.
 
-### Fixing it
+In a Spec-driven tree, defects work the same way with a few differences: see [In a Spec-driven tree](#in-a-spec-driven-tree).
 
-Start the defect with `/bk:build DEF-002`. Its context gives the defect, the work it was found in, and what to test. Write a **regression test**, a test that fails without the fix and passes with it, with the defect's ID in its name:
+## 3. Fix it with a regression test
 
-```js
-it("keeps reset links for 30 minutes [DEF-002]", async () => {
-  // ...
-});
-```
+A **regression test** fails without the fix and passes with it, and carries the defect's ID in its name.
 
-Finishing a defect needs that regression test passing, and the test case that found it passing too. Without one, the finish is refused and names it:
+1. Run `/bk:build DEF-002`.
+   Its context gives the defect, the work it was found in, and what to test.
+2. Write the regression test, with the defect's ID in its name:
 
-```
-Finish of DEF-002 refused by the done gate: 1 check failed.
-1. DEF-002 has no regression test: no test is tagged [DEF-002].
-   To fix: Write a test that fails without the fix and passes with it, with [DEF-002] in its name, then run the tests with a JUnit XML report and record it with the BuildKeel test_results tool.
-```
+   ```js
+   it("keeps reset links for 30 minutes [DEF-002]", async () => {
+     // ...
+   });
+   ```
 
-Once a defect attached to a unit is finished, its regression test counts among that unit's test cases: when the unit is worked on again, at a new version, the test must still pass. The unit's coverage view lists it under **Regression tests of fixed defects**.
+3. Fix the code.
+4. Run the tests, so that the regression test passes, and the test case that found the defect passes too.
+5. Run `/bk:done`.
+   Without a regression test, the finish is refused and names it:
+
+   ```text title="/bk:done"
+   Finish of DEF-002 refused by the done gate: 1 check failed.
+   1. DEF-002 has no regression test: no test is tagged [DEF-002].
+      To fix: Write a test that fails without the fix and passes with it, with [DEF-002] in its name, then run the tests with a JUnit XML report and record it with the BuildKeel test_results tool.
+   ```
+
+Once a defect attached to a unit is finished, its regression test counts among that unit's test cases. When the unit is worked on again, at a new version, the test must still pass. The unit's coverage view lists it under **Regression tests of fixed defects**.
 
 If fixing a defect means a requirement must change, the change is made as a new version of the story or task, approved as usual.
 
-### Closing a defect without a fix
+## 4. Close a defect without a fix
 
-Some defects turn out not to be defects after all: a duplicate of another defect, one nobody can reproduce, behavior that works as intended, or a failure caused by a wrong test. None of these can get a regression test, so instead of finishing one, close it. Run `/bk:done DEF-002`, and Claude offers **Close without a fix** beside finishing it, then asks for the reason, for a duplicate which defect it duplicates, and for a note if you want one. Before anything is written, it shows what closing does:
+Some defects turn out not to be defects: a duplicate of another, one nobody can reproduce, behavior that works as intended, or a failure caused by a wrong test. None of these can get a regression test, so you close it instead of finishing it.
 
-```
-Closing DEF-002 "Login redirect loops" without a fix, as a duplicate of DEF-001, will:
-- write its closing record, defects/DEF-002/closed.yaml: the reason, who closed it and when, never edited after
-- commit it on its own in the spec repo
+1. Run `/bk:done DEF-002`.
+2. Pick **Close without a fix**, which Claude offers beside finishing it.
+3. Give the reason, and for a duplicate, the defect it duplicates.
+4. Add a note if you want one.
+5. Read what closing does, and confirm.
 
-A closed defect is not open, counts as done for the work above it, and is never started or reopened: a defect that returns is a new defect.
-```
+   ```text title="/bk:done DEF-002"
+   Closing DEF-002 "Login redirect loops" without a fix, as a duplicate of DEF-001, will:
+   - write its closing record, defects/DEF-002/closed.yaml: the reason, who closed it and when, never edited after
+   - commit it on its own in the spec repo
+
+   A closed defect is not open, counts as done for the work above it, and is never started or reopened: a defect that returns is a new defect.
+   ```
 
 Claude closes a defect only when you confirm it. The closing record is written once and committed alone, as `close: DEF-002 (duplicate of DEF-001)`:
 
-```yaml
+```yaml title="defects/DEF-002/closed.yaml"
 defect: DEF-002
 reason: duplicate
 duplicateOf: DEF-001
@@ -147,13 +166,45 @@ closedBy: Jane Doe <jane@example.com>
 closedAt: 2026-10-15T09:12:00Z
 ```
 
-The reason is one of `duplicate`, `cannot-reproduce`, `works-as-intended`, `wrong-test` or `changes-behavior`, when the code does what the spec says and the spec is what must change; the record then names what takes it over in `takenOverBy`, such as `CH-014` or `US-007@v3`. A closed defect counts as done for its story or epic, drops out of open defects, relies on nothing that can change, and cannot be started. It is never reopened: if the defect comes back, record a new defect, which can name the closed one. When the test was wrong, correct the test case as a new version of its test plan. A defect that is finished, or already closed, cannot be closed.
+The reason is one of `duplicate`, `cannot-reproduce`, `works-as-intended`, `wrong-test` or `changes-behavior`. Use `changes-behavior` when the code does what the spec says and the spec is what must change; the record then names what takes it over in `takenOverBy`, such as `CH-014` or `US-007@v3`. When the test was wrong, correct the test case as a new version of its test plan.
 
-### Open defects in a unit's context
+> **A closed defect is never reopened.** It counts as done for its story or epic, drops out of open defects, relies on nothing that can change, and cannot be started. If the defect comes back, record a new defect, which can name the closed one. A defect that is finished, or already closed, cannot be closed.
+
+## 5. Try something in a spike
+
+A **spike** is throwaway work to find something out, such as whether a provider's client does what you need. It runs on a branch of its own, with no unit.
+
+1. Make sure no unit is active and the working tree has no uncommitted changes.
+   With a unit active, Claude asks you to pause or finish it first, or to try the idea in a worktree of its own. With uncommitted changes, it asks what to do with them first.
+2. Ask for a spike in words, with a name and the question it should answer, such as "spike the SMS provider: can it send a code in under five seconds?"
+
+   ```text title="Starting a spike"
+   Started the spike "SMS provider" on a new branch spike/sms-provider, from main: untracked, throwaway work. BuildKeel holds no edits here meanwhile, and its commits carry no BuildKeel-Unit line.
+   ```
+
+3. Try the idea with Claude.
+   Only what was run and observed against the real thing counts as a finding. A result from a simulated or mocked call shows nothing about the real thing, and Claude says so.
+4. Ask Claude to end the spike.
+   If the spike's branch has uncommitted changes, Claude asks whether to commit them there, with no `BuildKeel-Unit` line, or leave them. It never discards them.
+
+   ```text title="Ending a spike"
+   Ended the spike spike/sms-provider, and switched back to main. Its branch is left as it is: BuildKeel never merges it; keep it, delete it or take from it as the user decides.
+   ```
+
+5. Keep the findings you want as [working notes](working-notes.md).
+   Claude offers what the spike showed, each with its source, for the thread or the conversation it came from.
+
+A spike needs no tests and no review. Its commits carry no unit line, so on main they show as commits with no unit. Its code is never kept as it is: what it showed is built again in a unit, test first. `/bk:status` lists the spike branches still around, for you to keep, delete or take from.
+
+Spikes are a switch, on by default. With `planning.spikes: off`, starting one is refused, and spike branches from before are left as they are. See [Feature switches](settings.md).
+
+## Open defects and affected work
+
+### Open defects
 
 A unit's context lists the defects attached to it or to its parent that are neither finished nor closed:
 
-```
+```text title="A unit's context"
 ## Open defects
 - DEF-002 "Reset link lasts 3 minutes" in TK-001, found by US-001-TC2
 ```
@@ -164,7 +215,7 @@ A story, whether it is built through tasks or on its own, and an epic above it, 
 
 Before a reported defect is saved, Claude asks BuildKeel which work the code involved belongs to. BuildKeel finds the units whose commits changed those files and the stories and tasks whose `scope` covers them, and names the story each belongs to, most likely first. Code documented from before BuildKeel is found by its story's scope, even when no unit's commits ever changed it:
 
-```
+```text
 A reported defect in these files would have as its parent, most likely first:
 - US-001 story "Request a reset link": 1 file (src/reset.ts), through TK-001 "Reset endpoint"
 ```
@@ -173,32 +224,38 @@ A story found by its scope is named the same way: `- US-E001 story "Password res
 
 Claude offers the first as the defect's parent, and you pick before anything is saved. When nothing describes the code yet, BuildKeel says so, and Claude drafts version 0 of the story the defect touches first, as its parent.
 
-## When the spec tree is in your code repository
-
-The file of a defect or ad-hoc unit is committed on the branch that is checked out when it is recorded, often the branch of a unit you just finished, which waits for its pull request. When you start it, its own branch is made from your main branch as usual and brings along the commit that recorded it, which changes nothing but the unit's own file. The same file then sits on both branches, and they merge cleanly in either order.
-
 ## In a Spec-driven tree
 
 Defects and ad-hoc units work the same way in a [Spec-driven](modes.md) tree, with these differences:
 
 - Nothing is approved: every defect gets its number when it is created.
-- A defect found while building is attached to the [change](changes.md) whose work found it, such as `parent: CH-002`, with the scenario whose test found it as its `testCase`. It needs no proposal, and it shows in that change's context while it is open.
+- A defect found while building is attached to the change whose work found it, such as `parent: CH-002`, with the scenario whose test found it as its `testCase`. It needs no proposal, and it shows in that change's context while it is open.
 - A reported defect names the requirement it affects, such as `requirement: AUTH-R3`, pinned to the capability version in force (`AUTH-R3@v4`), or stands alone. Its context shows that requirement as its version states it, with its scenarios and the tests tagged with them. While it is open, a later version that modifies or removes the requirement makes it suspect: you decide whether it still applies, and its file is saved naming the new version, or it is closed.
 - When a standalone defect is finished, BuildKeel looks at the files its fix changed, finds the requirements that archived changes built in them, and offers to link the defect to one. You may leave it standalone.
 - When nothing describes the code of a reported defect, Claude asks whether to **record it standalone** (the default) or **document this code first**, as version 0 of a capability spec.
 - Finishing a defect with no test tagged with its ID reports the missing regression test, as a reminder, and the defect is still finished. The work must be committed on its branch.
 - A fix that changes a requirement is made through a change, which alters the capability spec when it is finished.
-- Closing a defect without a fix works as above, and a closed defect drops out of its change's open defects.
+- Closing a defect without a fix works as in Full SDLC, and a closed defect drops out of its change's open defects.
 
-## IDs
+## IDs and branches
 
-Defects and ad-hoc units are numbered like everything else, `DEF-002` and `AH-002`, from the same number counter in the spec repo. A reported defect in Full SDLC is numbered when it is approved, as any draft is. When the counter cannot be reached for one created with its number, such as with no connection, the unit still gets a permanent ID at once, with four random letters and digits in place of the number:
+### IDs given offline
 
-```
+Defects and ad-hoc units are numbered like everything else, `DEF-002` and `AH-002`, from the same number counter in the spec repo. An ad-hoc unit and a defect found while building get a permanent ID the moment they are created, because their commits are stamped with it straight away. A reported defect in Full SDLC is numbered when it is approved, as any draft is.
+
+When the counter cannot be reached for one created with its number, such as with no connection, the unit still gets a permanent ID at once, with four random letters and digits in place of the number:
+
+```text
 Created ad-hoc unit AH-k3x9 "Fix the footer link" at adhoc/AH-k3x9/adhoc.md.
 - The number counter could not be reached (...), so AH-k3x9 has an ID that needs no counter. It is permanent: commits are stamped with it.
 ```
 
 It is never renumbered: its commits already carry it.
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`, `/bk-new defect`, `/bk-done`.
+### When the spec tree is in your code repository
+
+The file of a defect or ad-hoc unit is committed on the branch that is checked out when it is recorded, often the branch of a unit you finished a moment ago, which waits for its pull request. When you start it, its own branch is made from your main branch as usual and brings along the commit that recorded it, which changes nothing but the unit's own file. The same file then sits on both branches, and they merge cleanly in either order.
+
+**More:** [Build](working-on-a-unit.md), [Finish](finishing-a-unit.md), [Spec-driven mode in depth](how-spec-driven-works.md), [Full SDLC mode in depth](how-full-sdlc-works.md).
+
+Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`.
