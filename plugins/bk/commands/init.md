@@ -17,15 +17,19 @@ Before any question, call `manage` with `action: "init"` and nothing else. It on
 - When it says the folder is not a git repository, ask before anything else, with your tool for asking a question with choices, so the user can pick an answer: **Run git init for me** (the default) or **Stop**. Only when the user agrees, call `manage` with `action: "init"`, `apply: true` and nothing else: it runs `git init`, so never run it yourself. Then say in one line that `git init` ran, before the next question. Ask nothing else until this is settled.
 - When it says the repository is already set up, show that, and stop.
 
-## 2. Where the spec tree lives
+## 2. Keep BuildKeel out of this repository?
 
-If the user gave a path above, use it as an existing spec tree and skip this question; if `manage` then reports there is no spec tree there, ask whether to create a new spec repository at that path instead. Otherwise ask:
+Explain in two lines: kept out, nothing in this repository names BuildKeel (no file, no hook, no line in commits), so the product can be released with no trace of it; the plan lives in a spec repository of its own, and each clone of this repository is pointed at it once with /bk:init. Set up in the repository, `.buildkeel.yaml` and a `.gitignore` line are committed, so teammates are set up by cloning, and commits carry a `BuildKeel-Unit` line. Ask, with your tool for asking a question with choices: **Keep BuildKeel out of this repository** (the default, listed first) or **Set it up in the repository, for the team**. Pass `keepOut: false` in every call to `manage` below only when they choose the second.
 
-- **In this repository**, in a `specs/` folder. Recommend this when this is the team's only repository, or when trying BuildKeel out.
+## 3. Where the spec tree lives
+
+If the user gave a path above, use it as an existing spec tree and skip this question; if `manage` then reports there is no spec tree there, ask whether to create a new spec repository at that path instead. Otherwise ask, in the order the first `manage` call gave, which follows whether this repository has a remote:
+
+- **A new spec repository**, a repository of its own that several code repositories and the team share: first and recommended when this repository has a remote. Ask for its folder, outside this repository, such as `../specs`: a folder that does not exist yet, an empty folder, or an empty repository the user has cloned. Use `location: "new-repo"` with that `path`. When the first call said gh is signed in, offer next to create it as a private GitHub repository with the name it gave, using the user's own gh sign-in and pushing nothing; pass `github` with that name only on a yes.
+- **In this repository**, in a `specs/` folder, only when BuildKeel is set up in the repository: first then when this repository has no remote, labeled for trying BuildKeel out, with a line that /bk:migrate can move it to a repository of its own later. Kept out, do not offer it: a new spec repository is first, as a folder beside this one, such as `../<this repository's name>-specs`.
 - **An existing spec tree**, usually its own repository shared by several code repositories. Ask for its local path. If it is not cloned yet, tell the user to clone it first.
-- **A new spec repository**, a repository of its own that several code repositories will share. Ask for its folder, outside this repository, such as `../specs`: a folder that does not exist yet, an empty folder, or an empty repository the user has cloned. Use `location: "new-repo"` with that `path`.
 
-## 3. The mode
+## 4. The mode
 
 For a new spec tree only: an existing tree keeps its own, and `manage` says which. Ask, with a line on each:
 
@@ -34,13 +38,13 @@ For a new spec tree only: an existing tree keeps its own, and `manage` says whic
 
 Pass the choice as `mode` (`spec-driven` or `full-sdlc`) in every call to `manage` below.
 
-## 4. Stamping their own commits
+## 5. Stamping their own commits
 
-Explain: while a unit of work is active, BuildKeel adds a line `BuildKeel-Unit: <id>` to commits the agent makes. Stamping is on by default: setup installs a git hook that adds the same line to commits they make themselves, for example in a terminal. It changes nothing when no unit is active, and can be turned off later, which uninstalls the hook. If the repository already manages its git hooks with another tool, nothing is installed and BuildKeel shows the lines to add. Ask, with your tool for asking a question with choices: **Stamp my commits** (the default, listed first) or **Don't stamp them**. Pass `stampCommits: false` only when they turn it off.
+Only when BuildKeel is set up in the repository; kept out, skip this step: no hook is installed, and commits carry the work's ID as `Refs: <id>`. Explain: while a unit of work is active, BuildKeel adds a line `BuildKeel-Unit: <id>` to commits the agent makes. Stamping is on by default: setup installs a git hook that adds the same line to commits they make themselves, for example in a terminal. It changes nothing when no unit is active, and can be turned off later, which uninstalls the hook. If the repository already manages its git hooks with another tool, nothing is installed and BuildKeel shows the lines to add. Ask, with your tool for asking a question with choices: **Stamp my commits** (the default, listed first) or **Don't stamp them**. Pass `stampCommits: false` only when they turn it off.
 
-Then call `manage` with `action: "init"`, the `location` (`this-repo`, `existing` or `new-repo`), the `path` if there is one, `stampCommits` and, for a new tree, `mode`, without `apply`. Show the list it returns, as it is, in your reply as normal text.
+Then call `manage` with `action: "init"`, the `location` (`this-repo`, `existing` or `new-repo`), the `path` if there is one, `keepOut: false` when they chose to set it up in the repository, `stampCommits` and, for a new tree, `mode`, without `apply`. Show the list it returns, as it is, in your reply as normal text.
 
-## 5. The process, for a new Full SDLC spec tree
+## 6. The process, for a new Full SDLC spec tree
 
 Topics for this step, in this order:
 
@@ -67,7 +71,7 @@ When no topic is left, call `manage` again without `apply` and show the whole ta
 
 Pass each agreed template in `templates`, by type, and call `manage` again without `apply`: it checks each one. Nothing is written until every template the list names is given and passes.
 
-## 6. Numbering, for a new Spec-driven spec tree
+## 7. Numbering, for a new Spec-driven spec tree
 
 Topics for this step: **numbering**, how the tree's IDs read.
 
@@ -75,13 +79,13 @@ Work from the topics listed for this step. The user may answer in their own word
 
 The list shows the tree's IDs, each with an example: changes, capability codes, requirements, scenarios, defects and ad-hoc units. Show them as they are, then ask in plain text whether to keep them (the default) or change them, with examples of other numbering, such as `RFC-0012` or `PROJ-12` for changes, or `AUTH-REQ1` for requirements. A change of change, defect or ad-hoc prefix or digits goes in `process`, such as `{ change: { prefix: RFC, width: 4 } }`; a change of the letters in requirement or scenario IDs goes in `markers`. Call `manage` again without `apply` with them, show the IDs it returns, and ask the user to confirm them. Pass `settled: ["numbering"]` once they keep or confirm the numbering.
 
-## 7. Confirm and set up
+## 8. Confirm and set up
 
 Show the last list `manage` returned in full and ask whether to set up with it, change something or stop. An existing spec tree keeps its own process and numbering: just ask the user to confirm the list. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool.
 
 Only when the user confirms, call `manage` again with the same values (the same `process`, `settled`, `templates` and `markers`, when there are any) and `apply: true`. Show the result as it is, including any lines the user must add to their hook manager, and, for a new spec repository, that it needs a remote and a push before others can use it.
 
-## 8. The guide
+## 9. The guide
 
 For a Spec-driven tree, new or existing, the result asks it. Ask **Guide me through my first change** (the default) or **Jump right in**, and record the answer with `manage`, `action: "guide"`, `guide: "on"` or `"off"`.
 

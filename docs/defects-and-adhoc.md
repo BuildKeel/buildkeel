@@ -10,11 +10,11 @@ An **ad-hoc unit** records a small change that belongs to no planned work, such 
    With no unit active in the working tree, Claude asks you how to go on before it changes code. If it tries the edit first, BuildKeel holds it and tells Claude:
 
    ```text title="An edit held with no unit active"
-   BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture (you cannot start it), turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:build <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose (then call the BuildKeel manage tool with action untracked). Make the change once one of these is done.
+   BuildKeel: there is no active unit in this working tree, so a change to src/footer.ts would belong to no unit of work. Before changing it, ask the user how to go on, recommending the choice that fits: capture what you discussed, which the user starts by running /bk:capture or by asking for it, turning it into the artifacts the team's process needs, to approve and then build; start the unit it belongs to with /bk:build <ID>; record it as an ad-hoc unit, with a short title you propose (create it with the BuildKeel save_draft tool, type adhoc, then start it with start_work); or go ahead without a unit, which only the user can choose, either for just these files (offer this first: call the BuildKeel manage tool with action untracked, scope files and files ["src/footer.ts"], or the folders the user names) or for the whole working tree (action untracked, scope tree). Make the change once one of these is done.
    ```
 
    Claude asks before changing code, so you usually see the question rather than the hold.
-2. Choose how to go on: run `/bk:capture` to capture what you discussed, name the unit the change belongs to, accept the ad-hoc unit Claude proposes, or say to go ahead without a unit.
+2. Choose how to go on: capture what you discussed (ask Claude, or run `/bk:capture`), name the unit the change belongs to, accept the ad-hoc unit Claude proposes, or say to go ahead without a unit, for just these files or for the whole working tree.
    To record an ad-hoc unit directly instead, describe the change in place of an ID:
 
    ```text

@@ -135,6 +135,8 @@ copy:
   adrs: docs/adr/
 ```
 
+Where BuildKeel is kept out of the repository, the copy is off (`copy: off` in the pointer): nothing is written, and the glossary, practices and ADRs are read in the spec repository. `copy: off` turns it off in a repository set up for the team too.
+
 The glossary is copied once it has an entry, the practices once the team has one of its own (BuildKeel's defaults alone stay in the plugin), and ADRs once accepted. The copy is written even when the spec tree is inside the code repository.
 
 - **When:** as a unit or change starts and as it is finished, or with `manage` and `action: "refresh-copy"`. Each refresh is its own commit, with the active unit's line, or, outside a unit, as setting BuildKeel up:

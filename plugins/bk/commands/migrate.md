@@ -1,5 +1,5 @@
 ---
-description: "BuildKeel: Move a Spec-driven tree to Full SDLC, area by area, or upgrade a spec tree in an older format, in one commit, without touching approved versions."
+description: "BuildKeel: Move a Spec-driven tree to Full SDLC, area by area, move a spec tree kept in this repository to a repository of its own, or upgrade a spec tree in an older format, without touching approved versions."
 disable-model-invocation: true
 ---
 
@@ -14,6 +14,12 @@ Call the BuildKeel `manage` tool with `action: "migrate"`, without `apply`.
 - If it says the plugin needs an update first, say so and stop.
 - If it lists what changes (the working files and `buildkeel.yaml`, in one commit, with frozen versions and records left exactly as they are), show it as it is and ask, with your tool for asking a question with choices: **Migrate** (the default) or **Not now**. Only when the user confirms, call `manage` again with `action: "migrate"` and `apply: true`, and show the result as it is. Remind the user to push the spec repo, and that teammates need this version of BuildKeel, or a later one, to work in the tree. Then stop.
 - If it says there is nothing to migrate, go on below.
+
+## Move the spec tree to its own repository
+
+When the spec tree is kept inside this code repository (the session report, or `query` with `view: "settings"`, says where it lives), and the user asked to move it, or asked what /bk:migrate can do: explain in a line that a repository of its own lets other code repositories and teammates share it, and that it moves with its whole history. Ask for its folder, outside this repository, such as `../specs`: a new or empty folder, or an empty repository they cloned. Ask, with your tool for asking a question with choices, whether to also create it as a private GitHub repository with their own gh sign-in (**No** is the default), and its name, such as `acme/payments-specs`, if so.
+
+Call `manage` with `action: "move-tree"`, the `path` and, only on a yes, `github`, without `apply`, and show the steps it returns as they are. If it refuses, for changes not committed in the tree for example, show why and stop. Only when the user agrees, call it again with `apply: true`, and show the result as it is.
 
 ## Move a Spec-driven tree to Full SDLC
 

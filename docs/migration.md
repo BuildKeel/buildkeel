@@ -1,4 +1,4 @@
-# Move to Full SDLC, or upgrade a tree
+# Move to Full SDLC, move the tree out, or upgrade it
 
 `/bk:migrate` does two things: it upgrades a spec tree in an older format, and it moves a Spec-driven tree to Full SDLC. It looks for a format upgrade first, and nothing is ever rewritten without your confirmation.
 
@@ -6,22 +6,48 @@
 
 You need a repository with a spec tree, set up with `/bk:init`. To move to Full SDLC, finish or discard every open change first.
 
-> **Approved work is never touched.** Neither task rewrites frozen copies, approval records, completion records or re-pin records. An upgrade changes only `buildkeel.yaml`; a move to Full SDLC drafts new artifacts beside your capability specs, which stay in the tree as history.
+> **Approved work is never touched.** Neither task rewrites frozen copies, approval records, completion records or re-pin records. An upgrade changes `buildkeel.yaml`, renames the test-run folders of open work and adds the analytics files; a move to Full SDLC drafts new artifacts beside your capability specs, which stay in the tree as history.
 
 ## 1. Upgrade a tree in an older format
 
-A spec tree declares its format in `buildkeel.yaml`, such as `format: 4`. Every new tree is written in format 4. A tree made with an earlier BuildKeel is in format 1, 2 or 3: BuildKeel can still read it, so you can see your plan and its context, but it changes nothing until the tree is migrated.
+A spec tree declares its format in `buildkeel.yaml`, such as `format: 5`. Every new tree is written in format 5.
+
+### A tree from BuildKeel 0.6.0 (format 4) moves by itself
+
+The first time this version works in a format 4 tree, it moves it to format 5 before anything else writes to it, and says so in one line at the next session start:
+
+- each `runs/` folder of work still open becomes `test-runs/`;
+- the analytics files, `analytics/runs.jsonl` and `analytics/units.jsonl`, are added, with `analytics/*.jsonl merge=union` in the tree's `.gitattributes`;
+- `buildkeel.yaml` gets `format: 5`.
+
+Those paths, and only those, are committed on their own as `migrate: format 4 to 5`, and pushed when the tree's other commits are. Files you left uncommitted stay uncommitted. Finished work keeps its files as they are, and work in progress carries on. Anyone still on 0.6.0 opens the tree read-only and is asked to update.
+
+If the step fails, the tree stays in format 4, read-only, and the line says why. Run `/bk:migrate` to try again.
+
+### A tree from BuildKeel 0.5.0 or earlier
+
+A tree made with an earlier BuildKeel is in format 1, 2 or 3: BuildKeel can still read it, so you can see your plan and its context, but it changes nothing until the tree is migrated.
 
 1. Run `/bk:migrate`.
 2. Read what migrating changes. Claude shows it before anything is written.
 3. Choose **Migrate** (the default) or **Not now**.
-4. Once you confirm, BuildKeel commits the change alone in the spec repo, such as `migrate: format 3 to 4`.
+4. Once you confirm, BuildKeel commits the change alone in the spec repo, such as `migrate: format 3 to 5`.
 5. Push the spec repo.
-6. Ask everyone working in the tree to update BuildKeel: an earlier version opens a format 4 tree read-only and asks for an update.
+6. Ask everyone working in the tree to update BuildKeel: an earlier version opens a format 5 tree read-only and asks for an update.
 
-From format 1, 2 or 3, only `buildkeel.yaml` changes: it gets `format: 4`, and a format 1 tree also names its mode, `mode: full-sdlc`, which it already followed. Everything this version adds goes in new files.
+From format 1, 2 or 3, `buildkeel.yaml` gets `format: 5`, and a format 1 tree also names its mode, `mode: full-sdlc`, which it already followed. The analytics files and their merge rule are added, as for a format 4 tree. Everything else this version adds goes in new files.
 
 > **What happens to work already done.** Every approval still matches its hash. Work in progress carries on: a unit started before the migration keeps its branch and claim, and you finish it as usual. Tasks written before have no Files, Uses, Delivers or Verify lines; BuildKeel reports them, and never refuses one for it. A unit with no recorded failing test before its code gets the TDD check's warning, or you state why it needed none.
+
+## Move the spec tree to its own repository
+
+A spec tree set up in a `specs/` folder of your code repository can move to a repository of its own, so other code repositories and your team can share it. Ask Claude, or run `/bk:migrate` and choose it.
+
+1. Give a folder for the new repository, outside this one, such as `../payments-specs`: a new or empty folder, or an empty repository you cloned. With `gh` signed in, you can also have it created as a private GitHub repository; nothing is pushed.
+2. Claude shows the steps. Once you agree, BuildKeel copies the tree with its whole history, so every approval and record stays traceable, then points `.buildkeel.yaml` at the new repository and removes the folder from this one, in one commit.
+3. Push the new repository, then this one.
+
+It refuses while the tree has changes not committed, so nothing is lost; commit them first. Until you push, `git revert` undoes the move here. It needs `git subtree`, which ships with git on macOS and Windows; on Linux it may be its own package.
 
 ## 2. Move a Spec-driven tree to Full SDLC
 
@@ -50,20 +76,20 @@ From the start of the conversion until the switch, no change can be opened, whil
 When a tree is in an older format, BuildKeel says so, and changes nothing until it is migrated:
 
 ```text title="A tree in an older format"
-This spec tree uses format 3; this version of BuildKeel uses format 4. The tree is read-only until it is migrated.
+This spec tree uses format 3; this version of BuildKeel uses format 5. The tree is read-only until it is migrated.
 To fix: Run /bk:migrate to upgrade it in one reviewable commit.
 ```
 
 A tree already in the format BuildKeel uses has nothing to migrate:
 
 ```text title="/bk:migrate"
-The spec tree is already in format 4, the one this version of BuildKeel uses; there is nothing to migrate.
+The spec tree is already in format 5, the one this version of BuildKeel uses; there is nothing to migrate.
 ```
 
 When a tree uses a newer format than your BuildKeel, you can read it but not change it. Update the plugin, then start a new session:
 
 ```text title="A tree in a newer format"
-This spec tree uses format 4, which is newer than this version of BuildKeel supports (format 3). You can read it, but not change it.
+This spec tree uses format 5, which is newer than this version of BuildKeel supports (format 4). You can read it, but not change it.
 To fix: Update the BuildKeel plugin, then start a new session.
 ```
 

@@ -28,7 +28,7 @@ When a command asks a quick choice with nothing to read, such as the pace, it as
 
 A command that asks you something first checks that the repository is set up; when it is not, it says so and names `/bk:init`, and asks nothing.
 
-Only you start a command, by typing it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read, and `/bk:pause` when you say words such as "let's stop here", since it saves nothing until you agree; it never starts any other command, even if you ask it to in words, such as "capture it": it asks you to type the command instead. In Claude Code this is enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
+You can start a command by typing it, or by asking in your own words, such as "let's capture this" or "build the next task": Claude then starts it and says so in a line. Claude never starts one on its own initiative. Four commands start only when you type them, since they approve, finish, set up or migrate: `/bk:approve`, `/bk:done`, `/bk:init` and `/bk:migrate`; asked for one of them in words, Claude asks you to type it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read, and `/bk:pause` when you say words such as "let's stop here", since it saves nothing until you agree. In Claude Code the four are enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
 
 ## /bk:init
 
@@ -99,7 +99,7 @@ Ready to approve user story US-draft-k3x9 "Reset link expires" as v1. Approving 
 
 ## /bk:build
 
-**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it on this machine, makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how to go on: **Build them all, each in a fresh agent** (the default, unless your settings put **Build them all here** first, or the session cannot start agents), **Build them all here**, **Build the next one only**, or **Set it up and work together**. Each task is reviewed once it is built, by the reviewers that are on; when fixes do not clear a finding, Principal handoff gives it one more round on a stronger tier. A run stops and asks you when a test keeps failing, a requirement is unclear, agreed behavior looks wrong, or the work would change what you agreed. When you change behavior, the spec changes first: see [Full SDLC mode in depth](how-full-sdlc-works.md) and [Spec-driven mode in depth](how-spec-driven-works.md). A paused unit or change is resumed, with its brief, and paused ones are listed first; one paused by someone else, or on another machine, is resumed only once you confirm.
+**What it does.** Starts a unit and builds it. Starting checks the unit is ready, switches to its branch, claims it (on this machine, and shared on the spec repo's claims branch), makes it the active unit, and loads its context for Claude; a unit already active is not started again. Then Claude shows what it would build and asks how to go on: **Build them all, each in a fresh agent** (the default, unless your settings put **Build them all here** first, or the session cannot start agents), **Build them all here**, **Build the next one only**, or **Set it up and work together**. Each task is reviewed once it is built, by the reviewers that are on; when fixes do not clear a finding, Principal handoff gives it one more round on a stronger tier. A run stops and asks you when a test keeps failing, a requirement is unclear, agreed behavior looks wrong, or the work would change what you agreed. When you change behavior, the spec changes first: see [Full SDLC mode in depth](how-full-sdlc-works.md) and [Spec-driven mode in depth](how-spec-driven-works.md). A paused unit or change is resumed, with its brief, and paused ones are listed first; one paused by someone else, or on another machine, is resumed only once you confirm.
 
 **What you can type.** A unit's ID, such as `/bk:build TK-001` or `/bk:build CH-012`; a parent's ID, such as `/bk:build US-001` to build its tasks; or the change in words, such as `/bk:build fix the footer link`, which Claude matches to the titles of the units that can start, or else offers to record as an ad-hoc unit. Typed on its own, it asks what to build: **The active unit** (the default, when there is one), **Show what can be started**, or **Type an ID or describe the change**.
 
@@ -134,7 +134,7 @@ The final review reviews nothing twice: only the commits since the last review, 
 
 ```text title="Example output"
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
-- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, and a summary of its test runs
+- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, with a summary of its test runs; its record files (working notes, test-run summaries, reviews and the rest) go into it in full and leave the tree
 - commit only those files in the spec repo as "done: TK-001 v1", without pushing
 - release its claim on this machine and clear the active unit here; the code branch is left as it is
 ```
@@ -182,7 +182,7 @@ The same in both modes.
 **In Full SDLC.** The overview shows the tree of stages, coverage gaps, documents still needed, suspects and approvals not pushed.
 
 ```text title="Example output"
-BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 4)
+BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 5)
 In short: TK-001 is in progress here; 3 units are ready to start; 1 gap in coverage or required documents; 1 approval not pushed; 1 commit with no unit.
 
 Active unit here: TK-001 task "Reset endpoint" on branch bk/TK-001-reset-endpoint.
@@ -289,7 +289,7 @@ Time from start to done: 1 h 3 min typically (the median), 2 h 30 min at the lon
 **In Full SDLC.** It upgrades the format when an update needs it; otherwise there is nothing to do.
 
 ```text title="Example output"
-The spec tree is already in format 4, the one this version of BuildKeel uses; there is nothing to migrate.
+The spec tree is already in format 5, the one this version of BuildKeel uses; there is nothing to migrate.
 ```
 
 **More:** [Move to Full SDLC, or upgrade a tree](migration.md).

@@ -298,7 +298,7 @@ Finishing commits the completion record in the spec repo, and pushes it when the
 
 ### A teammate started the same unit on another machine
 
-Claims are kept on your machine only: a teammate on another machine can start the same unit, and BuildKeel does not know.
+Claims are shared through the spec repo's remote. With no remote, they stay on your machine, and a teammate on another machine can start the same unit. A claim taken offline is pushed at the next start or status; if a teammate claimed the same unit meanwhile, both of you see the clash at your next status, and one of you releases it.
 
 1. Agree who works on what, as you would without BuildKeel.
 2. Pause a unit with `/bk:pause` and push the spec repo when you hand it over. Its pause record is what tells everyone, and resuming it on another machine takes it over.

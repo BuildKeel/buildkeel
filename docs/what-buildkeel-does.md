@@ -20,7 +20,7 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 - **Conversation comes first.** Until you run a command, or Claude is about to change a file, Claude talks as it would without BuildKeel: no stages, IDs or commands, beyond one offer to capture when the discussion has reached a point. It checks facts in the code before asking, and lays out options for a design choice. See [Talk it through and explore](exploring.md).
 - **Reviews in the conversation.** Anything you are asked to agree, such as a summary, a plan, a document or what finishing will write, is shown in full in the reply. Agreement saves it. Anything else is feedback, answered point by point, with the final version shown before saving.
 - **One topic at a time.** Setup, migration and onboarding ask one topic per message, with the default first. They assume nothing you did not say, and show everything before writing.
-- **Commands only you start.** Claude runs only the commands that read (`/bk:status`, `/bk:settings`, `/bk:stats`) on its own. Every other command waits for you to type it. Claude Code enforces this; in Antigravity, Claude is told the rule. See [Commands](commands.md).
+- **Commands start when you ask.** Claude starts a guided flow, such as capture or build, when you ask for it in your own words or type its command, never on its own initiative. Four commands start only when you type them: `/bk:approve`, `/bk:done`, `/bk:init` and `/bk:migrate`. Claude runs the commands that only read (`/bk:status`, `/bk:settings`, `/bk:stats`) on its own. Claude Code enforces the four; in Antigravity, Claude is told the rule. See [Commands](commands.md).
 - **Ticks reported, not asked.** A task is ticked when its check passes, and Claude says so in a line, without asking.
 - **Reminders to finish.** A reminder to run `/bk:done` when the work looks finished, or after a push, a pull request or a merge while a unit is active. It never blocks.
 - **Freshness warnings.** The spec tree's remote is fetched in the background, and you are warned when the tree is behind as you start, approve or finish work. See [Build](working-on-a-unit.md).
@@ -34,7 +34,7 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 
 #### Building
 
-- **Units of work and claims.** Work happens in units: a task, story, change, defect or ad-hoc unit. Each working tree has one active unit on its own branch, and a claim stops another working tree on the machine from starting the same one. See [Build](working-on-a-unit.md).
+- **Units of work and claims.** Work happens in units: a task, story, change, defect or ad-hoc unit. Each working tree has one active unit on its own branch, and a claim, shared on the spec repo's claims branch, stops a teammate or another working tree from starting the same one. See [Build](working-on-a-unit.md).
 - **The code-edit gate.** When Claude is about to change code with no active unit, it stops and offers to capture, build the unit the change belongs to, record an ad-hoc unit, or, only if you choose, go ahead without one.
 - **Scope drift warning.** While a unit is active, BuildKeel warns when edits go into areas the unit, its story and the work beside it do not relate to. See [Build](working-on-a-unit.md).
 - **Build runs.** `/bk:build` shows what it would build and how each task is checked, then builds all of it, the next task only, or sets up to work together. A run stops on a failing test it cannot fix, an unclear requirement or a needed spec change. It keeps no progress file, so it carries on after compaction or on another machine.
@@ -102,7 +102,7 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 
 - **Plain files you own.** The spec tree is markdown files in a git repository or folder. Every record is a new file, so branches merge without conflict. See [The spec tree and its artifacts](spec-tree.md).
 - **Two hosts.** Claude Code and Antigravity, with the same tools, records and commands. Teams can mix hosts on one tree. See [The spec tree and its artifacts](spec-tree.md).
-- **Data stays in your repositories.** No artifact content, code or usage is sent to any service. The only network calls are git against your remotes and optional GitHub CLI lookups.
+- **Data stays in your repositories.** No artifact content, code or usage is sent to any service. The network calls are git against your remotes, optional GitHub CLI lookups, and once a day a request to the npm registry for BuildKeel's latest version number, which sends nothing about you or your work and can be turned off.
 
 ### Full SDLC only
 

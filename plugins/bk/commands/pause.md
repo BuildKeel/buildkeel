@@ -16,7 +16,7 @@ The user typed: $ARGUMENTS
 
 ## Pausing work
 
-1. **Uncommitted changes.** Run `git status` in the code repo. When files are changed, list them and ask, with your tool for asking a question with choices: **Commit them as work in progress** (the default), committed with the message `WIP: <what they hold>` ending with `BuildKeel-Unit: <the unit's ID>`, or **Leave them as they are**, named in the pause record. Never discard or stash anything.
+1. **Uncommitted changes.** Run `git status` in the code repo. When files are changed, list them and ask, with your tool for asking a question with choices: **Commit them as work in progress** (the default), committed with the message `WIP: <what they hold>` ending with the unit's line (`BuildKeel-Unit: <ID>`, or `Refs: <ID>` where BuildKeel is kept out), or **Leave them as they are**, named in the pause record. Never discard or stash anything.
 2. **Working notes.** Draft the working notes since the last checkpoint or pause, and check them, as below, steps 1 and 2.
 
    **Working notes.** At this checkpoint, draft the working notes since the last checkpoint or pause: what the work learned that the code and the spec do not say. Each is one of these: a decision and why (with `replaces` naming an earlier decision it replaces), a constraint or pitfall, a dead end (what was tried, and why it failed), an open question, or the next step. Rulings are kept already. Give each its source: the user's own words, copied exactly, as `quote`; a `file` and `line`; or a `record`, such as a requirement, a finding or a commit. Never record an inference about a person, such as what they seem to prefer. With nothing new to note, leave notes out.

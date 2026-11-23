@@ -35,7 +35,7 @@ A setting you leave out takes its default. A setting that cannot be read, such a
 | Plan check | `planning.plan-check` | on, off | on | both |
 | Spikes | `planning.spikes` | on, off | on | both |
 | Fresh agent per task | `runs.build`: the first choice in `/bk:build` | fresh-agents, here | fresh-agents | both |
-| Parallel runs | `runs.parallel`: the most tasks built at the same time | 1 (off) or more | 3 | Full SDLC |
+| Parallel runs | `runs.parallel`: the most tasks built at the same time | 1 (off) or more | 1 | Full SDLC |
 | TDD | `gates.tdd`: the done gate's TDD check | block, warn, off | warn | Full SDLC |
 | | `checks.tdd`: at finish | reported, off | reported | Spec-driven |
 | Changed-line coverage | `checks.coverage` | on, off | on | both |
@@ -44,7 +44,7 @@ A setting you leave out takes its default. A setting that cannot be read, such a
 | Review: code quality | `reviews.code-quality` | on, off | on | both |
 | Review: break-it | `reviews.break-it` | on, off | on | both |
 | Review after each task | `reviews.each-task` | on, off | on | both |
-| Models and effort per role | `agents.roles`: a tier for each of the ten roles | inherit, or a tier | inherit | both |
+| Models and effort per role | `agents.roles`: a tier for each of the ten roles | inherit, or a tier | inherit for the implementer, standard for the rest | both |
 | Tiers | `agents.tiers` | a model and an effort per host | standard, principal | both |
 | Principal handoff | `agents.handoff` | `tier`: a tier, or none; `after`: failed fix rounds, 1 or more | principal, after 2 | both |
 | Threads | `continuity.threads` | off, ask, auto | ask | both |
@@ -102,7 +102,7 @@ process:
     review-findings: warn
   runs:
     build: fresh-agents
-    parallel: 3
+    parallel: 1
 ```
 
 How setup treats each mode's settings is in [Spec-driven mode in depth](how-spec-driven-works.md) and [Full SDLC mode in depth](how-full-sdlc-works.md).
@@ -146,7 +146,7 @@ How setup treats each mode's settings is in [Spec-driven mode in depth](how-spec
 
 ### Agents and models
 
-Each of the ten roles an agent plays runs with your session's model and effort (`inherit`) unless you give it a tier. The roles are `implementer`, `spec-reviewer`, `quality-reviewer`, `final-spec-reviewer`, `final-quality-reviewer`, `break-it`, `readiness-readers`, `edge-cases`, `designers` and `note-checker`. Two tiers are built in, *standard* and *principal*, and you can change them or add your own:
+The implementer runs with your session's model and effort (`inherit`), and the other nine roles, each a check, on the standard tier, unless you give a role another tier. The roles are `implementer`, `spec-reviewer`, `quality-reviewer`, `final-spec-reviewer`, `final-quality-reviewer`, `break-it`, `readiness-readers`, `edge-cases`, `designers` and `note-checker`. Two tiers are built in, *standard* and *principal*, and you can change them or add your own:
 
 ```yaml
 process:
@@ -170,6 +170,25 @@ These are each person's own, kept on their machine, and never in `buildkeel.yaml
 - **Stamping your own commits.** A git hook adds the active unit's line to commits you make by hand. It is on by default: setup asks, with **Stamp my commits** first. To change it later, ask Claude to turn stamping off or on. Turning it off uninstalls BuildKeel's hook. In a repository whose hooks another tool manages, such as husky or lefthook, Claude shows the lines to add or take out instead.
 - **Usage stats.** A record on your machine of what BuildKeel did for you. `/bk:stats off` stops it, `/bk:stats on` starts it again, and `/bk:stats delete` and `/bk:stats export` delete or export it. See [Status and usage](status.md).
 - **The guided first change.** In a Spec-driven tree, setup asks whether to be guided through your first change. Tell Claude to stop or start explaining at any time.
+- **What an edit with no unit active does (`code-edits`).** `hold` waits until a unit is started; `warn` lets the edit go ahead and says once that it belongs to no unit. The default is `warn` in Spec-driven mode and `hold` in Full SDLC. See [Working on a unit](working-on-a-unit.md).
+- **The new-version check (`update-check`).** Once a day, BuildKeel asks the npm registry for its latest version number, and a session start shows a newer one once, with the command to update. It sends nothing about you or your work. On by default; `update-check: off` turns it off, and so does the environment variable `BUILDKEEL_NO_UPDATE_CHECK=1`, for CI and machines that stay offline.
+
+`code-edits` and `update-check` are kept in `~/.buildkeel/settings.yaml`:
+
+```yaml
+code-edits: warn
+update-check: on
+```
+
+A team can lock `code-edits` for everyone in a tree, in its `buildkeel.yaml`; your own setting then has no effect there. The version check cannot be locked: it is each person's own choice.
+
+```yaml
+process:
+  personal:
+    code-edits: hold
+```
+
+`/bk:settings` shows each one with where its value comes from: set by you, locked by the team, or the default.
 
 ## Turning a feature off or on
 

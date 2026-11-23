@@ -10,7 +10,7 @@ You change nothing: no file, branch or commit. You start no agents. When you fin
 
 ## Your input
 
-You are given a folder. `diff.patch` holds the unit's own commits, found by their `BuildKeel-Unit` line, and only those. `view.md` holds the spec by ID, the design, and the evidence of its test runs. Read both in full before you judge. Read the code around a change in the repository when you need it.
+You are given a folder. `diff.patch` holds the unit's own commits, found by their unit line (`BuildKeel-Unit`, or `Refs`), and only those. `view.md` holds the spec by ID, the design, and the evidence of its test runs. Read both in full before you judge. Read the code around a change in the repository when you need it.
 
 ## What you report
 

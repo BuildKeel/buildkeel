@@ -14,6 +14,8 @@ The words BuildKeel uses, in alphabetical order, each with a short definition an
 
 **Approval record.** In Full SDLC, the file that records who approved which version of an artifact, when, and the hash of what was approved. See [Records and the audit trail](records.md).
 
+**Analytics files.** `analytics/runs.jsonl` and `analytics/units.jsonl` at the top of the spec tree: a line of counts for each task's build run and each finished unit, only ever added to. See [Execution records and analytics](execution-records.md).
+
 **Archiving.** In Spec-driven, what finishing does to a change: its spec changes are merged, each capability it touches gets its next version, and its files are frozen as its record. See [Finish](finishing-a-unit.md).
 
 **Artifact.** A markdown file in the spec tree with defined fields and sections. In Full SDLC, a business idea, epic, story, task or a document attached to one; in Spec-driven, a capability spec or a change. See [The spec tree and its artifacts](spec-tree.md).
@@ -36,7 +38,7 @@ The words BuildKeel uses, in alphabetical order, each with a short definition an
 
 **Checkpoint.** A point where BuildKeel saves the working notes since the last one. A pause is one too. See [Working notes and threads](working-notes.md).
 
-**Claim.** A unit's hold on this machine, so another working tree here cannot start it. Claims are kept on your machine only, and released when the unit is finished or when you ask. See [Build](working-on-a-unit.md).
+**Claim.** A unit's hold, so no one else starts it: kept on this machine, so another working tree here cannot start it, and shared on the spec repo's `buildkeel/claims` branch, so a teammate cannot either. Released when the unit is finished or paused, or when you ask. See [Build](working-on-a-unit.md).
 
 **Completion record.** The permanent record finishing writes: the versions built against, the branch and commits, the files changed, the test results and TDD evidence, every review finding and its answer, who finished it and when, and a context part with the decisions and notes for the next person. See [Records and the audit trail](records.md).
 
@@ -49,6 +51,8 @@ The words BuildKeel uses, in alphabetical order, each with a short definition an
 **Design document.** A document attached to an artifact, usually an epic, saying how its work is built, such as `EP-01-DD`. See [Process: stages, kinds and documents](process-and-templates.md).
 
 **Draft.** In Full SDLC, an artifact not yet approved. It carries a temporary ID, such as `US-draft-k3x9`, until approval gives it its permanent number. See [Capture a plan](capture.md).
+
+**Execution record.** What one task's build run recorded: its agents, their models, what they did, the tokens they used and how it ended, by pointer only. See [Execution records and analytics](execution-records.md).
 
 **Fix loop.** In a run, an open High or Medium review finding stops its task, and the review runs again on the fix. See [Reviews and the fix loop](reviews.md).
 
@@ -101,6 +105,8 @@ The words BuildKeel uses, in alphabetical order, each with a short definition an
 **Revert check.** A run of the unit's tests against the code as it was before the unit, to show the tests need the unit's code. See [TDD evidence](tdd.md).
 
 **Ruling.** Claude's answer to a building agent's question, from the spec, the working notes, the glossary or the practices, with its source. Every later agent in the run is given it. See [Records and the audit trail](records.md).
+
+**Run.** A build run: what one `/bk:build` starts, with its own run ID. A run of tests is a test run, and its summaries are kept in the unit's `test-runs/` folder. See [Build](working-on-a-unit.md).
 
 **Scenario.** In Spec-driven, a WHEN and THEN case of a requirement, such as `ACCT-R2-S1`, checked by tests that carry its ID. See [Tests and traceability](test-plans.md).
 

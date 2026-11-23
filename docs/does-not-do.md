@@ -5,7 +5,7 @@ The limits BuildKeel keeps on purpose, so you can plan around them. Each says wh
 ## Across machines
 
 - **No shared test status.** Test results are recorded for the working tree they ran in, and labeled as local results. They are one machine's word, not a status every machine agrees on. See [Tests and traceability](test-plans.md).
-- **No coordination between machines as you work.** A claim stops another working tree on your machine from starting the same unit, but a teammate on another machine can start it too, and BuildKeel does not know. A pause, once the spec repo is pushed, is what tells the team that work is held, and by whom. See [Pause, resume and hand over](pausing-and-resuming.md) and [Troubleshooting](troubleshooting.md#known-limits).
+- **No claims shared without a remote, or while offline.** A claim is shared through the spec repo's remote, on its `buildkeel/claims` branch. With no remote, claims stay on your machine, and a teammate can start the same unit. Offline, the start goes ahead with a warning, and two people can claim the same unit until the next status shows the clash to both. See [Status and usage](status.md#claims) and [Troubleshooting](troubleshooting.md#known-limits).
 - **It does not push your code.** Finishing commits the completion record in the spec repo, and pushes it only when the tree's `settings.autoPush` is on. Pushing the code branch is up to you. See [Finish](finishing-a-unit.md).
 
 ## Other tools
@@ -28,7 +28,7 @@ The limits BuildKeel keeps on purpose, so you can plan around them. Each says wh
 
 ## Your data and your history
 
-- **It sends no data anywhere.** No artifact content, code or usage leaves your repositories and your machine. The only network calls are git against your remotes and optional lookups with GitHub's CLI. Your usage record stays on your machine. See [Status and usage](status.md).
+- **It sends no data anywhere.** No artifact content, code or usage leaves your repositories and your machine. The network calls are git against your remotes, optional lookups and setup's optional repository with GitHub's CLI, and the version check: once a day, BuildKeel asks the npm registry for its latest version number. It sends nothing about you or your work. Turn it off in your settings (see [Personal settings](settings.md#personal-settings)). Your usage record stays on your machine. See [Status and usage](status.md).
 - **It does not rewrite your git history.** Commits without a unit line are listed for you to keep or leave out, and nothing in history changes. See [Finish](finishing-a-unit.md).
 - **It does not merge or delete spike branches.** You keep, delete or take from each one. See [Small fixes, defects and spikes](defects-and-adhoc.md).
 - **It does not change a tree's format unless you ask.** A tree in an older format is read but not changed until you run `/bk:migrate`, and approved versions are never altered. See [Move to Full SDLC, or upgrade a tree](migration.md).

@@ -15,3 +15,10 @@ For each note, one verdict:
 - **not supported**, with why: the source says something else, says less, or is only one option mentioned among others.
 
 A note that records an inference about a person, such as what they seem to prefer, is not supported, whatever its source.
+
+## The implementer's own choices
+
+You may also be given choices an implementer made by itself, each with why, what it was chosen over, and a file and line. Read the line. For each choice, one verdict:
+- **supported**, when the line holds the choice, the reason holds, and the choice is about how to build;
+- **not supported**, with why: the line does not hold it, or nothing in the code or the records shows the reason;
+- **about behavior**, when a user or a test could observe it, such as what the system accepts, refuses, shows, sends or limits, whatever its source: it should have been asked.

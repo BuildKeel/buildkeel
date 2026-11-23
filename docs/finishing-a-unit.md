@@ -130,7 +130,7 @@ Before writing anything, Claude shows what finishing will do, in its reply, and 
 
 ```text title="/bk:done"
 TK-001 "Reset endpoint" v1 can be finished. Finishing will:
-- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, and a summary of its test runs
+- write its completion record in the spec tree, built against US-001@v1, EP-01@v1, BI-01@v1, with a summary of its test runs; its record files (working notes, test-run summaries, reviews and the rest) go into it in full and leave the tree
 - commit only those files in the spec repo as "done: TK-001 v1", without pushing
 - release its claim on this machine and clear the active unit here; the code branch is left as it is
 
@@ -268,7 +268,7 @@ In a Spec-driven tree, defects and ad-hoc units finish the same way, except that
 
 ## The completion record
 
-Finishing writes one file in the unit's directory, `completions/<time>-<who>.yaml`, with a summary of the unit's test runs in its `runs/` folder, and commits them on their own in the spec repo as `done: <ID> v<N>`. It is pushed only when `autoPush` is set in `buildkeel.yaml`, like approvals; otherwise push the spec repo when you are ready to share it. For how records fit together, see [Records and the audit trail](records.md).
+Finishing writes one file in the unit's directory, `completions/<time>-<who>.yaml`. Its last part, `records`, holds the unit's record files in full (working notes, pauses, test-run summaries with one written now, review findings and answers, switches, handoffs and execution records), and they are removed from the tree; as-built records stay as files, and git history keeps everything. It commits that on its own in the spec repo as `done: <ID> v<N>`. It is pushed only when `autoPush` is set in `buildkeel.yaml`, like approvals; otherwise push the spec repo when you are ready to share it. For how records fit together, see [Records and the audit trail](records.md).
 
 ```yaml
 unit: TK-001

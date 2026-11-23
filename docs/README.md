@@ -48,6 +48,7 @@ User documentation, kept beside the code it describes.
 - [Spec-driven mode in depth](how-spec-driven-works.md): one change followed from a conversation to the capability's next version, defects and changes in behavior, every /bk:init question for a Spec-driven tree, and the settings left at their defaults.
 - [Full SDLC mode in depth](how-full-sdlc-works.md): one piece of work followed from a business idea to a finished task, every /bk:init question for a Full SDLC tree, three complete processes, and what approval checks, writes and locks.
 - [Records and the audit trail](records.md): rulings, answers to findings and decisions with their evidence, where records are kept, completion, approval and re-pin records, commits linked to their unit, and how records are kept.
+- [Execution records and analytics](execution-records.md): what each task in a build run records, the choices an agent made by itself, the tokens a unit used, the analytics files, and rebuilding them.
 - [Status and usage](status.md): the overview with /bk:status, releasing a claim, your usage with /bk:stats, turning it off, deleting or exporting it, what each section of the overview shows, and what usage stats record.
 
 ## Reference

@@ -1,7 +1,6 @@
 ---
 description: "BuildKeel: Turn what you discussed into a plan: a plain summary, then the artifacts your process needs, agreed one by one or all at once, as you choose."
 argument-hint: "[which part of the conversation to capture; all of it when left out]"
-disable-model-invocation: true
 ---
 
 Turn the conversation into a plan the team's process can build from, with the user agreeing at each step: the summary, the list of what will be created, the pace, then each artifact. Nothing is saved that the user has not agreed to, and everything saved stays a draft until it is approved.
@@ -178,6 +177,7 @@ Version 0 describes what the code does today, as if BuildKeel had been used from
    It changes nothing the user has not agreed to.
 2. **Gaps.** List each pitfall or constraint from the summary that no saved artifact covers, and treat each as a gap, as above. Then show what was drafted as a table: ID, title, and its open questions, if any.
 3. **A resumed thread.** When this capture started from a thread, close it with `save_draft`, `type: "thread"`, its `id` and `captured` set to the top artifact saved, and say so in a line: the thread links to what it became.
+4. **Compacting.** Call `query` with `view: "conversation"` and do as it says: when the conversation is long, it says to offer compacting it once, with a line to paste that keeps what was saved and drops the discussion. What was agreed is saved in the drafts already; save any working notes first. Otherwise say nothing about it.
 
 ## 6. Approve them, or leave them as drafts
 

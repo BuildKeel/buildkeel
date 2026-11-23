@@ -20,6 +20,8 @@ A Full SDLC tree:
 ```
 <spec root>/
   buildkeel.yaml                 settings for the whole tree
+  .gitattributes                 merges the analytics files by keeping both sides
+  analytics/                     runs.jsonl and units.jsonl: a line per build run of a task, and per finished unit
   templates/                     your own templates (optional)
   ideas/BI-01/idea.md            one directory per business idea
   epics/EP-01/epic.md            one directory per epic
@@ -42,6 +44,8 @@ A Spec-driven tree holds capability specs and changes instead of stages:
 ```
 <spec root>/
   buildkeel.yaml                 settings, with mode: spec-driven
+  .gitattributes                 merges the analytics files by keeping both sides
+  analytics/                     runs.jsonl and units.jsonl: a line per build run of a task, and per finished change or unit
   templates/                     your own templates (optional)
   capabilities/AUTH/versions/    each version of a capability spec, with its record
   changes/CH-012-<short name>/   one directory per change, named by its ID and title
@@ -54,7 +58,7 @@ A Spec-driven tree holds capability specs and changes instead of stages:
   code-notes/CN-001/             each version of a note on the code
 ```
 
-Both modes keep the glossary, the practices, the ADRs, the threads and the notes on the code at the top of the tree. See [Choose a mode](modes.md).
+Both modes keep the glossary, the practices, the ADRs, the threads, the notes on the code and the analytics files at the top of the tree. See [Choose a mode](modes.md).
 
 The hierarchy is not in the directory structure. Each artifact names its parent in its own file, so moving a story to another epic never moves files. Use `/bk:status` to see the tree as a hierarchy.
 
@@ -72,19 +76,20 @@ Each artifact has its own directory, named by its ID, holding its working file. 
 | `repins/` | One record each time someone confirms the artifact, or in a test plan one of its test cases, is still valid after what it was built against changed |
 | `notes/` | The working notes of the work on it, one file each time they are saved |
 | `pauses/` | Where the work stood at each pause, and who paused it |
-| `runs/` | The summary of its test runs, one file each time it is saved |
+| `test-runs/` | The summary of its test runs, one file each time it is saved (`runs/` in work finished before format 5) |
 | `reviews/` | The findings of each review, each finding with an ID such as `TK-013-Fk3q` |
 | `answers/` | How each finding was answered, one file per finding |
 | `switches/` | The switches in force when the unit started, which its checks apply |
 | `handoffs/` | Each Principal handoff that did not clear its finding |
+| `executions/` | One execution record per task in each build run: which agents worked on it, on which model, what they did and the tokens they used |
 | `as-built/` | What a task finished before Build-ready tasks was on delivered, written later from its commits |
 | `test-plan/` | The artifact's test plan, `plan.md`, with its own `versions/` and `approvals/` |
 | `design/` | The artifact's design document, `design.md`, with its own `versions/` and `approvals/` |
 | `<document>/` | A document of your team's own, such as `threat-model/threat-model.md`; see [Process: stages, kinds and documents](process-and-templates.md) |
 
-A change in a Spec-driven tree keeps `notes/`, `pauses/`, `runs/`, `reviews/`, `answers/`, `switches/`, `handoffs/` and `as-built/` in its own directory the same way.
+A change in a Spec-driven tree keeps `notes/`, `pauses/`, `test-runs/`, `reviews/`, `answers/`, `switches/`, `handoffs/`, `executions/` and `as-built/` in its own directory the same way.
 
-Records are written once and never edited, so two branches that add records merge without conflicts. Each one's file name holds the time and a short random suffix, such as `20261101T183000Z-k3q8.md`, or for a version of a glossary entry, a practice or a note on the code, the version and a suffix, such as `v2-k3q8.md`. When two branches each add the same version of an entry, both are kept and validation asks you to settle which one stands. Edit only working files, and always through BuildKeel. See [Records and the audit trail](records.md).
+Records are written once and never edited, so two branches that add records merge without conflicts. Each one's file name holds the time and a short random suffix, such as `20261101T183000Z-k3q8.md`, or for a version of a glossary entry, a practice or a note on the code, the version and a suffix, such as `v2-k3q8.md`. When two branches each add the same version of an entry, both are kept and validation asks you to settle which one stands. Edit only working files, through BuildKeel or by hand in your own editor (see [Editing by hand](#editing-by-hand)); records are never edited. See [Records and the audit trail](records.md).
 
 Version 0, which describes code as it was before BuildKeel, is drafted in `onboard.md` beside the working file, so it can be drafted while the next version is drafted too. Approving it writes `versions/v0.md` and `approvals/v0.yaml`, and removes `onboard.md`.
 
@@ -141,7 +146,7 @@ The repair reads every ID in the spec tree: approved artifacts, defects and ad-h
 The file at the root of the spec tree. Its presence is what makes a directory a spec tree.
 
 ```yaml
-format: 4
+format: 5
 mode: full-sdlc
 name: Payments
 repos:
@@ -182,6 +187,8 @@ repo: payments-api
 
 BuildKeel finds the pointer from any directory inside the code repository. If the spec tree is not where the pointer says, BuildKeel tells you and how to fix it, and changes nothing.
 
+Where BuildKeel is kept out of the repository (see [Your first change](getting-started.md#what-each-question-means)), the pointer is `.git/buildkeel.yaml` instead, inside the clone's git folder, which git never commits. Its `specs` path is read from the repository's root, and it holds `copy: off`, so no read-only copy is written. BuildKeel's local state is then in `.git/buildkeel/` rather than `.buildkeel/`.
+
 The pointer file also sets where the read-only copy of the glossary, practices and accepted ADRs is written in that repository (see [Spec-driven mode in depth](how-spec-driven-works.md#settings-left-at-their-defaults)).
 
 ### When repositories are checked out somewhere else
@@ -201,18 +208,18 @@ One spec tree serves everyone, whichever host each person uses: Claude Code or A
 
 A few things differ by host:
 
-- **Commands only you start** are enforced in Claude Code. Antigravity cannot block them, so there Claude is told the rule and follows it.
+- **Commands only you start** (`approve`, `done`, `init` and `migrate`) are enforced in Claude Code. Antigravity cannot block them, so there Claude is told the rule and follows it.
 - **Models and effort:** a tier names a model and an effort for each host. Antigravity has no effort setting for agents, so an effort is ignored there. See [Models and effort per role](models.md).
 - **Completion records** note the host the work was finished on.
 
 ## Format versions
 
-`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Every new tree is written in format 4. An older BuildKeel opens a format 4 tree read-only and asks for an update.
+`format` in `buildkeel.yaml` tells BuildKeel which version of the file layout the tree uses. Every new tree is written in format 5. An older BuildKeel opens a format 5 tree read-only and asks for an update. A format 4 tree, from BuildKeel 0.6.0, is moved to format 5 the first time this version uses it (see [Upgrade a tree](migration.md#1-upgrade-a-tree-in-an-older-format)).
 
 - **An older format** (formats 1 to 3, made by an older BuildKeel): BuildKeel reads the tree but does not change it, and asks you to run `/bk:migrate`. Migration upgrades the tree in one commit you can review, never alters approved versions, and keeps work in progress going. See [Move to Full SDLC, or upgrade a tree](migration.md).
 - **A newer format** than your BuildKeel supports: BuildKeel reads the tree but does not change it, and asks you to update the plugin.
 
-BuildKeel never rewrites files to a new format without being asked.
+Apart from that one step from format 4, BuildKeel never rewrites files to a new format without being asked.
 
 ## Capability specs
 
@@ -430,6 +437,12 @@ A task is ticked once its verification passes; a box holding an `x` is ticked. T
 ### Editing an open change
 
 Every file of an open change can be changed at any time, by you or by Claude, with no new version and no approval, and several changes can be open at once; [Capture a plan](capture.md) shows how to edit one.
+
+### Editing by hand
+
+You may edit working files in any editor: an open change's files, drafts in Full SDLC, and your own code. BuildKeel reads them as they are at its next step, so an edit made by hand counts like one Claude made through BuildKeel. BuildKeel's checks on an edit only see the edits Claude makes; an edit you make yourself is never held.
+
+Records, frozen versions and capability specs are never edited, by hand or otherwise: they are the audit trail. Validation reports any that changed, naming the file, and `/bk:status` shows it too.
 
 ### What BuildKeel checks in a change
 

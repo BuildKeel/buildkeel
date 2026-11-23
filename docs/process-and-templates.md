@@ -33,7 +33,7 @@ What you confirm is written to `buildkeel.yaml`, with the templates, together. N
 For example:
 
 ```yaml
-format: 4
+format: 5
 mode: full-sdlc
 process:
   chain:

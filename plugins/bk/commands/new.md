@@ -1,7 +1,6 @@
 ---
 description: "BuildKeel: Draft an artifact, break a parent down into drafts of its children, or record a defect."
 argument-hint: <type> [parent ID] [what to draft], e.g. story EP-01, stories from EP-01, or defect TK-001
-disable-model-invocation: true
 ---
 
 Draft BuildKeel artifacts with the user. Everything you produce is a draft: drafting never approves anything, and every draft goes through the same checks and approval as one written by hand. A defect found while building is the exception: it is recorded at once, with its permanent ID, and needs no approval; a defect reported by users, customers or testers is drafted and approved like the rest (see "Defects" below). In a Spec-driven tree every defect is recorded at once.

@@ -112,7 +112,7 @@ All of these sit under `process` in `buildkeel.yaml`.
 | `planning.plan-check` | The report when tasks are saved | `on` |
 | `planning.spikes` | Whether spikes can be started | `on` |
 | `runs.build` | The first choice in `/bk:build`: fresh agents or here | `fresh-agents` |
-| `runs.parallel` | Full SDLC: the most tasks built at the same time | `3` |
+| `runs.parallel` | Full SDLC: the most tasks built at the same time | `1` (off) |
 | `checks.tdd` | Spec-driven: TDD at finish | `reported` |
 | `checks.coverage` | Changed-line coverage | `on` |
 | `checks.mutation` | Mutation testing, with your tool's command | `off` |
@@ -120,7 +120,7 @@ All of these sit under `process` in `buildkeel.yaml`.
 | `reviews.code-quality` | The code quality reviewer | `on` |
 | `reviews.break-it` | The break-it reviewer | `on` |
 | `reviews.each-task` | A review after each task | `on` |
-| `agents.roles` | The tier each agent role runs on | `inherit` |
+| `agents.roles` | The tier each agent role runs on | `inherit` for the implementer, `standard` for the rest |
 | `agents.tiers` | The model and effort of each tier | `standard`, `principal` |
 | `agents.handoff` | Principal handoff: the tier, and after how many failed fix rounds | `principal`, after `2` |
 | `continuity.threads` | What a pause does with nothing active | `ask` |

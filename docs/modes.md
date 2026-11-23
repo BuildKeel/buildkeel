@@ -61,7 +61,7 @@ Full SDLC follows your team's chain of stages, from business idea down, with app
 | **Traceability** | Versions, code links, tests, change impact, defects and ad-hoc work, reported and never blocking | The same, with gates that can stop work |
 | **Existing code** | A capability's version 0, written once a person has confirmed it | Version 0 of each artifact, reviewed and approved, with its sources kept |
 | **What your team sets** | Templates, rules for each artifact, ID prefixes | Stages, kinds within a stage, documents, which kinds a reported defect can belong to, templates, rules, ID prefixes and gates |
-| **The spec tree's format** | 4: everyone working in it needs a version of BuildKeel that reads format 4 | 4, as for Spec-driven |
+| **The spec tree's format** | 5: everyone working in it needs a version of BuildKeel that reads format 5 | 5, as for Spec-driven |
 
 The same in both: commits are linked to their unit automatically, test results are read from JUnit XML reports, defects can be closed without a fix, every finished unit leaves a permanent record, nothing leaves your repositories, and the commands are the same.
 
@@ -143,14 +143,14 @@ When you point a repository at an existing spec tree, nothing is asked: the clos
 The mode is written to `buildkeel.yaml`:
 
 ```yaml title="buildkeel.yaml"
-format: 4
+format: 5
 mode: spec-driven
 name: Accounts
 repos:
   - name: accounts-api
 ```
 
-> **Teammates on older versions.** A new tree of either mode uses format 4. Older versions of BuildKeel open it read-only and ask for an update, so everyone who works in the tree needs the current version.
+> **Teammates on older versions.** A new tree of either mode uses format 5. Older versions of BuildKeel open it read-only and ask for an update, so everyone who works in the tree needs the current version.
 
 A spec tree created before modes existed names no mode, and follows Full SDLC. `/bk:migrate` names its mode, Full SDLC, as it moves the tree to the current format. See [Move to Full SDLC, or upgrade a tree](migration.md).
 

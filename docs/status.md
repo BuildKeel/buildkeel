@@ -10,11 +10,12 @@ The overview shows the tree with each artifact's state, the work in progress, wh
 2. Run `/bk:status`.
 
    ```text title="/bk:status"
-   BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 4)
+   BuildKeel status: Payments, spec tree /home/ana/payments-specs (format 5)
    In short: TK-001 is in progress here; 3 units are ready to start; 1 gap in coverage or required documents; 1 approval not pushed; 1 commit with no unit.
 
    Active unit here: TK-001 task "Reset endpoint" on branch bk/TK-001-reset-endpoint.
    Spec repo: up to date at the last check (2026-10-01T09:00:00Z). Not pushed yet: 1 approval; push the spec repo to share it.
+   Shared claims (buildkeel/claims, fetched in 140 ms): TK-001 held by Ana Lopez on ana-laptop since 2026-10-01T09:05:00Z.
 
    AH-001 ad-hoc unit "Fix typo in reset email": open
    BI-01 business idea "Self-service account recovery": approved v1
@@ -57,12 +58,12 @@ The overview shows the tree with each artifact's state, the work in progress, wh
 
 ## 2. Release a claim
 
-A claim stops other working trees on this machine from starting a unit. It is released when its unit is finished. If the work on a unit has stopped, you can release it sooner.
+A claim stops teammates, and other working trees on this machine, from starting a unit. It is released when its unit is finished or paused. If the work on a unit has stopped, you can release it sooner.
 
 1. Run `/bk:status` and find the unit under **Claims on this machine**.
 2. Ask Claude to release its claim, such as "release the claim on TK-001".
 
-Any working tree can then start the unit, and it is no longer the active unit in the working tree that held it. Its branch and commits stay as they are.
+Anyone can then start the unit: its claim is gone from the claims branch too, and it is no longer the active unit in the working tree that held it. Its branch and commits stay as they are.
 
 ## 3. See your usage
 
@@ -181,7 +182,10 @@ After the state, the work on it:
 
 ### Claims
 
-The units claimed by working trees on this machine, with each one's branch and since when. A claim is released when its unit is finished, or sooner on request: see [Release a claim](#2-release-a-claim).
+- **Shared claims:** the units the team holds, read from the spec repo's `buildkeel/claims` branch after it is fetched, each with who holds it, on which machine and since when. Status also pushes any claim of yours taken offline. A **clash** is a unit you claimed offline that a teammate claimed meanwhile: both of you see it at your next status, and the one who does not keep it releases it. With no remote, status says claims are kept on this machine only and not shared.
+- **Claims on this machine:** the units claimed by working trees here, with each one's branch and since when.
+
+A claim is released when its unit is finished or paused, or sooner on request: see [Release a claim](#2-release-a-claim). Releasing removes it from the claims branch too.
 
 ### Gaps, suspects and pending numbers
 
@@ -245,11 +249,12 @@ The units that can be started now, the active unit first. `/bk:build` lists the 
 In a Spec-driven tree, the overview is about changes and capability specs:
 
 ```text title="/bk:status"
-BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 4)
+BuildKeel status: Accounts, Spec-driven spec tree /home/ana/accounts-specs (format 5)
 In short: CH-002 is in progress here; 2 open changes; 2 findings in open changes; 4 scenarios with no tagged test; 1 failing; commits with no unit.
 
 Active unit here: CH-002 "Reset links expire" (change) on branch bk/CH-002-reset-links-expire.
 Spec repo: up to date at the last check (2026-10-01T09:00:00Z).
+Shared claims (buildkeel/claims, fetched in 140 ms): CH-002 held by Ana Lopez on ana-laptop since 2026-10-01T09:05:00Z.
 
 Open changes (2):
 - CH-002 "Reset links expire": 1 of 3 tasks done; proposal, spec change AUTH, design, tasks · in progress here

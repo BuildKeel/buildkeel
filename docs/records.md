@@ -37,18 +37,20 @@ TK-047   Task "Implement verification token endpoint"
 ├── versions/      Full SDLC: each approved version, frozen with its hash
 ├── approvals/     Full SDLC: who approved which version, and when
 ├── switches/      which checks were on when the work started
-├── runs/          the summary of its test runs: each test's first failing run, then its first passing run
+├── test-runs/     the summary of its test runs: each test's first failing run, then its first passing run
 ├── notes/         the working notes, one file each time they are saved
 ├── pauses/        where the work stood at each pause, and who paused it
 ├── reviews/       each review's findings, each with an ID such as TK-047-Fk3q
 ├── answers/       how each finding was answered: fixed, parked or rejected, with its evidence
 ├── handoffs/      each Principal handoff that did not clear its finding
+├── executions/    each task's execution record in each build run: its agents, what they did, the tokens they used
 ├── repins/        each time the work is confirmed still valid after what it was built against changed
 └── completions/   what was built, against which versions, with which results, and why
 ```
 
 - **While the work is open,** decisions are in the unit's or change's own folders: `notes/`, `reviews/`, `answers/` and `handoffs/`. The full list of folders is on [The spec tree and its artifacts](spec-tree.md#records-beside-each-artifact).
-- **When it is finished,** the completion record holds every review finding with its answer, and a context part built from the working notes. An archived change carries the same.
+- **When it is finished,** the completion record holds every review finding with its answer, and a context part built from the working notes. Its last part, `records`, holds every file of those folders in full (working notes, pauses, test-run summaries, review findings, answers, switches, handoffs and execution records), and finishing removes the files, so a finished unit's folder holds its completion record and little else. Git history keeps them too, and everything that reads these folders reads the `records` part as well: looking back, the review-findings check, status and the Learning loop cite the completion record. As-built records are written after a task's finish, so they stay files. An archived change carries the same, in its own folder.
+- **Work finished before format 5** keeps its folders as they were, `runs/` for its test-run summaries included.
 - **The switches in force** are noted beside them, so a reader can tell "reviewed, nothing found" from "built with reviews off". See [Feature switches](settings.md).
 - **Also kept:** for a defect closed without a fix, who closed it and why (`closed.yaml`); for version 0, each source it was drafted from, as it was read (`sources/`); for a discarded change, who discarded it, when and why (`discarded.yaml`).
 

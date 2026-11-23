@@ -39,7 +39,7 @@ Claude compares your words with the titles of the units that can start and, in a
 
 1. It checks that the unit is ready (see [What must be true to start](#what-must-be-true-to-start)).
 2. It switches to the unit's branch, `bk/<ID>-<title>`, such as `bk/TK-001-reset-endpoint`, or `bk/CH-002-reset-links-expire` for a change (see [Its branch](#its-branch)).
-3. It claims the unit on this machine, so another working tree cannot start it too.
+3. It claims the unit, on this machine and on the spec repo's `buildkeel/claims` branch, so neither another working tree nor a teammate can start it too. A unit a teammate holds is refused, naming who and since when. Offline, it goes ahead with a warning and the claim is pushed at the next start or status.
 4. It makes it the **active unit** of this working tree.
 5. It loads its context for Claude (see [The context Claude receives](#the-context-claude-receives)).
 6. It refreshes the read-only copy of the glossary, practices and ADRs in the code repository, when it has changed, in a commit of its own (see [The playbook](glossary-practices-adrs.md)).
@@ -58,7 +58,7 @@ Once the unit is started, Claude shows what it would build and asks, in plain te
    - **Set it up and work together**: the unit is active on its branch with its context loaded, nothing is built, and Claude asks how you want to begin.
 3. For a single task, ask Claude to build it in a fresh agent if you want one.
 
-When a change's tasks are all ticked already, Claude says so and that you can finish it with `/bk:done`. In Full SDLC, when some ready tasks are independent of each other, Claude also offers to build them at the same time (see [Parallel runs](#parallel-runs)).
+When a change's tasks are all ticked already, Claude says so and that you can finish it with `/bk:done`. In Full SDLC, with parallel runs turned on, when some ready tasks are independent of each other, Claude also offers to build them at the same time (see [Parallel runs](#parallel-runs)).
 
 ### Fresh agents
 
@@ -157,7 +157,7 @@ BuildKeel-Unit: CH-002
 BuildKeel-Task: 1.2
 ```
 
-Each test is written and seen failing before its code. Each task is ticked once its verification passes, and Claude says so in a line, without asking. Ticking writes the task's [Built line](#the-built-line) and saves a summary of the test runs so far in the change's `runs/` folder. A change's tasks are built one after another. Finish the change with `/bk:done` when its tasks are done.
+Each test is written and seen failing before its code. Each task is ticked once its verification passes, and Claude says so in a line, without asking. Ticking writes the task's [Built line](#the-built-line) and saves a summary of the test runs so far in the change's `test-runs/` folder. A change's tasks are built one after another. Finish the change with `/bk:done` when its tasks are done.
 
 If you ask in words, such as "let's build the rest now", Claude suggests `/bk:build` once. Say "just go ahead" and it builds the tasks anyway, by the same rules; say "not now" and it builds nothing.
 
@@ -194,12 +194,12 @@ Each task gets a worktree of its own, a second checkout of your repository under
 Added TK-001's worktree at /home/you/payments-api/.buildkeel/worktrees/TK-001, from this checkout's commit (4abbce1), and started TK-001 there on its branch bk/TK-001-reset-endpoint: it is the active unit there, and claimed by that worktree.
 ```
 
-The most tasks run at the same time is 3 by default. `1` turns parallel runs off, and a change applies from the next run:
+Parallel runs are off by default: `runs.parallel` is `1`, one task at a time. To turn them on, set the most tasks built at the same time; a change applies from the next run:
 
 ```yaml
 process:
   runs:
-    parallel: 2
+    parallel: 3
 ```
 
 ### Merging a parallel run
@@ -444,7 +444,7 @@ In a Spec-driven tree, a change's context holds its proposal, every spec change 
 ```text title="The context of CH-002"
 # Active unit: CH-002 "Reset links expire" (change)
 Progress: 1 of 3 tasks done.
-Commits: end every message with "BuildKeel-Unit: CH-002", and add "BuildKeel-Task: <number>" when the commit does exactly one task.
+Commits: end every message with "BuildKeel-Unit: CH-002", and when the commit does exactly one task, add "BuildKeel-Task: <number>".
 Tests: put the scenario ID in each test's name, such as [AUTH-R1-S1], one ID per bracket: [AUTH-R1-S1] [AUTH-R2-S1]. Record each run's JUnit XML report with test_results.
 Tasks: work through the unticked ones in order, and tick each once its verification passes, with save_draft, type tasks, id CH-002 and tick (its number); say so in a line. Finish with /bk:done.
 Keep the change consistent: when you edit one of its files, check the others and propose the follow-on edits, each through the review. Read one file with query (view changes, id CH-002, file); change one requirement with save_draft, type spec-change, its capability and requirement.
@@ -553,7 +553,16 @@ At the start of every session, when a session is resumed, and after Claude Code 
 
 Nothing else is raised at session start, so a question about the code gets a plain answer. Whether the spec tree is behind its remote, what is suspect, and what is not pushed are shown when you start, approve or finish work, and in `/bk:status`.
 
-When you ask Claude to change code and no unit is active, Claude asks how to go on before changing any file: capture what you discussed, by running `/bk:capture` yourself, build the unit the change belongs to with `/bk:build`, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Small fixes, defects and spikes](defects-and-adhoc.md)).
+When you ask Claude to change code and no unit is active, what happens depends on your `code-edits` setting:
+
+- **`hold`** (the default in Full SDLC): Claude asks how to go on before changing any file. Capture what you discussed (ask for it, or run `/bk:capture`), build the unit the change belongs to with `/bk:build`, record it as an ad-hoc unit, or go ahead without a unit if you say so. If Claude goes to change code anyway, BuildKeel holds the edit until one of these is done (see [Small fixes, defects and spikes](defects-and-adhoc.md)).
+- **`warn`** (the default in Spec-driven mode): the edit goes ahead, and Claude says once in the conversation that it belongs to no unit, with the same ways to give it one.
+
+Either way, `/bk:status` lists the commits that carry no unit. Set `code-edits` in your own `~/.buildkeel/settings.yaml`; a team can lock it for everyone in the tree's `buildkeel.yaml` (see [Personal settings](settings.md#personal-settings)).
+
+Going ahead without a unit has two scopes. **Just these files** (offered first) lets the files at hand, or folders you name, change with no unit; every other edit is treated as before. **The whole working tree** lets everything change. Either ends when a unit is started.
+
+Files git ignores, such as build output or a local `.env`, are never held and never warned about: they can never be committed, so they never belong to a unit.
 
 BuildKeel checks the edits Claude makes with its file editing tools, and Claude is told to change files only with them. A change made another way, such as through a shell command, escapes these checks; if it is committed without a unit, `/bk:status` lists it under commits with no unit.
 

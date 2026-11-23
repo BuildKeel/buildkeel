@@ -30,7 +30,7 @@ A story built through tasks, an epic, or a stage the team added above its storie
 3. Call the BuildKeel `finish_work` tool without `apply`, with `id` if the user named a unit, `notes` with the notes the checker supports, and `context` with what it adds (`departures`, `limitations`, `followUps`, `forNext`). It runs the done gate and writes nothing.
    - **A check on the tests not run yet:** when the result says the revert check, or mutation testing, has not run yet, run it first, once, without asking, then call `finish_work` without `apply` again. For the revert check: call `manage` with `action: "revert-check"`, run the unit's tagged tests in the worktree it prepares, from that directory, with a JUnit XML report written there (it links the dependencies the main checkout has installed: never install, update or remove a package through a link, and install in the worktree only where it says to), and record it with `test_results` and `purpose: "revert-check"`; when the tests cannot run there, remove the worktree with `remove: true` and say why. For mutation testing: run the command the result names, and record its report with `test_results` and `purpose: "mutation"`.
    - **Refused only because tests have no current result** (not run, or run before the code last changed): run the tests with a JUnit XML report, record it with `test_results`, and call `finish_work` without `apply` again. Do this once, without asking.
-   - **Refused by the done gate** for anything else: show every failing check with its fix, as it is, and where each test case stands. Offer the fix that comes first: commit uncommitted changes (ending the message with `BuildKeel-Unit: <ID>`), write a test that is missing its tag, fix a failing test, or run the tests again. Do not finish anything else in its place.
+   - **Refused by the done gate** for anything else: show every failing check with its fix, as it is, and where each test case stands. Offer the fix that comes first: commit uncommitted changes (ending the message with the unit's line, `BuildKeel-Unit: <ID>` or `Refs: <ID>`), write a test that is missing its tag, fix a failing test, or run the tests again. Do not finish anything else in its place.
    - **Not the active unit, or no active unit:** show the message and its fix.
    - **A story or epic refused because work under it is open:** show every open unit with its fix, and where each test case stands. Offer to start the first open unit with /bk:build.
    - **The final review not run yet:** when the result says the unit has no final review, review it now, before showing anything else, as "The final review" says, then call `finish_work` without `apply` again. It always runs, whatever the settings say of reviews after each task.
@@ -73,7 +73,7 @@ When the unit is a defect, offer closing it without a fix beside finishing it, w
 
 Ask the user, the default first, with what the result said in your reply. Show it in full in your reply, as normal text: the document, table or list itself. End the message with your question in plain text, and take the user's next message as the answer. Never put what you show inside your question tool. The choices:
 
-- If the result lists commits without a BuildKeel-Unit line, ask what to do with them:
+- If the result lists commits without the unit's line, ask what to do with them:
   1. **Count them all as <ID> work and finish** (the default).
   2. **Choose which to leave out.** Then ask which ones, allowing several, and finish with those left out.
   3. **Stop, and do not finish yet.**

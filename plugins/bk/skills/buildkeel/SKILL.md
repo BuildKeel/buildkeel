@@ -9,7 +9,7 @@ BuildKeel keeps requirements, tests and code connected. Follow these rules in an
 
 Talk with the user as you would without BuildKeel, as a thinking partner, the way BuildKeel's session report describes: explain the options, trade-offs and pitfalls before you ask, ask in prose, recommend only what the evidence supports, and never push toward a plan or a BuildKeel step. Discussing ideas, weighing options, talking through architecture and reading code are free: leave BuildKeel's artifacts, stages, IDs and commands out of it.
 
-BuildKeel comes in when the user runs a BuildKeel command, or when you are about to change a file (see "Before changing code"). Once that is done, the conversation is free again. Start a BuildKeel command only when the user types it, except /bk:status, /bk:settings and /bk:stats, which only read and which you may run on your own, and /bk:pause, when the user says words such as "let's stop here", since it saves nothing until they agree.
+BuildKeel comes in when the user starts a BuildKeel command, or when you are about to change a file (see "Before changing code"). Once that is done, the conversation is free again. Start a BuildKeel command only when the user asks for it, by typing it or in their own words, such as "let's capture this" or "build the next task": never on your own initiative, and never because it would be the next step. /bk:approve, /bk:done, /bk:init and /bk:migrate start only when the user types them, since they approve, finish, set up or migrate: when asked for one in words, tell the user to type it. /bk:status, /bk:settings and /bk:stats only read, and you may run them on your own; /bk:pause when the user says words such as "let's stop here", since it saves nothing until they agree.
 
 ## The spec tree
 
@@ -21,12 +21,12 @@ A team can rename the stages of its process and add stages of its own. When it h
 
 ## Before changing code
 
-Every code change belongs to the active unit of this working tree: a task, a story built without tasks, a defect or an ad-hoc unit, and in a Spec-driven tree a change, a defect or an ad-hoc unit. If there is none, before changing any file, ask the user how to go on, with your tool for asking a question with choices if you have one, recommending the choice that fits:
+Every code change belongs to the active unit of this working tree: a task, a story built without tasks, a defect or an ad-hoc unit, and in a Spec-driven tree a change, a defect or an ad-hoc unit. If there is none, BuildKeel either holds the edit or lets it go ahead with a warning, as this person's `code-edits` setting says. When it holds it, ask the user how to go on, with your tool for asking a question with choices if you have one, recommending the choice that fits. When it warns, the edit has gone ahead: tell the user once, in a line, and offer the same choices.
 
-1. **Capture what we discussed**: the user runs /bk:capture, which turns the conversation into the artifacts the team's process needs, to approve and then build; in a Spec-driven tree, into a change, which needs no approval. You cannot start it yourself: if they choose it, ask them to run it, and change nothing until a unit is active. Recommend it when the conversation shaped new work.
+1. **Capture what we discussed** with /bk:capture, which turns the conversation into the artifacts the team's process needs, to approve and then build; in a Spec-driven tree, into a change, which needs no approval. If they choose it, start it, and change nothing more until a unit is active. Recommend it when the conversation shaped new work.
 2. **Start the unit it belongs to** with /bk:build <ID>, when the change is part of planned work.
 3. **Record it as an ad-hoc unit** with a short title you propose, and start it as /bk:build does for a description: for a small change that belongs to no planned work.
-4. **Go ahead without a unit.** Only the user can choose this: then call the BuildKeel `manage` tool with `action: "untracked"` first, and tell them the change will belong to no unit.
+4. **Go ahead without a unit.** Only the user can choose this, for just the files at hand (offer this first) or for the whole working tree: then call the BuildKeel `manage` tool with `action: "untracked"`, and `scope: "files"` with the files or folders, or `scope: "tree"`, first, and tell them the change will belong to no unit. Files git ignores are never held, so they need none of this.
 
 When the user reports a defect, or a test fails in work that was finished, offer to record a defect with /bk:new defect, which sorts a report first. Call `get_context` when you need the unit's requirements, design and test cases again.
 
@@ -36,7 +36,7 @@ If BuildKeel says a change is outside the areas the active unit relates to, tell
 
 ## Commits
 
-End every commit message with the active unit's trailer, after a blank line:
+End every commit message with the active unit's line, after a blank line:
 
 ```
 Add the reset endpoint
@@ -44,7 +44,7 @@ Add the reset endpoint
 BuildKeel-Unit: TK-047
 ```
 
-When a commit does exactly one task of a change, add `BuildKeel-Task: <task number>`, such as `BuildKeel-Task: 1.2`, on the next line. If the message has other trailer lines, such as `Co-Authored-By`, keep them all in that last block with no blank line between them, so git reads them as trailers. Use the active unit's ID, never another unit's. Do not rewrite commits that are already made.
+When a commit does exactly one task of a change, add `BuildKeel-Task: <task number>`, such as `BuildKeel-Task: 1.2`, on the next line. Where BuildKeel is kept out of the repository, write `Refs: TK-047` (or `Refs: CH-004 task 1.2`) instead. If the message has other trailer lines, such as `Co-Authored-By`, keep them all in that last block with no blank line between them, so git reads them as trailers. Use the active unit's ID, never another unit's. Do not rewrite commits that are already made.
 
 ## Tests
 
@@ -52,7 +52,7 @@ When you write a test for a test case, put the test case's ID in square brackets
 
 A test written before BuildKeel may be matched to a test case instead of tagged; the unit's context lists those matches. When you change such a test, add its test case's ID to its name too; BuildKeel drops the match when the unit is finished.
 
-Run the tests with a JUnit XML reporter, writing the report under `.buildkeel/` (git ignores it), and record each report with the BuildKeel `test_results` tool. For example:
+Run the tests with a JUnit XML reporter, writing the report under `.buildkeel/` (git ignores it; where BuildKeel is kept out, under the folder the session report names), and record each report with the BuildKeel `test_results` tool. For example:
 
 - Vitest: `npx vitest run --reporter=default --reporter=junit --outputFile.junit=.buildkeel/junit.xml`
 - Jest: `npx jest --reporters=default --reporters=jest-junit` with `JEST_JUNIT_OUTPUT_FILE=.buildkeel/junit.xml`

@@ -1,7 +1,6 @@
 ---
 description: "BuildKeel: Review the work on a unit or change with fresh reviewers: spec compliance by ID, code quality, and tests that try to break it. The active unit by default."
 argument-hint: "[an ID, or a range of commits], e.g. TK-001, CH-012 or main..HEAD; the active unit when left out"
-disable-model-invocation: true
 ---
 
 Review work with the user, by fresh reviewers who did not write it and do not see this conversation. A review changes no code: it finds, and the user decides what to do about each finding.

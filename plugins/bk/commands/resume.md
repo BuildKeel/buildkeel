@@ -1,7 +1,6 @@
 ---
 description: "BuildKeel: Resume paused work: a unit, a change or a thread, by its ID, or pick from what is paused, the most recent first."
 argument-hint: "[nothing, or an ID], e.g. TK-013 or TH-004"
-disable-model-invocation: true
 ---
 
 Resume paused work with the user: a unit or change, where it was left, or a thread, the exploration it holds.

@@ -184,9 +184,9 @@ Claude asks: **Run git init for me** (the default) or **Stop**. With the first, 
 
 The spec tree holds your capability specs and changes.
 
-- **In this repository**, in a `specs/` folder. Choose this for a team with one repository, or to try BuildKeel out.
+- **In this repository**, in a `specs/` folder. Choose this to try BuildKeel out; `/bk:migrate` can move it to its own repository later. Setup lists it first when your repository has no remote, and **A new spec repository** first when it has one.
 - **An existing spec tree**, usually a repository of its own that several code repositories share. Clone it first and give its path. It keeps its own mode and numbering, so setup only registers your repository.
-- **A new spec repository**, a repository of its own for the tree. Give a folder outside this repository, such as `../payments-specs`.
+- **A new spec repository**, a repository of its own for the tree. Give a folder outside this repository, such as `../payments-specs`. With `gh` signed in, setup offers to create it as a private GitHub repository.
 
 See [The spec tree and its artifacts](spec-tree.md).
 
@@ -246,7 +246,7 @@ IDs are always a prefix and a number. A prefix is 1 to 8 capital letters or digi
 Claude shows everything setup will write and asks whether to set up with it. Once you agree, BuildKeel writes the tree's `buildkeel.yaml` and, if you changed the requirement or scenario letters, the two templates. With changed numbering, `buildkeel.yaml` reads:
 
 ```yaml
-format: 4
+format: 5
 mode: spec-driven
 repos:
   - name: payments

@@ -1,6 +1,6 @@
 # Models and effort per role
 
-Each agent BuildKeel starts plays one of ten roles, and every role uses your session's model and effort until you give it a tier. This page shows how to set a model and effort for a role, how tiers work, and what Antigravity does with them.
+Each agent BuildKeel starts plays one of ten roles. The implementer uses your session's model and effort, and every other role, each a check, runs on the standard tier, until you give it another. This page shows how to set a model and effort for a role, how tiers work, and what Antigravity does with them.
 
 ## Before you start
 
@@ -18,15 +18,15 @@ You need a repository where `/bk:init` has been run. Roles and tiers are setting
    - The quality reviewer, after each task: the standard tier: sonnet at medium effort.
    - The final spec reviewer, at finish: inherits the session's model and effort.
    - The final quality reviewer, at finish: inherits the session's model and effort.
-   - Break-it: inherits the session's model and effort.
-   - The readiness readers: inherits the session's model and effort.
-   - Edge-case suggestions: inherits the session's model and effort.
-   - The designers: inherits the session's model and effort.
-   - The note checker: inherits the session's model and effort.
+   - Break-it: the standard tier: sonnet at medium effort.
+   - The readiness readers: the standard tier: sonnet at medium effort.
+   - Edge-case suggestions: the standard tier: sonnet at medium effort.
+   - The designers: the standard tier: sonnet at medium effort.
+   - The note checker: the standard tier: sonnet at medium effort.
    - Principal handoff's round: the principal tier: opus at high effort.
    ```
 
-   An example, with three roles given a tier. Yours shows your own.
+   An example of a team that gave the implementer the principal tier and its final reviewers the session's model. Yours shows your own.
 
 ## 2. Give a role a tier
 
@@ -82,17 +82,17 @@ By default it is the principal tier after 2 rounds.
 | Role | Setting key | What it does, and when | Default |
 |---|---|---|---|
 | The implementer | `implementer` | builds each task | `inherit` |
-| The spec reviewer | `spec-reviewer` | after each task | `inherit` |
-| The quality reviewer | `quality-reviewer` | after each task | `inherit` |
-| The final spec reviewer | `final-spec-reviewer` | at finish | `inherit` |
-| The final quality reviewer | `final-quality-reviewer` | at finish | `inherit` |
-| Break-it | `break-it` | writes tests that try to break the code, in `/bk:build`, `/bk:done` and `/bk:review` | `inherit` |
-| The readiness readers | `readiness-readers` | the readiness check | `inherit` |
-| Edge-case suggestions | `edge-cases` | when a test plan or scenarios are drafted | `inherit` |
-| The designers | `designers` | design options, in `/bk:capture` | `inherit` |
-| The note checker | `note-checker` | checks each drafted working note against its source, at checkpoints and pauses | `inherit` |
+| The spec reviewer | `spec-reviewer` | after each task | `standard` |
+| The quality reviewer | `quality-reviewer` | after each task | `standard` |
+| The final spec reviewer | `final-spec-reviewer` | at finish | `standard` |
+| The final quality reviewer | `final-quality-reviewer` | at finish | `standard` |
+| Break-it | `break-it` | writes tests that try to break the code, in `/bk:build`, `/bk:done` and `/bk:review` | `standard` |
+| The readiness readers | `readiness-readers` | the readiness check | `standard` |
+| Edge-case suggestions | `edge-cases` | when a test plan or scenarios are drafted | `standard` |
+| The designers | `designers` | design options, in `/bk:capture` | `standard` |
+| The note checker | `note-checker` | checks each drafted working note against its source, at checkpoints and pauses | `standard` |
 
-`inherit` is your session's model and effort.
+`inherit` is your session's model and effort; `standard` is sonnet at medium effort in Claude Code, and `flash` in Antigravity.
 
 ## In Antigravity
 

@@ -33,6 +33,17 @@ You install BuildKeel from its marketplace, the public repository each version o
    - **For you, in this repository only.**
 5. If Claude Code says to run `/reload-plugins`, run it, or start a new session.
 
+From a terminal instead, with `--scope user` (for you), `project` (for everyone working in the repository) or `local` (for you, in this repository only):
+
+```sh
+claude plugin marketplace add BuildKeel/buildkeel
+claude plugin install bk@buildkeel --scope user
+```
+
+**Installing is not setting up.** Installing makes BuildKeel's commands available on your machine. Each repository is then set up once with `/bk:init`, which writes its `.buildkeel.yaml` and points it at a spec tree; the people working in it commit that, and nobody runs `/bk:init` there again.
+
+**A teammate, after cloning a repository that is set up,** installs BuildKeel for their own host (Claude Code offers it on its own when it was installed for everyone working in the repository) and, when the spec tree has a repository of its own, clones that too. Nothing else: the repository is set up already.
+
 ## 2. Install in Antigravity
 
 This installs BuildKeel for every project you open in Antigravity.
@@ -133,7 +144,26 @@ Claude Code updates BuildKeel on its own only if you turn that on.
    ```
 
    `@latest` makes npx fetch the newest version rather than run one it has kept from before. For a project install, add `--workspace /path/to/your/project`.
-2. To remove BuildKeel, run `npx buildkeel remove`, with `--workspace /path/to/your/project` for a project install.
+2. To remove BuildKeel, run `npx buildkeel remove`, with `--workspace /path/to/your/project` for a project install. For a project install, it also takes its line out of `.git/info/exclude`, leaving the rest of the file as it was.
+
+### What stays behind
+
+Removing BuildKeel removes the plugin. It leaves your work as it is:
+
+- the spec tree, and `.buildkeel.yaml` in each repository: your work, committed with your code;
+- `.buildkeel/` in each repository: BuildKeel's local state, never committed, which you can delete;
+- `~/.buildkeel/`: your own settings, usage record and claims on this machine, which you can delete;
+- `.git/buildkeel.yaml` and `.git/buildkeel/` in each clone where BuildKeel is kept out of the repository: its pointer and local state, inside git's own folder, never committed;
+- the hook that stamps your own commits, in each repository where it was installed: turn stamping off before removing BuildKeel (ask Claude), or delete `.git/hooks/commit-msg` if BuildKeel wrote it.
+
+To undo setting up a repository as well:
+
+- **Kept out of the repository:** delete `.git/buildkeel.yaml` and `.git/buildkeel/` in each clone. Nothing was committed, so there is nothing else to undo.
+- **Set up in the repository, for the team:** delete `.buildkeel.yaml`, `.buildkeel/` and the `.buildkeel/` line in `.gitignore`, then commit.
+
+### Hearing about new versions
+
+Once a day, BuildKeel asks the npm registry for its latest version number. When there is a newer one, the next session start says so once, with the command to update. It sends nothing about you or your work; to turn it off, see [Personal settings](settings.md#personal-settings).
 
 > **After an update.** If BuildKeel says your spec tree uses an older format, run `/bk:migrate`. It upgrades the tree in one commit, and work in progress carries on. See [Move to Full SDLC, or upgrade a tree](migration.md).
 
@@ -144,14 +174,14 @@ What BuildKeel adds to your sessions, and what to do when something goes wrong.
 ### What it adds to a Claude Code session
 
 - **Commands** starting with `/bk:`.
-- **A local server**, started by Claude Code for the session and stopped with it. Claude reads and changes your spec tree through it. Nothing is sent anywhere.
-- **Hooks** that run when a session starts and when Claude edits a file. They read a small file in `.buildkeel/` in your project and never use the network.
+- **A local server**, started by Claude Code for the session and stopped with it. Claude reads and changes your spec tree through it. Nothing about you or your work is sent anywhere; once a day it asks the npm registry for BuildKeel's latest version number.
+- **Hooks** that run when a session starts, when you send a message and when Claude edits a file. They read small files in `.buildkeel/` in your project and never use the network.
 
 ### What it adds to an Antigravity conversation
 
 - **Commands** starting with `/bk-`.
 - **A rule** that is always on. It tells the agent how to work in a project set up with BuildKeel: change the spec tree only through BuildKeel, add a `BuildKeel-Unit` line to every commit, and put test case IDs in test names.
-- **A local server**, started by Antigravity and stopped with it. The agent reads and changes your spec tree through it. Nothing is sent anywhere.
+- **A local server**, started by Antigravity and stopped with it. The agent reads and changes your spec tree through it. Nothing about you or your work is sent anywhere; once a day it asks the npm registry for BuildKeel's latest version number.
 - **Hooks** that run before each step of the agent and when it edits a file. They read small files in `.buildkeel/` in your project and never use the network. Antigravity has every hook that checks an edit approve or refuse it. So BuildKeel refuses edits to approved records, approves other edits inside the folders open in Antigravity and the agent's own working files, and leaves edits anywhere else for Antigravity to ask you about.
 
 ### If something goes wrong in Claude Code

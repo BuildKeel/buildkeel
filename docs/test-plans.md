@@ -314,7 +314,7 @@ Each line no test ran has two possible answers:
 - **tie it to a test case,** by writing a test or extending one, tagged with the test case it belongs to;
 - **raise it as behavior no spec describes,** when the line does something no requirement asks for, so you can decide whether the spec should say it.
 
-Neither is required: the lines are reported, and the unit can be finished with them listed. The list is kept in the completion record, under `testFirst`, and in the run summary in the unit's `runs/` folder.
+Neither is required: the lines are reported, and the unit can be finished with them listed. The list is kept in the completion record, under `testFirst`, and in the test-run summary in the unit's `test-runs/` folder.
 
 Beside the coverage, finishing shows the TDD evidence, the revert check and the test-file diff, and [mutation testing](tdd.md#mutation-testing), which asks whether the tests would notice if the changed code were wrong.
 

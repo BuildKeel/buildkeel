@@ -203,9 +203,11 @@ Claude then asks: **Run git init for me** (the default) or **Stop**. With the fi
 
 ```text
 Ran git init in /home/ana/payments: it is a git repository now, with no commits yet. Nothing else has been written. Ask the first setup question.
+This repository has no remote: ask where the spec tree lives with **In this repository** first, labeled for trying BuildKeel out, then **A new spec repository** and **An existing spec tree**, and say in a line that /bk:migrate can move the spec tree to a repository of its own later.
+For **A new spec repository**, ask for a folder for it, as usual: gh is not installed or not signed in, so BuildKeel cannot offer to create it on GitHub.
 ```
 
-The last sentence is for Claude: it goes on to the first question. A folder that is already a repository goes straight on, and one already set up stops here, with how to point it at another spec tree.
+The last three sentences are for Claude: it goes on to the first question, with the choices in the order that fits this repository. A repository with a remote puts **A new spec repository** first, and when `gh` is installed and signed in, BuildKeel offers to create it as a private GitHub repository. A folder that is already a repository goes straight on, and one already set up stops here, with how to point it at another spec tree.
 
 ### 1. Where the spec tree lives
 
@@ -477,7 +479,7 @@ Each process below is shown as setup's table and as the `buildkeel.yaml` it writ
 One kind at each stage, every gate blocking. A team that uses the process as it is gets a `buildkeel.yaml` with no process section:
 
 ```yaml
-format: 4
+format: 5
 mode: full-sdlc
 repos:
   - name: payments
@@ -501,7 +503,7 @@ A task's own test plan is recorded as it is saved, not approved.
 The story stage holds three kinds. Features also need a design document, and the templates `templates/feature.md` and `templates/enhancement.md` are settled at setup. A defect someone reports can sit under a user story or a feature, set by `defect.parents`.
 
 ```yaml
-format: 4
+format: 5
 mode: full-sdlc
 repos:
   - name: payments
@@ -547,7 +549,7 @@ A kind's `requires` defaults to its stage's: enhancements need a test plan, as u
 A feature level between epics and stories, a security review required of every epic, and every gate but the lock gate on warn while the team tries BuildKeel out. Setup settles two templates: `templates/feature.md` and `templates/security-review.md`.
 
 ```yaml
-format: 4
+format: 5
 mode: full-sdlc
 repos:
   - name: payments

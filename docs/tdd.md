@@ -116,7 +116,7 @@ Finishing shows the evidence for each test case of the unit, then the checks on 
 
 3. For a test case with no red run, state an exception if one applies (see [step 3](#3-state-an-exception)). For a changed line no test ran or a surviving mutant, write or extend a test, tagged with the test case it belongs to.
 
-The same lines are kept in the completion record, under `testFirst` (see [Finish](finishing-a-unit.md)), and in the run summary written into the unit's `runs/` folder. Changed-line coverage is explained in [Tests and traceability](test-plans.md#changed-line-coverage).
+The same lines are kept in the completion record, under `testFirst` (see [Finish](finishing-a-unit.md)), and in the test-run summary written into the unit's `test-runs/` folder. Changed-line coverage is explained in [Tests and traceability](test-plans.md#changed-line-coverage).
 
 ## How BuildKeel tells
 
@@ -124,7 +124,7 @@ BuildKeel never asks Claude whether a test failed first. It works it out from gi
 
 **Test files** are known by their names and folders: `*.test.*`, `*.spec.*`, `*_test.*` and `test_*.py`, and files under a `test/`, `tests/`, `__tests__/` or `src/test/` folder anywhere in the repository. A file a test report names is a test file too. Add other patterns with `tests.paths`, as in [step 1](#1-turn-tdd-on).
 
-The runs are kept in `.buildkeel/test-evidence.json` in your working tree, never committed. When the unit is finished, and at each task of a change, a summary of them is written into the spec tree, in the unit's `runs/` folder, so the evidence travels: finishing on another machine finds the red runs there.
+The runs are kept in `.buildkeel/test-evidence.json` in your working tree, never committed. When the unit is finished, and at each task of a change, a summary of them is written into the spec tree, in the unit's `test-runs/` folder, so the evidence travels: finishing on another machine finds the red runs there.
 
 ### The red check
 
@@ -243,7 +243,7 @@ The check follows its own mode, whatever the done gate's: with `tdd: block`, it 
 
 ### In Spec-driven
 
-Everything on this page works the same for a change, a defect and an ad-hoc unit: the red runs, the exceptions, the revert check, the test-file diff, coverage and mutation testing. The evidence is reported when the change is finished, and never blocks it. Each time a task is ticked, a summary of the runs so far is saved in the change's `runs/` folder. `checks.tdd: off` turns TDD off:
+Everything on this page works the same for a change, a defect and an ad-hoc unit: the red runs, the exceptions, the revert check, the test-file diff, coverage and mutation testing. The evidence is reported when the change is finished, and never blocks it. Each time a task is ticked, a summary of the runs so far is saved in the change's `test-runs/` folder. `checks.tdd: off` turns TDD off:
 
 ```yaml
 process:
