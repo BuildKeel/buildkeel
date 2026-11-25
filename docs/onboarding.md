@@ -297,4 +297,4 @@ Once a version 0 or a map exists, `/bk:status` shows an **Existing code** sectio
 
 **More:** [Tests and traceability](test-plans.md), [When a requirement changes](change-impact.md), [Move to Full SDLC, or upgrade a tree](migration.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-onboard`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-onboard`.

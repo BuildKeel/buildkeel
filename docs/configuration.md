@@ -12,8 +12,8 @@ You need a repository where `/bk:init` has already been run. If it has not, star
 
 Always start here. It tells you the mode, the process and which switches are on.
 
-1. Open Claude Code or Antigravity in your repository.
-2. Type `/bk:settings` and press Enter. In Antigravity, type `/bk-settings`.
+1. Open Claude Code, Antigravity or Pi in your repository.
+2. Type `/bk:settings` and press Enter. In Antigravity and Pi, type `/bk-settings`.
 3. Read the result. It shows how the repository is set up: the mode, where the spec tree lives, the process or the numbering, every switch with its value and its default, each agent role's model and effort, and each template with where it comes from.
 
    ```text title="/bk:settings"
@@ -107,7 +107,7 @@ All of these sit under `process` in `buildkeel.yaml`.
 | `planning.exploring` | Structured exploring: playback, then two or three approaches | `on` |
 | `planning.design-options` | Fresh agents each propose a design for a shared interface | `ask`, `2` designers |
 | `planning.readiness` | Fresh agents read the plan and list their questions | `ask`, `1` reader |
-| `planning.edge-cases` | A fresh agent proposes missing test cases | `auto` |
+| `planning.edge-cases` | The BuildKeel edge-cases agent proposes missing test cases | `auto` |
 | `planning.build-ready-tasks` | Files, Uses, Delivers and Verify on every task | `on` |
 | `planning.plan-check` | The report when tasks are saved | `on` |
 | `planning.spikes` | Whether spikes can be started | `on` |
@@ -132,7 +132,7 @@ The gates, and the done gate's TDD and review-findings checks in Full SDLC, are 
 
 ## 5. Share it with your team
 
-Settings are committed with the spec tree, so everyone on the team works with the same checks, in Claude Code or in Antigravity.
+Settings are committed with the spec tree, so everyone on the team works with the same checks, in Claude Code, Antigravity or Pi.
 
 1. Commit the change to the spec tree and push it, as you would any other change.
 2. Your teammates get it the next time they pull.
@@ -141,4 +141,4 @@ Three things stay personal and are never shared: whether your own commits are st
 
 **More:** [Process: stages, kinds and documents](process-and-templates.md), [Templates](templates.md), [Feature switches](settings.md), [Models and effort per role](models.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-settings`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-settings`.

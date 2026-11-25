@@ -52,7 +52,7 @@ With no unit or change active, `/bk:pause` keeps the conversation as a thread in
 
 `/bk:resume` brings paused work back where it was left, on this machine or another.
 
-1. Open Claude Code or Antigravity in the repository.
+1. Open Claude Code, Antigravity or Pi in the repository.
    The session report mentions what is paused, and Claude offers it once, in a line, unless your first message is about something else.
 2. Pull the spec tree if Claude offers to.
    If the spec tree was behind its remote at the last fetch, Claude offers to pull it once you turn to work, so that work paused elsewhere is there. Listing what is paused, and resuming, fetch the remote first, so work paused and pushed on another machine after your session began is found; when the spec tree is then behind, Claude offers to pull it.
@@ -129,4 +129,4 @@ Working notes, pause records and threads are in the spec tree, so the team sees 
 
 **More:** [Working notes and threads](working-notes.md), [Notes on the code](heads-up-notes.md), [Build](working-on-a-unit.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-pause`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-pause`.

@@ -4,7 +4,7 @@ BuildKeel has 15 commands. This page gives each one: what it does, what you can 
 
 ## All commands
 
-| Command | What it does | In Antigravity |
+| Command | What it does | In Antigravity and Pi |
 |---|---|---|
 | [/bk:init](#bkinit) | Sets up BuildKeel in this repository, with a new spec tree or an existing one. | `/bk-init` |
 | [/bk:capture](#bkcapture) | Turns what you discussed into a plan: a plain summary, then the artifacts or the change, agreed one by one or all at once. | `/bk-capture` |
@@ -17,6 +17,7 @@ BuildKeel has 15 commands. This page gives each one: what it does, what you can 
 | [/bk:resume](#bkresume) | Resumes paused work, by its ID, or from a list of what is paused, the most recent first. | `/bk-resume` |
 | [/bk:status](#bkstatus) | Shows the overview: the tree, work in progress, claims, gaps and what can be started next. | `/bk-status` |
 | [/bk:settings](#bksettings) | Shows how the repository is set up: the mode, the process and its gates or the numbering, and the templates. | `/bk-settings` |
+| [/bk:models](#bkmodels) | Chooses the model and effort for each of BuildKeel's agents on this host, from the models you can use. | `/bk-models` |
 | [/bk:impact](#bkimpact) | Reviews what a change to an approved artifact or a capability spec affects, one suspect at a time. | `/bk-impact` |
 | [/bk:onboard](#bkonboard) | Documents code from before BuildKeel, area by area. | `/bk-onboard` |
 | [/bk:stats](#bkstats) | Shows your own BuildKeel usage over a period, kept on this machine only. | `/bk-stats` |
@@ -28,7 +29,7 @@ When a command asks a quick choice with nothing to read, such as the pace, it as
 
 A command that asks you something first checks that the repository is set up; when it is not, it says so and names `/bk:init`, and asks nothing.
 
-You can start a command by typing it, or by asking in your own words, such as "let's capture this" or "build the next task": Claude then starts it and says so in a line. Claude never starts one on its own initiative. Four commands start only when you type them, since they approve, finish, set up or migrate: `/bk:approve`, `/bk:done`, `/bk:init` and `/bk:migrate`; asked for one of them in words, Claude asks you to type it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read, and `/bk:pause` when you say words such as "let's stop here", since it saves nothing until you agree. In Claude Code the four are enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
+You can start a command by typing it, or by asking in your own words, such as "let's capture this" or "build the next task": Claude then starts it and says so in a line. Claude never starts one on its own initiative. Five commands start only when you type them, since they approve, finish, set up, migrate or choose your models: `/bk:approve`, `/bk:done`, `/bk:init`, `/bk:migrate` and `/bk:models`; asked for one of them in words, Claude asks you to type it. Claude may run `/bk:status`, `/bk:settings` and `/bk:stats` on its own, since they only read, and `/bk:pause` when you say words such as "let's stop here", since it saves nothing until you agree. In Claude Code the five are enforced; Antigravity has no way to enforce it, so there Claude is told to follow it.
 
 ## /bk:init
 
@@ -205,6 +206,18 @@ To change a setting, edit `buildkeel.yaml` or `templates/` in the spec tree and 
 
 **More:** [Feature switches](settings.md), [Process: stages, kinds and documents](process-and-templates.md), [Templates](templates.md), [Models and effort per role](models.md).
 
+## /bk:models
+
+**What it does.** Chooses the model and effort for each of BuildKeel's agents, on the host you use, from the models you can use there: Fable, Opus, Sonnet or Haiku in Claude Code; the conversation's model, pro or flash in Antigravity; in Pi, the models your keys and subscriptions give you. It asks in six groups: the implementer, the reviewers after each task, the final reviewers, the planning agents, the note checker, and the Principal handoff round. Each question offers the current choice first and "Same as the previous group" next, so Enter keeps going; "Each one separately" asks a group's agents one by one. Then it shows one table and saves it once you agree. `/bk:init` offers the same step at its end.
+
+**What you can type.** Nothing: `/bk:models` takes no arguments. It starts only when you type it.
+
+**Whose choice it is.** Yours: it is kept in your own `~/.buildkeel/settings.yaml`, never committed. A role your team sets in the spec tree's `buildkeel.yaml` is fixed for everyone: it is shown, not asked. See [Models and effort](models.md).
+
+The same in both modes.
+
+**More:** [Models and effort per role](models.md), [Feature switches](settings.md).
+
 ## /bk:impact
 
 **What it does.** Shows what a change makes suspect: work and tests built against an older version of something that has changed since. Claude goes through each suspect with you and records only what you decide: still valid, or needs change.
@@ -294,4 +307,4 @@ The spec tree is already in format 5, the one this version of BuildKeel uses; th
 
 **More:** [Move to Full SDLC, or upgrade a tree](migration.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-review`, `/bk-pause`, `/bk-resume`, `/bk-status`, `/bk-settings`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-init`, `/bk-capture`, `/bk-new`, `/bk-approve`, `/bk-build`, `/bk-done`, `/bk-review`, `/bk-pause`, `/bk-resume`, `/bk-status`, `/bk-settings`, `/bk-models`, `/bk-impact`, `/bk-onboard`, `/bk-stats`, `/bk-migrate`.

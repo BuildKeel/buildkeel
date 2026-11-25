@@ -156,4 +156,4 @@ The copy is not code. It never makes test results stale, and reviews and the che
 
 **More:** [The Learning loop](learning-loop.md), [Reviews and the fix loop](reviews.md), [Records and the audit trail](records.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-approve`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-approve`.

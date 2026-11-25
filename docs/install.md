@@ -1,13 +1,13 @@
 # Install
 
-This page installs BuildKeel in Claude Code or in Antigravity, checks that it works, and shows how to update or remove it. Install it one way, then set up your repository with [Your first change](getting-started.md).
+This page installs BuildKeel in Claude Code, Antigravity or Pi, checks that it works, and shows how to update or remove it. Install it one way, then set up your repository with [Your first change](getting-started.md).
 
 ## Before you start
 
 You need three things on your machine.
 
-- **Claude Code or Antigravity.**
-- **Node.js 20 or later.** It comes with `npx`, which the Antigravity install uses. Check with `node --version`. If it is missing or older, install it from [nodejs.org](https://nodejs.org) or with your version manager (for example `nvm install 20`). BuildKeel tells you if it cannot find a suitable Node.js.
+- **Claude Code, Antigravity or Pi.**
+- **Node.js 20 or later.** It comes with `npx`, which the Antigravity install uses. Pi itself needs Node.js 22.19 or later. Check with `node --version`. If it is missing or older, install it from [nodejs.org](https://nodejs.org) or with your version manager (for example `nvm install 20`). BuildKeel tells you if it cannot find a suitable Node.js.
 - **git.**
 
 ## 1. Install in Claude Code
@@ -63,9 +63,24 @@ Antigravity starts BuildKeel's server once and keeps it running until you quit, 
 
 > **Install it one way, not both.** An install for every project and an install for one project both bring a server named `buildkeel`, and Antigravity runs only one of them.
 
-## 3. Install for one project only
+## 3. Install in Pi
 
-In Claude Code, choose **For everyone working in this repository** or **For you, in this repository only** in [step 4 of the Claude Code install](#1-install-in-claude-code). In Antigravity, you install into the project's folder.
+This installs BuildKeel for you, in every project you open in Pi.
+
+1. In a terminal, run:
+
+   ```sh
+   pi install npm:buildkeel
+   ```
+
+   Pi installs the `buildkeel` package from npm and loads its extension, commands and instructions.
+2. Start Pi in your project, or start a new session.
+
+BuildKeel registers its own server with Pi: nothing is written to your `mcp.json` or to the repository. If you have added a server named `buildkeel` to your own `mcp.json`, Pi uses yours instead, and `/bk-settings` says so.
+
+## 4. Install for one project only
+
+In Claude Code, choose **For everyone working in this repository** or **For you, in this repository only** in [step 4 of the Claude Code install](#1-install-in-claude-code). In Pi, add `-l`: `pi install -l npm:buildkeel` writes it to the project's `.pi/settings.json`, and Pi loads it only once you trust the project (Pi asks the first time you start it there; an install for you needs no trust). In Antigravity, you install into the project's folder.
 
 1. In a terminal, run:
 
@@ -76,7 +91,7 @@ In Claude Code, choose **For everyone working in this repository** or **For you,
    This puts BuildKeel in `.agents/plugins/buildkeel/` inside that project. It also adds that folder to the repository's local ignore file (`.git/info/exclude`), so the folder is never committed and never shows as a change.
 2. Quit Antigravity if it is running, open it again with your project, and start a new conversation.
 
-## 4. Install without npm
+## 5. Install without npm
 
 Each release on [BuildKeel's releases page](https://github.com/BuildKeel/buildkeel/releases) carries the Antigravity package as an archive, `buildkeel-antigravity-<version>.zip`.
 
@@ -93,7 +108,7 @@ Each release on [BuildKeel's releases page](https://github.com/BuildKeel/buildke
 
 To update, do the same with a newer release's archive. To remove it, run `node install.mjs --remove`, with `--workspace /path/to/your/project` for a project install.
 
-## 5. Check that it works
+## 6. Check that it works
 
 Run two checks in a new session or conversation.
 
@@ -110,13 +125,20 @@ In the command menu, press **Tab** to put a command in the prompt and type its i
 
 1. Open a new conversation in the agent panel.
 2. Run `/bk-status`. In a project that is not set up yet, it tells you how to set one up. In a project that is, it shows your spec tree.
-3. Ask "Which BuildKeel tools do you have?". The agent lists twelve, from `get_context` to `resolve_suspect`.
+3. Ask "Which BuildKeel tools do you have?". The agent lists thirteen, from `get_context` to `review`.
 
 BuildKeel's server comes with the plugin, so it is not shown under **Additional options (…) > MCP Servers**, which lists the servers you added yourself.
 
 BuildKeel's commands are all named `/bk-<command>`, such as `/bk-init` and `/bk-build`. Type `/bk` in the agent panel to see them all. A command that takes input, such as `/bk-approve`, asks what you want when you run it on its own. You can also type the input after it, such as `/bk-approve US-001`.
 
-## 6. Update or remove it
+### In Pi
+
+1. Run `/mcp`. The `buildkeel` server is listed as connected, with its tools declared directly.
+2. Run `/bk-status`. In a project that is not set up yet, it tells you how to set one up. In a project that is, it shows your spec tree.
+
+BuildKeel's commands are all named `/bk-<command>`, with descriptions starting with "BuildKeel:". Type `/bk` to see them all, and type the input after a command, such as `/bk-approve US-001`.
+
+## 7. Update or remove it
 
 Update BuildKeel the way you installed it.
 
@@ -146,13 +168,24 @@ Claude Code updates BuildKeel on its own only if you turn that on.
    `@latest` makes npx fetch the newest version rather than run one it has kept from before. For a project install, add `--workspace /path/to/your/project`.
 2. To remove BuildKeel, run `npx buildkeel remove`, with `--workspace /path/to/your/project` for a project install. For a project install, it also takes its line out of `.git/info/exclude`, leaving the rest of the file as it was.
 
+### In Pi
+
+1. To update BuildKeel to the newest version, run this, then start a new session:
+
+   ```sh
+   pi update npm:buildkeel
+   ```
+
+   For a project install, run it in the project. An install pinned to a version, such as `npm:buildkeel@0.7.1`, stays on that version: install it again without the version to follow updates.
+2. To remove BuildKeel, run `pi remove npm:buildkeel` (with `-l` for a project install), then `npx buildkeel remove` in each repository, as on the other hosts.
+
 ### What stays behind
 
 Removing BuildKeel removes the plugin. It leaves your work as it is:
 
 - the spec tree, and `.buildkeel.yaml` in each repository: your work, committed with your code;
 - `.buildkeel/` in each repository: BuildKeel's local state, never committed, which you can delete;
-- `~/.buildkeel/`: your own settings, usage record and claims on this machine, which you can delete;
+- `~/.buildkeel/`: your own settings, usage record and claims on this machine, and in Pi, its agents' sessions and the list of your models, which you can delete;
 - `.git/buildkeel.yaml` and `.git/buildkeel/` in each clone where BuildKeel is kept out of the repository: its pointer and local state, inside git's own folder, never committed;
 - the hook that stamps your own commits, in each repository where it was installed: turn stamping off before removing BuildKeel (ask Claude), or delete `.git/hooks/commit-msg` if BuildKeel wrote it.
 
@@ -184,6 +217,14 @@ What BuildKeel adds to your sessions, and what to do when something goes wrong.
 - **A local server**, started by Antigravity and stopped with it. The agent reads and changes your spec tree through it. Nothing about you or your work is sent anywhere; once a day it asks the npm registry for BuildKeel's latest version number.
 - **Hooks** that run before each step of the agent and when it edits a file. They read small files in `.buildkeel/` in your project and never use the network. Antigravity has every hook that checks an edit approve or refuse it. So BuildKeel refuses edits to approved records, approves other edits inside the folders open in Antigravity and the agent's own working files, and leaves edits anywhere else for Antigravity to ask you about.
 
+### What it adds to a Pi session
+
+- **Commands** starting with `/bk-`, from the package's command files.
+- **The instructions** as a skill, which the agent reads when the work calls for it, and a short section in the system prompt saying where BuildKeel's command files are.
+- **A local server**, registered by BuildKeel's extension and started by Pi. The agent reads and changes your spec tree through it. Nothing about you or your work is sent anywhere; once a day it asks the npm registry for BuildKeel's latest version number.
+- **Hooks** in Pi's own process, at session start, after compaction, when you send a message, and before and after an edit or a shell command. A held edit is stopped with BuildKeel's reason; anything else BuildKeel has to say is added to the tool's result.
+- **Two tools Pi does not have:** `bk_ask`, which asks you a question with choices (Enter takes the first; "Other…" lets you answer in your own words), and `bk_agent`, which starts BuildKeel's agents as separate Pi runs with only their role's tools and their own session files, kept in `~/.buildkeel/pi-agents/`.
+
 ### If something goes wrong in Claude Code
 
 - **"BuildKeel needs Node.js 20 or later"**: install Node.js as in [Before you start](#before-you-start), and start a new session.
@@ -197,6 +238,12 @@ What BuildKeel adds to your sessions, and what to do when something goes wrong.
 - **BuildKeel works in the wrong project**: the agent passes the project's folder to every BuildKeel tool. If it did not, ask it to call the tool again with `workspace` set to your project's folder.
 - **"… exists and is not a BuildKeel plugin; nothing was installed"**: another plugin already uses the folder `buildkeel` there. BuildKeel leaves it alone.
 
+### If something goes wrong in Pi
+
+- **`/bk-status` is not listed**: run `pi list` to check `npm:buildkeel` is installed. For a project install, check that you trusted the project (`/trust`).
+- **The agent has no BuildKeel tools**: run `/mcp`. If the `buildkeel` server failed, check that `node --version` works in the terminal you start Pi from, then run `/reload`.
+- **An agent does not start**: the model given for its role may not be one your keys or subscriptions cover. Run `/bk-models` to choose another, or ask your team if the role is set for everyone.
+
 **More:** [Your first change](getting-started.md), [Troubleshooting](troubleshooting.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`.

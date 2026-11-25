@@ -202,14 +202,15 @@ specs:
 
 The key is the `remote` from the pointer file. This file stays on your machine and is never committed.
 
-## Teams on both hosts
+## Teams on several hosts
 
-One spec tree serves everyone, whichever host each person uses: Claude Code or Antigravity. The tree, its records and the commands are the same in both; only the commands' form differs (`/bk:build` in Claude Code, `/bk-build` in Antigravity). Each person installs BuildKeel for their own host (see [Install](install.md)), and work paused on one host can be resumed on the other.
+One spec tree serves everyone, whichever host each person uses: Claude Code, Antigravity or Pi. The tree, its records and the commands are the same on each; only the commands' form differs (`/bk:build` in Claude Code, `/bk-build` in Antigravity and Pi). Each person installs BuildKeel for their own host (see [Install](install.md)), and work paused on one host can be resumed on another.
 
 A few things differ by host:
 
-- **Commands only you start** (`approve`, `done`, `init` and `migrate`) are enforced in Claude Code. Antigravity cannot block them, so there Claude is told the rule and follows it.
-- **Models and effort:** a tier names a model and an effort for each host. Antigravity has no effort setting for agents, so an effort is ignored there. See [Models and effort per role](models.md).
+- **Commands only you start** (`approve`, `done`, `init`, `migrate` and `models`) are enforced in Claude Code. Antigravity and Pi cannot block them, so there the agent is told the rule and follows it.
+- **Models and effort:** a tier names a model and an effort for each host, and each person can choose their own with `/bk:models`. Antigravity's agents take only the session's model, `pro` or `flash`, and no effort; Pi's take any model your keys give, with a thinking level. See [Models and effort per role](models.md).
+- **Agents:** Claude Code and Antigravity start BuildKeel's agents themselves; Pi has no agents, so BuildKeel brings a tool that starts each as a separate Pi run, with only its role's tools.
 - **Completion records** note the host the work was finished on.
 
 ## Format versions
@@ -497,4 +498,4 @@ ids:
 
 **More:** [Spec-driven mode in depth](how-spec-driven-works.md), [Full SDLC mode in depth](how-full-sdlc-works.md), [Records and the audit trail](records.md), [Process: stages, kinds and documents](process-and-templates.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`.

@@ -302,4 +302,4 @@ The design document's template is on [Process: stages, kinds and documents](proc
 
 **More:** [Change your configuration](configuration.md), [Process: stages, kinds and documents](process-and-templates.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-settings`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-settings`.

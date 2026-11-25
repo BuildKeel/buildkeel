@@ -117,7 +117,7 @@ Call `query` with `view: "settings"` once, before the first agent: its part "To 
 For each task:
 
 1. **Its view.** Call `get_context` with `role: "implementer"` and the unit's `id`; in a change, also its `task` number. It holds the task's context, what the tasks before it built, and the working notes and rulings.
-2. **Start the implementer** with that view as it is: it holds every ruling saved so far. Give it nothing else: not the whole plan and not this conversation. If the agent fails to start, stop the run, say so with the reason, and offer to go on here (the default).
+2. **Start the implementer,** saying the implementer line the settings view gives, with that view as it is: it holds every ruling saved so far. Give it nothing else: not the whole plan and not this conversation. If the agent fails to start, stop the run, say so with the reason, and offer to go on here (the default).
 3. **Take its status.** It ends with one of these:
    - **finished:** go on to the review.
    - **finished with concerns:** show the concerns in a line each. A concern about what was agreed stops the run, as "Behavior that looks wrong" says; otherwise go on to the review, and name them again at the end of the run.
@@ -125,7 +125,7 @@ For each task:
    - **blocked:** stop the run, show the reason, and ask the user how to go on.
 4. **Check its work** before the review: its commits carry the unit's line (and in a change, the task's), and its test runs are recorded. Call `test_results` with no report: if the task's tests have no current passing result, run them and record the report yourself, once.
 
-Keep the ID each agent's start gives (Claude Code), or its conversation or name (Antigravity), with its role and round: the execution record needs them.
+Keep the ID each agent's start gives, or, where the host gives none, its conversation or name, with its role and round: the execution record needs them.
 
 A run in fresh agents goes from records, not from memory: the ticks, completion records, test runs, rulings and commits. When a run is stopped or the conversation is compacted, /bk:build on the same parent or change goes on from the first unit not finished or task not ticked.
 
@@ -168,7 +168,7 @@ Each task is reviewed once it is built, whether it was built in a fresh agent or
 A review is done by three fresh agents: the spec reviewer, the quality reviewer and the break-it agent. None of them is the agent that wrote the code, and none sees this conversation.
 
 1. **The packages.** Call `review` with `action: "input"`, the `id` (and in a change, the `task` when one task is reviewed), and the `kind` of this review: `kind: "after-task"` in a run, `kind: "final"` at finishing, `kind: "on-demand"` when the user asks. It says which reviewers to start, and only those: each reviewer that is switched on, and at finishing only the commits since the last review, with one spec-compliance review of the whole change when its tasks were reviewed in a run. It writes each one's package, the diff and the reviewer's view, to a folder, and prepares the break-it agent's worktree when break-it runs. When it says nothing is to be reviewed, review nothing, and say so in a line, with why.
-2. **The reviewers.** Call `query` with `view: "settings"`, if you have not in this conversation: it names the agent to start for each role, with the model and effort to pass on this host. Start the reviewers the input names: after a task, the spec reviewer and the quality reviewer; at finishing, the final spec reviewer and the final quality reviewer; and the break-it agent. Give each the folder the input names for it and nothing else, and the break-it agent its worktree too. They can run at the same time.
+2. **The reviewers.** Call `query` with `view: "settings"`, if you have not in this conversation: it names the agent to start for each role, with the model and effort to pass on this host. Start the reviewers the input names, saying the reviewers' line the settings view gives: after a task, the spec reviewer and the quality reviewer; at finishing, the final spec reviewer and the final quality reviewer; and the break-it agent. Give each the folder the input names for it and nothing else, and the break-it agent its worktree too. They can run at the same time.
 3. **Record each report as it is,** with `review`, `action: "record"`, the same `id` (and `task`), the `reviewer` (spec, quality or break-it), the `kind` of this review, and the report's lists: its verdicts, findings, proposed additions, what was done well and its verdict, or the break-it agent's failing tests. Never change a finding's severity or wording.
 4. **When a reviewer cannot be started,** follow "When agents can't be started": review it here, as each reviewer's instructions would, and record each report with `by: "author"`. Say in a line that it was reviewed by the author, so it does not count as an independent review.
 5. **Answer each finding.** Check it against the code first: never accept a finding only because a reviewer made it. Then answer it with `review`, `action: "answer"` and the `finding`'s ID:

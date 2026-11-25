@@ -1,6 +1,6 @@
 # Reviews and the fix loop
 
-Code is reviewed by three fresh agents, none of which wrote it or sees the conversation that built it: the spec reviewer, the quality reviewer and the break-it agent. Reviewers change nothing, and each finding they make is recorded and stays open until it is fixed, parked as a defect, or rejected with evidence.
+Code is reviewed by three fresh agents, none of which wrote it or sees the conversation that built it: the spec reviewer, the quality reviewer and the break-it agent. Reviewers change nothing, and each finding they make is recorded and stays open until it is fixed, parked as a defect, or rejected with evidence. When they start, Claude says so in one line, naming them as BuildKeel's agents, such as "Reviewing TK-001 with BuildKeel's spec-reviewer, quality-reviewer and break-it agents." In Pi, which has no agents of its own, BuildKeel starts them with its own agent tool.
 
 ## 1. Let /bk:done review
 
@@ -196,4 +196,4 @@ A review by the author is not an independent review. It does not count as the fi
 
 **More:** [Finish](finishing-a-unit.md), [Build](working-on-a-unit.md), [TDD evidence](tdd.md), [Models and effort per role](models.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-review`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-review`.

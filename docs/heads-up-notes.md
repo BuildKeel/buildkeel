@@ -97,4 +97,4 @@ Each note on the code is kept in the spec tree, in `code-notes/` under its ID, o
 
 **More:** [Working notes and threads](working-notes.md), [Ask why the code is the way it is](looking-back.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-build`.

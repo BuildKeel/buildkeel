@@ -62,9 +62,9 @@ When a change's tasks are all ticked already, Claude says so and that you can fi
 
 ### Fresh agents
 
-A fresh agent is a separate agent that starts with only one task's context, does the work, and reports back. Your conversation stays in charge of the run: it starts each agent, checks what it did, has the task reviewed, and finishes it (Full SDLC) or ticks it (Spec-driven). An agent never finishes, ticks or approves anything.
+A fresh agent is a separate agent that starts with only one task's context, does the work, and reports back. Your conversation stays in charge of the run: it starts each agent, checks what it did, has the task reviewed, and finishes it (Full SDLC) or ticks it (Spec-driven). An agent never finishes, ticks or approves anything. As each one starts, Claude says so in one line, such as "Building TK-001 with the BuildKeel implementer agent."
 
-A fresh agent sees only what it needs, so a long run does not fill one conversation, and each task is built without the history of the ones before it. BuildKeel ships its agents with the plugin, for Claude Code and for Antigravity: there is nothing to install or turn on.
+A fresh agent sees only what it needs, so a long run does not fill one conversation, and each task is built without the history of the ones before it. BuildKeel ships its agents with the plugin, for Claude Code, Antigravity and Pi: there is nothing to install or turn on. Pi has no agents of its own, so there BuildKeel starts each as a separate Pi run, with only its role's tools.
 
 The default is **Fresh agent per task**, set with `runs.build` in `buildkeel.yaml`: `fresh-agents` or `here`. It only decides which choice comes first: the other is always offered too. See [Feature switches](settings.md).
 
@@ -537,7 +537,7 @@ BuildKeel: src/billing/invoice.ts is outside the areas TK-001 relates to so far 
 - Tests are never outside the scope, wherever the project keeps them.
 - While no area is known, as for the first task under a new story when neither names a scope, nothing is said. The areas grow as the work is committed.
 - A story that describes code from before BuildKeel names the paths it covers, so the first task under it is warned about work elsewhere before it has any code of its own.
-- In Antigravity, the note reaches the agent right before its next step.
+- In Antigravity, the note reaches the agent right before its next step. In Pi, it comes with the edit's result.
 
 ### Sessions
 
@@ -572,6 +572,8 @@ Antigravity tells BuildKeel about each step of the agent rather than about sessi
 - **Each new message** in a conversation adds only what changed since the last report, such as a unit that was started or finished. When nothing changed, nothing is added. A conversation reopened later keeps its history, so nothing is loaded again.
 - **After Antigravity compacts a conversation**, the report and the context come back. BuildKeel sees the compaction in the conversation's record that Antigravity keeps. If that record cannot be read, each new message is reminded of the active unit instead, and the agent loads its context again when it needs it.
 
+Pi has session events of its own, like Claude Code: the report and the active unit's context come before the model's next reply at a session's start and after Pi compacts it.
+
 What BuildKeel remembers about each conversation is kept in `.buildkeel/conversations/` in the working tree.
 
 ### Freshness
@@ -580,4 +582,4 @@ When a session starts, BuildKeel fetches the spec repo's remote in the backgroun
 
 **More:** [Finish](finishing-a-unit.md), [Reviews and the fix loop](reviews.md), [TDD evidence](tdd.md), [Models and effort per role](models.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-build`.

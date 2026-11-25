@@ -4,7 +4,7 @@ This page sets up BuildKeel in a repository and walks through a first piece of w
 
 ## Before you start
 
-You need BuildKeel installed in Claude Code or Antigravity. See [Install](install.md).
+You need BuildKeel installed in Claude Code, Antigravity or Pi. See [Install](install.md).
 
 ## 1. Set up a repository
 
@@ -161,4 +161,4 @@ To draft one artifact at a time instead, use `/bk:new`, such as `/bk:new change`
 
 **More:** [Choose a mode](modes.md), [Start on existing code](onboarding.md), [Spec-driven mode in depth](how-spec-driven-works.md), [Full SDLC mode in depth](how-full-sdlc-works.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-init`.

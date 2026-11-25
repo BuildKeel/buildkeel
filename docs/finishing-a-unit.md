@@ -97,7 +97,7 @@ In Full SDLC, recording the test results says the same once every test case that
 BuildKeel: CH-002 "Reset links expire" is not finished: tell the user to run /bk:done before merging. The command goes ahead.
 ```
 
-In Claude Code a hook adds this before the command runs. Antigravity cannot add a note before a command, so there the agent is told right after the command ran, at its next step, and its instructions also ask it to remind you before it pushes. A push you make in a terminal gets no reminder.
+In Claude Code a hook adds this before the command runs. Antigravity cannot add a note before a command, so there the agent is told right after the command ran, at its next step; in Pi, the note comes with the command's result; and its instructions also ask it to remind you before it pushes. A push you make in a terminal gets no reminder.
 
 ## 3. Run /bk:done
 
@@ -467,4 +467,4 @@ A change's completion record has the fields of [The completion record](#the-comp
 
 **More:** [Build](working-on-a-unit.md), [Records and the audit trail](records.md), [Reviews and the fix loop](reviews.md), [TDD evidence](tdd.md), [Tests and traceability](test-plans.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-done`.

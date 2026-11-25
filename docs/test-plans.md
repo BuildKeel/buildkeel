@@ -365,4 +365,4 @@ Changed-line coverage works the same way for a change.
 
 **More:** [TDD evidence](tdd.md), [Finish](finishing-a-unit.md), [When a requirement changes](change-impact.md), [Status and usage](status.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-new`, `/bk-approve`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-new`, `/bk-approve`.

@@ -258,4 +258,4 @@ Changed-line coverage is on by default in both modes, and `checks.coverage: off`
 
 **More:** [Tests and traceability](test-plans.md), [Reviews and the fix loop](reviews.md), [Finish](finishing-a-unit.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-done`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-done`.

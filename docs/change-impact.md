@@ -220,4 +220,4 @@ Anything not decided becomes suspect once the change is archived, and the status
 
 **More:** [Tests and traceability](test-plans.md), [Finish](finishing-a-unit.md), [Status and usage](status.md), [Records and the audit trail](records.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-impact`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-impact`.

@@ -156,4 +156,4 @@ Working notes, pause records and threads are in the spec tree, so the team sees 
 
 **More:** [Pause, resume and hand over](pausing-and-resuming.md), [Ask why the code is the way it is](looking-back.md), [Talk it through and explore](exploring.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-pause`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-pause`.

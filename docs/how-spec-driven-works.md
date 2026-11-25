@@ -332,10 +332,10 @@ TDD is reported when a change is finished, or off, and review findings are repor
 
 Each of the ten roles an agent plays, from the implementer to the note checker, runs with the session's model and effort (`inherit`) unless you give it a tier. Two tiers are ready to use, and you can change them or add your own under `agents.tiers`:
 
-| Tier | Claude Code | Antigravity |
-|---|---|---|
-| standard | Sonnet at medium effort | `flash` |
-| principal | Opus at high effort | the conversation's model |
+| Tier | Claude Code | Antigravity | Pi |
+|---|---|---|---|
+| standard | Sonnet at medium effort | `flash` | the session's model, thinking `medium` |
+| principal | Opus at high effort | the conversation's model | the session's model, thinking `high` |
 
 ```yaml
 process:
@@ -346,7 +346,7 @@ process:
     handoff: { tier: careful, after: 2 }
 ```
 
-Antigravity has no effort setting for agents, so an effort there is ignored, and `/bk:settings` says so. See [Models and effort per role](models.md).
+Antigravity has no effort setting for agents, so an effort there is ignored, and `/bk:settings` says so. Each person can also choose their own models with `/bk:models`, for the roles the team leaves open. See [Models and effort per role](models.md).
 
 ### The read-only copy
 
@@ -363,4 +363,4 @@ A setting you leave out takes its default, and one that cannot be read keeps its
 
 **More:** [The spec tree and its artifacts](spec-tree.md), [Capture a plan](capture.md), [Finish](finishing-a-unit.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-init`.

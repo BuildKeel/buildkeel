@@ -20,7 +20,7 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 - **Conversation comes first.** Until you run a command, or Claude is about to change a file, Claude talks as it would without BuildKeel: no stages, IDs or commands, beyond one offer to capture when the discussion has reached a point. It checks facts in the code before asking, and lays out options for a design choice. See [Talk it through and explore](exploring.md).
 - **Reviews in the conversation.** Anything you are asked to agree, such as a summary, a plan, a document or what finishing will write, is shown in full in the reply. Agreement saves it. Anything else is feedback, answered point by point, with the final version shown before saving.
 - **One topic at a time.** Setup, migration and onboarding ask one topic per message, with the default first. They assume nothing you did not say, and show everything before writing.
-- **Commands start when you ask.** Claude starts a guided flow, such as capture or build, when you ask for it in your own words or type its command, never on its own initiative. Four commands start only when you type them: `/bk:approve`, `/bk:done`, `/bk:init` and `/bk:migrate`. Claude runs the commands that only read (`/bk:status`, `/bk:settings`, `/bk:stats`) on its own. Claude Code enforces the four; in Antigravity, Claude is told the rule. See [Commands](commands.md).
+- **Commands start when you ask.** Claude starts a guided flow, such as capture or build, when you ask for it in your own words or type its command, never on its own initiative. Five commands start only when you type them: `/bk:approve`, `/bk:done`, `/bk:init`, `/bk:migrate` and `/bk:models`. Claude runs the commands that only read (`/bk:status`, `/bk:settings`, `/bk:stats`) on its own. Claude Code enforces the five; in Antigravity and Pi, the agent is told the rule. See [Commands](commands.md).
 - **Ticks reported, not asked.** A task is ticked when its check passes, and Claude says so in a line, without asking.
 - **Reminders to finish.** A reminder to run `/bk:done` when the work looks finished, or after a push, a pull request or a merge while a unit is active. It never blocks.
 - **Freshness warnings.** The spec tree's remote is fetched in the background, and you are warned when the tree is behind as you start, approve or finish work. See [Build](working-on-a-unit.md).
@@ -101,7 +101,7 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 #### Platform
 
 - **Plain files you own.** The spec tree is markdown files in a git repository or folder. Every record is a new file, so branches merge without conflict. See [The spec tree and its artifacts](spec-tree.md).
-- **Two hosts.** Claude Code and Antigravity, with the same tools, records and commands. Teams can mix hosts on one tree. See [The spec tree and its artifacts](spec-tree.md).
+- **Three hosts.** Claude Code, Antigravity and Pi, with the same tools, records and commands. Teams can mix hosts on one tree. See [The spec tree and its artifacts](spec-tree.md).
 - **Data stays in your repositories.** No artifact content, code or usage is sent to any service. The network calls are git against your remotes, optional GitHub CLI lookups, and once a day a request to the npm registry for BuildKeel's latest version number, which sends nothing about you or your work and can be turned off.
 
 ### Full SDLC only
@@ -165,4 +165,4 @@ Each part starts with what works the same in both modes, then what is Full SDLC 
 
 - **Parallel runs.** Independent tasks built at the same time, each in its own worktree, then merged one after another with the tests run again. `runs.parallel`, 3 by default; 1 turns it off. See [Build](working-on-a-unit.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-capture`.

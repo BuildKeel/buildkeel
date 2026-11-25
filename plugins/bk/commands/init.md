@@ -89,4 +89,8 @@ Only when the user confirms, call `manage` again with the same values (the same 
 
 For a Spec-driven tree, new or existing, the result asks it. Ask **Guide me through my first change** (the default) or **Jump right in**, and record the answer with `manage`, `action: "guide"`, `guide: "on"` or `"off"`.
 
+## 10. Models for the agents
+
+Last, and optional: offer to choose the models for BuildKeel's agents. Call `query` with `view: "models"`, and ask, with your tool for asking a question with choices, as its last line says: **Keep the defaults** first, then **Choose models now**; where the result says choosing comes first (on Pi), **Choose models now** first. If the user chooses models, go on as /bk:models does. Keeping the defaults changes nothing.
+
 Do not create or edit any BuildKeel files yourself; the `manage` tool does all of it. If `manage` reports a problem, show it with its fix and ask how to continue.

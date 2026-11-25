@@ -6,7 +6,7 @@ Most work starts as a conversation. This page shows how to think an idea through
 
 BuildKeel stays out of the conversation until you want structure.
 
-1. Open Claude Code or Antigravity in your repository.
+1. Open Claude Code, Antigravity or Pi in your repository.
 2. Talk the idea through as you would without BuildKeel: what it is for, the options, the design, the code it touches.
    Claude brings up no stages, IDs or commands. It mentions no BuildKeel structure until you signal the discussion has reached a point.
 3. Let Claude check facts as you go.
@@ -43,4 +43,4 @@ Some questions are cheaper to answer by trying than by discussing, such as wheth
 
 **More:** [Capture a plan](capture.md), [Working notes and threads](working-notes.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-capture`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-capture`.

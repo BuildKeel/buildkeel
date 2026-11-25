@@ -12,7 +12,8 @@ What to do when BuildKeel does not work as you expect, and the known limits to p
    In a project that is not set up yet, it tells you how to set one up. In a project that is, it shows your spec tree.
 3. In Antigravity, start a new conversation in the agent panel and run `/bk-status`.
 4. In Antigravity, ask "Which BuildKeel tools do you have?".
-   The agent lists twelve, from `get_context` to `resolve_suspect`. BuildKeel's server comes with the plugin, so it is not shown under **Additional options (…) > MCP Servers**, which lists the servers you added yourself.
+   The agent lists thirteen, from `get_context` to `review`. BuildKeel's server comes with the plugin, so it is not shown under **Additional options (…) > MCP Servers**, which lists the servers you added yourself.
+5. In Pi, run `/mcp` and `/bk-status`. The `buildkeel` server is listed as connected.
 
 ### "BuildKeel needs Node.js 20 or later"
 
@@ -20,6 +21,7 @@ What to do when BuildKeel does not work as you expect, and the known limits to p
 2. If Node.js is missing or older than 20, install it from [nodejs.org](https://nodejs.org) or with your version manager, for example `nvm install 20`.
 3. In Claude Code, start a new session.
 4. In Antigravity, run the install command again, then quit and reopen Antigravity.
+5. In Pi, start a new session.
 
 ### The `buildkeel` server is not connected in `/mcp`
 
@@ -321,4 +323,4 @@ A test belongs to a test case or scenario because its name, or the line it is on
 
 **More:** [What BuildKeel does not do](does-not-do.md), [Install](install.md), [Status and usage](status.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`.

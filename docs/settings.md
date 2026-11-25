@@ -171,13 +171,17 @@ These are each person's own, kept on their machine, and never in `buildkeel.yaml
 - **Usage stats.** A record on your machine of what BuildKeel did for you. `/bk:stats off` stops it, `/bk:stats on` starts it again, and `/bk:stats delete` and `/bk:stats export` delete or export it. See [Status and usage](status.md).
 - **The guided first change.** In a Spec-driven tree, setup asks whether to be guided through your first change. Tell Claude to stop or start explaining at any time.
 - **What an edit with no unit active does (`code-edits`).** `hold` waits until a unit is started; `warn` lets the edit go ahead and says once that it belongs to no unit. The default is `warn` in Spec-driven mode and `hold` in Full SDLC. See [Working on a unit](working-on-a-unit.md).
+- **Models for BuildKeel's agents (`agents`).** The model and effort of each agent role on each host you use, chosen with `/bk:models`. A role the team sets in `buildkeel.yaml` is fixed for everyone, and your choice for it is ignored. See [Models and effort per role](models.md).
 - **The new-version check (`update-check`).** Once a day, BuildKeel asks the npm registry for its latest version number, and a session start shows a newer one once, with the command to update. It sends nothing about you or your work. On by default; `update-check: off` turns it off, and so does the environment variable `BUILDKEEL_NO_UPDATE_CHECK=1`, for CI and machines that stay offline.
 
-`code-edits` and `update-check` are kept in `~/.buildkeel/settings.yaml`:
+`code-edits`, `update-check` and `agents` are kept in `~/.buildkeel/settings.yaml`:
 
 ```yaml
 code-edits: warn
 update-check: on
+agents:
+  claude-code:
+    spec-reviewer: { model: haiku, effort: low }
 ```
 
 A team can lock `code-edits` for everyone in a tree, in its `buildkeel.yaml`; your own setting then has no effect there. The version check cannot be locked: it is each person's own choice.
@@ -206,4 +210,4 @@ Each check reads the switches noted when the work started. A unit started with T
 
 **More:** [Change your configuration](configuration.md), [Models and effort per role](models.md), [Features](what-buildkeel-does.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-settings`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-settings`.

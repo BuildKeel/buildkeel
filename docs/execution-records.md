@@ -72,7 +72,7 @@ usage:
   usage: { input: 128000, output: 30100, cache-read: 905000, cache-write: 61000 }
 ```
 
-When a session's tokens could not be read, the total leaves it out and names it, with why. Cost is never stored, only token counts. Claude Code records cache writes; Antigravity does not, and an older Antigravity records no token counts at all.
+When a session's tokens could not be read, the total leaves it out and names it, with why. Cost is never stored, only token counts. Claude Code and Pi record cache writes; Antigravity does not, and an older Antigravity records no token counts at all.
 
 ## 4. Read the analytics files
 
@@ -101,4 +101,4 @@ Rebuilt analytics/runs.jsonl (14 lines, one per execution record) and analytics/
 
 **More:** [Build](working-on-a-unit.md), [Records and the audit trail](records.md), [Models and effort per role](models.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-build`.

@@ -4,7 +4,7 @@ User documentation, kept beside the code it describes.
 
 ## Get started
 
-- [Install](install.md): installing in Claude Code or Antigravity, for one project only or without npm, checking it works, updating and removing, and what to do when something goes wrong.
+- [Install](install.md): installing in Claude Code, Antigravity or Pi, for one project only or without npm, checking it works, updating and removing, and what to do when something goes wrong.
 - [Your first change](getting-started.md): setting up a repository with /bk:init, what each question means, the files it adds, checking the result, and a first piece of work in each mode.
 - [Choose a mode](modes.md): which mode to choose, what each holds, the two side by side, the same work in each, setting the mode, one mode per tree, and moving to Full SDLC.
 - [Start on existing code](onboarding.md): documenting existing code as work touches it or area by area with /bk:onboard, the baseline, version 0, kept sources, onboarded numbers, finished work and old commits, existing tests, and filling in later.
@@ -39,7 +39,7 @@ User documentation, kept beside the code it describes.
 - [Process: stages, kinds and documents](process-and-templates.md): setting up the process, changing it later, the default chain, the documents a stage requires, the design document, stages, kinds and ID prefixes, gate modes and task plans, and what is checked before approval.
 - [Templates](templates.md): replacing a template, adding one for a new stage, kind or document, rules per type, organization templates pinned to a version with local overrides and upgrades, and how a template is built.
 - [Feature switches](settings.md): every switch with its values, default and mode, what each does, personal settings, turning a feature off or on, and the switches each record notes.
-- [Models and effort per role](models.md): the ten roles, tiers, giving a role a tier, Principal handoff, and what Antigravity ignores.
+- [Models and effort per role](models.md): the ten roles, tiers, giving a role a tier, Principal handoff, choosing your own with /bk:models, and what Antigravity and Pi do with them.
 - [Move to Full SDLC, or upgrade a tree](migration.md): upgrading a tree in an older format, the area-by-area move to Full SDLC with /bk:migrate, and what holds after the switch.
 
 ## How it is organised

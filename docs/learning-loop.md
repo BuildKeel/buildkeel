@@ -63,4 +63,4 @@ Each pattern shown is one never declined, or one with a new record added since i
 
 **More:** [The playbook](glossary-practices-adrs.md), [Notes on the code](heads-up-notes.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`.

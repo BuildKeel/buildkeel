@@ -187,4 +187,4 @@ The move goes one way: a Full SDLC tree cannot become Spec-driven.
 
 **More:** [Spec-driven mode in depth](how-spec-driven-works.md), [Full SDLC mode in depth](how-full-sdlc-works.md), [Move to Full SDLC, or upgrade a tree](migration.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-migrate`.

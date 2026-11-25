@@ -443,10 +443,10 @@ process:
 
 **Agents.** Each of the ten roles an agent plays, from the implementer to the note checker, runs with the session's model and effort (`inherit`) unless you give it a tier. Two tiers are ready to use, and you can change them or add your own under `agents.tiers`:
 
-| Tier | Claude Code | Antigravity |
-|---|---|---|
-| standard | Sonnet at medium effort | `flash` |
-| principal | Opus at high effort | the conversation's model |
+| Tier | Claude Code | Antigravity | Pi |
+|---|---|---|---|
+| standard | Sonnet at medium effort | `flash` | the session's model, thinking `medium` |
+| principal | Opus at high effort | the conversation's model | the session's model, thinking `high` |
 
 ```yaml
 process:
@@ -457,7 +457,7 @@ process:
     handoff: { tier: careful, after: 2 }
 ```
 
-Antigravity has no effort setting for agents, so an effort there is ignored, and `/bk:settings` says so. See [Models and effort per role](models.md).
+Antigravity has no effort setting for agents, so an effort there is ignored, and `/bk:settings` says so. Each person can also choose their own models with `/bk:models`, for the roles the team leaves open. See [Models and effort per role](models.md).
 
 **The read-only copy.** BuildKeel keeps a copy of the team's glossary, practices and accepted ADRs in each code repository, so they are read with the code. Its paths are set in that repository's `.buildkeel.yaml`, and default to:
 
@@ -768,4 +768,4 @@ Validation never changes anything.
 
 **More:** [Capture a plan](capture.md), [The spec tree and its artifacts](spec-tree.md), [Records and the audit trail](records.md), [Process: stages, kinds and documents](process-and-templates.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-approve`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-approve`.

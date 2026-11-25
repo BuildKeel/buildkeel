@@ -337,4 +337,4 @@ What a template holds, and how to change one, is on [Templates](templates.md).
 
 **More:** [Change your configuration](configuration.md), [Templates](templates.md), [Full SDLC mode in depth](how-full-sdlc-works.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-init`.

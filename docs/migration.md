@@ -177,4 +177,4 @@ The capability specs, archived changes and the conversion's record stay in the t
 
 **More:** [Choose a mode](modes.md), [Full SDLC mode in depth](how-full-sdlc-works.md), [Start on existing code](onboarding.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-migrate`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-migrate`.

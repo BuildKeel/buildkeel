@@ -6,7 +6,7 @@
 
 The overview shows the tree with each artifact's state, the work in progress, what is missing, what is not shared yet, and what can be started next. It changes nothing.
 
-1. Open Claude Code or Antigravity in your repository.
+1. Open Claude Code, Antigravity or Pi in your repository.
 2. Run `/bk:status`.
 
    ```text title="/bk:status"
@@ -330,4 +330,4 @@ The record is kept in `~/.buildkeel/usage/`, one file per spec tree, outside eve
 
 **More:** [Records and the audit trail](records.md), [The Learning loop](learning-loop.md), [When a requirement changes](change-impact.md), [Feature switches](settings.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`, `/bk-stats`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`, `/bk-stats`.

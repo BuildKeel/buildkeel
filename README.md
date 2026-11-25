@@ -1,4 +1,4 @@
-# BuildKeel for Claude Code and Antigravity
+# BuildKeel for Claude Code, Antigravity and Pi
 
 BuildKeel keeps your specs, tests and code connected, and gives your coding agent that picture before it writes anything. It works in one of two modes, chosen for each spec tree:
 
@@ -22,6 +22,12 @@ You need Node.js 20 or later, and git.
 
 ```sh
 npx buildkeel install
+```
+
+**Pi:** run this in a terminal, then start Pi in your project.
+
+```sh
+pi install npm:buildkeel
 ```
 
 For installing in one project only, updating and removing, see [Install](docs/install.md).
@@ -56,11 +62,11 @@ Business Idea → Epic → User Story → Task → Test cases → Code
 
 One spec tree can serve many code repositories, or sit in a folder of a single repository.
 
-The plugin needs no server and no account. It works with git and your coding agent, Claude Code or Antigravity, and nothing leaves your repositories.
+The plugin needs no server and no account. It works with git and your coding agent, Claude Code, Antigravity or Pi, and nothing leaves your repositories.
 
 ## Commands
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead of a colon: `/bk-init`, `/bk-build` and so on.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen instead of a colon: `/bk-init`, `/bk-build` and so on.
 
 | Command | What it does |
 |---|---|
@@ -76,6 +82,7 @@ Commands are shown in Claude Code's form. In Antigravity, use a hyphen instead o
 | `/bk:resume` | Resume paused work, by its ID, or pick from what is paused, the most recent first |
 | `/bk:status` | Show the tree, work in progress, coverage gaps, what is not pushed and what to do next |
 | `/bk:settings` | Show how the repository is set up: the mode, the process and its gates or the numbering, every feature switch, and the templates |
+| `/bk:models` | Choose the model and effort for each of BuildKeel's agents, from the models you can use |
 | `/bk:impact` | Show what a change affects and resolve it |
 | `/bk:stats` | Show your own usage, kept on your machine |
 | `/bk:migrate` | Move a Spec-driven tree to Full SDLC, or upgrade a spec tree to a newer format |

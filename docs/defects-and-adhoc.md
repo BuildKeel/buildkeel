@@ -258,4 +258,4 @@ The file of a defect or ad-hoc unit is committed on the branch that is checked o
 
 **More:** [Build](working-on-a-unit.md), [Finish](finishing-a-unit.md), [Spec-driven mode in depth](how-spec-driven-works.md), [Full SDLC mode in depth](how-full-sdlc-works.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-build`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-build`.

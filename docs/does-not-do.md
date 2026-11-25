@@ -11,7 +11,7 @@ The limits BuildKeel keeps on purpose, so you can plan around them. Each says wh
 ## Other tools
 
 - **No connectors of its own.** BuildKeel does not connect to other requirement or test management tools. Their content comes in through tools Claude can already read, such as your issue tracker through a tool you connected to Claude, a file, or the conversation, and is fitted to your templates, in drafting and in onboarding. See [Capture a plan](capture.md) and [Start on existing code](onboarding.md).
-- **Two hosts only.** BuildKeel runs in Claude Code and Antigravity. See [Install](install.md).
+- **Three hosts only.** BuildKeel runs in Claude Code, Antigravity and Pi. See [Install](install.md).
 - **It does not measure coverage.** Your test run writes the coverage report, and BuildKeel reads it. See [Tests and traceability](test-plans.md).
 
 ## Enforcement
@@ -19,7 +19,7 @@ The limits BuildKeel keeps on purpose, so you can plan around them. Each says wh
 - **It is not a security boundary.** Its hooks and gates keep Claude to the team's process. They do not protect files or code from a person or a tool that sets out to change them.
 - **It does not stop edits made with other tools.** A file can always be changed with another editor, or by a shell command, which BuildKeel's edit checks do not see. It detects such changes instead: an approved version that no longer matches the hash in its approval record, or a record changed after it was written, shows in `/bk:status` and in validation. A commit made without a unit is listed under commits with no unit. See [Status and usage](status.md).
 - **It does not stop code being written before its test.** The evidence that a test failed first is recorded and reported. In Full SDLC, a team can make its absence block finishing. See [TDD evidence](tdd.md).
-- **It never starts a command for you.** Claude runs only the commands that read, `/bk:status`, `/bk:settings` and `/bk:stats`, on its own, and `/bk:pause` when you say words such as "let's stop here". Every other command waits for you to type it. Claude Code enforces this; Antigravity cannot, so there Claude is told the rule and follows it. See [Commands](commands.md).
+- **It never starts a command for you.** Claude runs only the commands that read, `/bk:status`, `/bk:settings` and `/bk:stats`, on its own, and `/bk:pause` when you say words such as "let's stop here". Every other command waits for you to type it. Claude Code enforces this; Antigravity and Pi cannot, so there the agent is told the rule and follows it. See [Commands](commands.md).
 
 ## Tests
 
@@ -42,4 +42,4 @@ The limits BuildKeel keeps on purpose, so you can plan around them. Each says wh
 
 **More:** [Troubleshooting](troubleshooting.md), [Features](what-buildkeel-does.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-status`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-status`.

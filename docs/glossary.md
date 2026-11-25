@@ -146,4 +146,4 @@ The words BuildKeel uses, in alphabetical order, each with a short definition an
 
 **Working notes.** What the conversation settles on a unit or change: a decision and why, a ruling, a constraint, a dead end, an open question, the next step. Each names a source that is checked, and finishing turns them into the context part of the completion record. See [Working notes and threads](working-notes.md).
 
-Commands are shown in Claude Code's form. In Antigravity, use a hyphen: `/bk-init`.
+Commands are shown in Claude Code's form. In Antigravity and Pi, use a hyphen: `/bk-init`.
